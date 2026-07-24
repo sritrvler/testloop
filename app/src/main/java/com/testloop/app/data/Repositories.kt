@@ -7,6 +7,7 @@ import com.testloop.app.domain.Campaign
 import com.testloop.app.domain.OwnedApp
 import com.testloop.app.domain.PublicApp
 import com.testloop.app.domain.ReciprocalCommitment
+import com.testloop.app.domain.UsageAccessStatus
 import kotlinx.coroutines.flow.StateFlow
 
 /** Google identity is never Play enrollment proof. */
@@ -29,7 +30,11 @@ interface TestLoopRepository {
     val commitments: StateFlow<List<ReciprocalCommitment>>
     val notifications: StateFlow<List<AppNotification>>
     val bookmarks: StateFlow<List<AppBookmark>>
+    val usageAccess: StateFlow<UsageAccessStatus>
     suspend fun addOwnedApp(app: OwnedApp, campaign: Campaign): Result<Unit>
+    suspend fun delistOwnedApp(appId: String): Result<Unit>
+    suspend fun markOwnedAppPublished(appId: String): Result<Unit>
+    suspend fun syncUsageAccess(hasAccess: Boolean): Result<Unit>
     suspend fun joinCampaign(publicAppId: String, ownAppId: String?): Result<ReciprocalCommitment>
     suspend fun bookmarkApp(publicAppId: String): Result<Unit>
     suspend fun removeBookmark(publicAppId: String): Result<Unit>

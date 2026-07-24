@@ -13,6 +13,7 @@ import com.testloop.app.domain.NotificationKind
 import com.testloop.app.domain.OwnedApp
 import com.testloop.app.domain.PublicApp
 import com.testloop.app.domain.ReciprocalCommitment
+import com.testloop.app.domain.UsageAccessStatus
 import com.testloop.app.tracking.AndroidInstallStatusReporter
 import com.testloop.app.tracking.AndroidUsageAccessReporter
 import java.time.Instant
@@ -24,6 +25,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.rpc
 
 /**
  * Production repository for the bounded MVP. Every write is authorized by Supabase RLS.
@@ -49,19 +52,29 @@ class SupabaseTestLoopRepository(
     override val notifications: StateFlow<List<AppNotification>> = _notifications.asStateFlow()
     private val _bookmarks = MutableStateFlow<List<AppBookmark>>(emptyList())
     override val bookmarks: StateFlow<List<AppBookmark>> = _bookmarks.asStateFlow()
+    private val _usageAccess = MutableStateFlow(UsageAccessStatus())
+    override val usageAccess: StateFlow<UsageAccessStatus> = _usageAccess.asStateFlow()
 
     override suspend fun refresh(): Result<Unit> = runCatching {
         val userId = requireUserId()
         val ownRows = supabase.from("owned_apps").select {
             filter { eq("owner_id", userId) }
         }.decodeList<OwnedAppRow>()
-        val ownIds = ownRows.map { it.id }
+        // Archived rows remain in the database for history, but are no longer
+        // active apps in the owner's portfolio.
+        val activeOwnRows = ownRows.filter { it.lifecycle == "published" }
+        val ownIds = activeOwnRows.map { it.id }
         val campaignRows = ownIds.mapNotNull { appId ->
             supabase.from("campaigns").select {
                 filter { eq("owned_app_id", appId) }
             }.decodeList<CampaignRow>().firstOrNull()
         }
-        val listings = supabase.from("public_app_listings").select().decodeList<PublicListingRow>()
+        // A listing permission problem must not hide the publisher's own apps.
+        // The database migration grants the helper permission; this fallback
+        // keeps My apps usable while Discover is temporarily unavailable.
+        val listings = runCatching {
+            supabase.from("public_app_listings").select().decodeList<PublicListingRow>()
+        }.getOrDefault(emptyList())
         var commitmentRows = supabase.from("reciprocal_commitments").select().decodeList<CommitmentRow>()
         val profileRows = supabase.from("profiles").select().decodeList<TesterProfileRow>()
 
@@ -76,7 +89,7 @@ class SupabaseTestLoopRepository(
         // commitments again before publishing UI state.
         commitmentRows = supabase.from("reciprocal_commitments").select().decodeList()
 
-        _ownedApps.value = ownRows.map { it.toOwnedApp(campaignRows.firstOrNull { campaign -> campaign.ownedAppId == it.id }?.id) }
+        _ownedApps.value = activeOwnRows.map { it.toOwnedApp(campaignRows.firstOrNull { campaign -> campaign.ownedAppId == it.id }?.id) }
         val listingsByCampaign = listings.associateBy { it.campaignId }
         _campaigns.value = campaignRows.map { campaign ->
             campaign.toCampaign().copy(joinedTesterCount = listingsByCampaign[campaign.id]?.joinedTesterCount ?: 0)
@@ -121,7 +134,7 @@ class SupabaseTestLoopRepository(
                 installUrl = app.installUrl.trim(),
                 optInUrl = app.optInUrl.trim(),
                 iconSeed = app.iconSeed,
-                details = "",
+                details = app.details.trim(),
                 category = "Productivity",
                 lifecycle = "published"
             )
@@ -130,10 +143,38 @@ class SupabaseTestLoopRepository(
             CampaignInsert(
                 ownedAppId = inserted.id,
                 requestedTesters = campaign.requestedTesters,
-                instructions = campaignInstructions(app)
+                instructions = campaign.instructions.trim()
             )
         )
         refresh().getOrThrow()
+    }
+
+    override suspend fun delistOwnedApp(appId: String): Result<Unit> = runCatching {
+        val userId = requireUserId()
+        supabase.from("campaigns").update(CampaignLifecycleUpdate(lifecycle = "closed", closedAt = Instant.now().toString())) {
+            filter { eq("owned_app_id", appId) }
+        }
+        supabase.from("owned_apps").update(OwnedAppLifecycleUpdate(lifecycle = "archived")) {
+            filter { eq("id", appId); eq("owner_id", userId) }
+        }
+        refresh().getOrThrow()
+    }
+
+    override suspend fun markOwnedAppPublished(appId: String): Result<Unit> = runCatching {
+        val userId = requireUserId()
+        supabase.from("owned_apps").update(OwnedAppPublicationUpdate(playStorePublishedAt = Instant.now().toString())) {
+            filter { eq("id", appId); eq("owner_id", userId) }
+        }
+        refresh().getOrThrow()
+    }
+
+    override suspend fun syncUsageAccess(hasAccess: Boolean): Result<Unit> = runCatching {
+        requireUserId()
+        val status = supabase.postgrest.rpc("record_usage_access_status", UsageAccessStatusParams(hasAccess))
+            .decodeList<UsageAccessStatusRow>()
+            .firstOrNull()
+            ?: error("Could not update Usage Access status")
+        _usageAccess.value = status.toDomain()
     }
 
     override suspend fun joinCampaign(publicAppId: String, ownAppId: String?): Result<ReciprocalCommitment> = runCatching {
@@ -244,8 +285,6 @@ class SupabaseTestLoopRepository(
     private fun requireUserId(): String = auth.account.value?.id?.takeIf { it.isNotBlank() }
         ?: error("Please sign in again")
 
-    private fun campaignInstructions(app: OwnedApp): String =
-        "Install ${app.title}, follow the publisher's test instructions, and report any issue in the app listing."
 }
 
 @Serializable
@@ -258,9 +297,11 @@ private data class OwnedAppRow(
     @SerialName("opt_in_url") val optInUrl: String,
     @SerialName("icon_seed") val iconSeed: String = "",
     val details: String = "",
-    val category: String = "Productivity"
+    val category: String = "Productivity",
+    @SerialName("play_store_published_at") val playStorePublishedAt: String? = null,
+    val lifecycle: String = "published"
 ) {
-    fun toOwnedApp(campaignId: String?) = OwnedApp(id, title, packageName, installUrl, optInUrl, iconSeed, campaignId.orEmpty())
+    fun toOwnedApp(campaignId: String?, details: String = this.details) = OwnedApp(id, title, packageName, installUrl, optInUrl, iconSeed, campaignId.orEmpty(), details, playStorePublishedAt?.let(Instant::parse))
 }
 
 @Serializable
@@ -277,14 +318,37 @@ private data class OwnedAppInsert(
 )
 
 @Serializable
+private data class OwnedAppLifecycleUpdate(val lifecycle: String)
+
+@Serializable
+private data class OwnedAppPublicationUpdate(
+    @SerialName("play_store_published_at") val playStorePublishedAt: String
+)
+
+@Serializable
+private data class UsageAccessStatusParams(
+    @SerialName("has_access") val hasAccess: Boolean
+)
+
+@Serializable
+private data class UsageAccessStatusRow(
+    @SerialName("usage_access_revoked_at") val revokedAt: String? = null,
+    @SerialName("usage_access_deadline") val deadlineAt: String? = null,
+    @SerialName("listing_deactivated") val listingDeactivated: Boolean = false
+) {
+    fun toDomain() = UsageAccessStatus(revokedAt?.let(Instant::parse), deadlineAt?.let(Instant::parse), listingDeactivated)
+}
+
+@Serializable
 private data class CampaignRow(
     val id: String,
     @SerialName("owned_app_id") val ownedAppId: String,
     @SerialName("requested_testers") val requestedTesters: Int,
     val instructions: String = "",
-    @SerialName("started_on") val startedOn: String
+    @SerialName("started_on") val startedOn: String,
+    val lifecycle: String = "active"
 ) {
-    fun toCampaign() = Campaign(id, ownedAppId, requestedTesters, 0, parseDate(startedOn))
+    fun toCampaign() = Campaign(id, ownedAppId, requestedTesters, 0, parseDate(startedOn), isActive = lifecycle == "active", instructions = instructions)
 }
 
 @Serializable
@@ -293,6 +357,12 @@ private data class CampaignInsert(
     @SerialName("requested_testers") val requestedTesters: Int,
     val instructions: String,
     val lifecycle: String = "active"
+)
+
+@Serializable
+private data class CampaignLifecycleUpdate(
+    val lifecycle: String,
+    @SerialName("closed_at") val closedAt: String
 )
 
 @Serializable

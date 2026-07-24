@@ -37,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.testloop.app.domain.DirectionSignal
+import com.testloop.app.domain.ActivitySignal
 import com.testloop.app.domain.InstallSignal
 import com.testloop.app.ui.theme.Attention100
 import com.testloop.app.ui.theme.Attention700
@@ -69,8 +70,11 @@ fun MemberAvatar(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun SignalLabel(signal: DirectionSignal, compact: Boolean = false) {
     val (text, icon, tint, background) = when {
-        signal.install == InstallSignal.NOT_INSTALLED -> Quad("Not installed", Icons.Default.ErrorOutline, Attention700, Attention100)
-        signal.install == InstallSignal.UNAVAILABLE -> Quad("Install status unavailable", Icons.Default.ErrorOutline, Ink500, Brand100)
+        signal.install == InstallSignal.NOT_INSTALLED -> Quad("Install needed", Icons.Default.ErrorOutline, Attention700, Attention100)
+        signal.install == InstallSignal.UNAVAILABLE -> Quad("Can't check install", Icons.Default.ErrorOutline, Ink500, Brand100)
+        signal.activity == ActivitySignal.OPENED_TODAY -> Quad("Opened today", Icons.Default.CheckCircle, Success700, Success100)
+        signal.activity == ActivitySignal.NOT_DETECTED -> Quad("Not opened today", Icons.Default.ErrorOutline, Attention700, Attention100)
+        signal.activity == ActivitySignal.UNAVAILABLE -> Quad("Open status unavailable", Icons.Default.ErrorOutline, Ink500, Brand100)
         else -> Quad("Installed", Icons.Default.CheckCircle, Success700, Success100)
     }
     Row(
@@ -94,10 +98,24 @@ fun InstallLabel(signal: DirectionSignal) {
     Text(text, modifier = Modifier.clip(RoundedCornerShape(10.dp)).background(background).padding(horizontal = 8.dp, vertical = 5.dp).semantics { contentDescription = text }, style = MaterialTheme.typography.labelMedium, color = tint)
 }
 
-/** Shows the only device signal supported by this MVP: install state. */
+/** Shows the two device signals that matter to a testing commitment. */
 @Composable
 fun EvidenceLabels(signal: DirectionSignal, compact: Boolean = true) {
-    InstallLabel(signal)
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        InstallLabel(signal)
+        Spacer(Modifier.width(6.dp))
+        ActivityLabel(signal)
+    }
+}
+
+@Composable
+private fun ActivityLabel(signal: DirectionSignal) {
+    val (text, tint, background) = when (signal.activity) {
+        ActivitySignal.OPENED_TODAY -> Triple("Opened today", Success700, Success100)
+        ActivitySignal.NOT_DETECTED -> Triple("Not opened today", Attention700, Attention100)
+        ActivitySignal.UNAVAILABLE -> Triple("Open status unavailable", Ink500, Brand100)
+    }
+    Text(text, modifier = Modifier.clip(RoundedCornerShape(10.dp)).background(background).padding(horizontal = 8.dp, vertical = 5.dp).semantics { contentDescription = text }, style = MaterialTheme.typography.labelMedium, color = tint)
 }
 
 private data class Quad(val text: String, val icon: androidx.compose.ui.graphics.vector.ImageVector, val tint: Color, val background: Color)

@@ -48,7 +48,10 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         usageAccessGranted = usageAccessReporter.isGranted()
-        if (auth.account.value != null) lifecycleScope.launch { repository.refresh() }
+        if (auth.account.value != null) lifecycleScope.launch {
+            repository.syncUsageAccess(usageAccessGranted)
+            repository.refresh()
+        }
     }
 
     override fun onNewIntent(intent: Intent) {

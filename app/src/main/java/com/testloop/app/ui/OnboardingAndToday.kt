@@ -48,6 +48,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import com.testloop.app.domain.AppNotification
+import com.testloop.app.domain.ActivitySignal
+import com.testloop.app.domain.CommitmentLifecycle
 import com.testloop.app.domain.InstallSignal
 import com.testloop.app.domain.OwnedApp
 import com.testloop.app.domain.PublicApp
@@ -91,29 +93,28 @@ fun TrackingSetup(usageAccessGranted: Boolean, onOpenUsageAccess: () -> Unit, on
 }
 
 @Composable
-fun TodayRedesign(padding: PaddingValues, username: String, commitments: List<ReciprocalCommitment>, ownedApps: List<OwnedApp>, publicApps: List<PublicApp>, onPair: (String) -> Unit, onOwnApp: (String, Boolean) -> Unit, onNotifications: () -> Unit, unread: Int, onObligations: () -> Unit, onAddApp: () -> Unit, onDiscover: () -> Unit) {
+fun TodayRedesign(padding: PaddingValues, username: String, commitments: List<ReciprocalCommitment>, ownedApps: List<OwnedApp>, publicApps: List<PublicApp>, onPair: (String) -> Unit, onPrimaryAction: (String) -> Unit, onOwnApp: (String, Boolean) -> Unit, onNotifications: () -> Unit, unread: Int, onObligations: () -> Unit, onAddApp: () -> Unit, onDiscover: () -> Unit) {
     val today = LocalDate.now()
-    val active = commitments.filter { it.lifecycle != com.testloop.app.domain.CommitmentLifecycle.LEFT && it.lifecycle != com.testloop.app.domain.CommitmentLifecycle.PENDING_SETUP }
-    val tasks = active.sortedBy { it.youOweSignal.install == InstallSignal.INSTALLED }
-    val opened = tasks.count { it.youOweSignal.install == InstallSignal.INSTALLED }
-    val attentionByApp = active.filter { it.currentUserOwnAppId != null && needsAttention(it.theyOweSignal) }.groupBy { it.currentUserOwnAppId!! }
+    val active = commitments.filter { it.lifecycle == CommitmentLifecycle.ACTIVE }
+    val tasks = active.sortedWith(compareBy<ReciprocalCommitment> { taskPriority(it) }.thenBy { it.joinedOn })
+    val pendingTasks = tasks.filter(::needsYourAction)
+    val tasksRemaining = tasks.count(::needsYourAction)
+    val incoming = active.filter { it.currentUserOwnAppId != null }
+    val incomingNeedsAction = incoming.count { needsAttention(it.theyOweSignal) }
     val hasNoActivity = active.isEmpty()
     val firstRun = hasNoActivity && ownedApps.isEmpty()
     LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(horizontal = Gutter, vertical = 0.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { TestLoopTopBar("${timeGreeting()}, ${username.ifBlank { "there" }}", today.format(DateTimeFormatter.ofPattern("EEEE, d MMMM")), unreadCount = unread, onNotifications = onNotifications) }
+        item { TestLoopTopBar("Today", "${timeGreeting()}, ${username.ifBlank { "there" }} · ${today.format(DateTimeFormatter.ofPattern("EEEE, d MMMM"))}", unreadCount = unread, onNotifications = onNotifications) }
         if (firstRun) {
             item { FirstRunToday(onAddApp = onAddApp, onDiscover = onDiscover) }
         } else if (hasNoActivity) {
             item { ReadyToPairToday(onDiscover = onDiscover, onAddApp = onAddApp) }
         } else {
-            item { MomentumPanel(opened, tasks.size) }
-        }
-        if (!firstRun) {
-            item { SectionHeader("You owe them", if (tasks.isEmpty()) "No test apps yet" else "${tasks.size - opened} left", action = "All obligations", onAction = onObligations) }
-            if (tasks.isNotEmpty()) item { GroupSurface { tasks.forEachIndexed { index, pair -> DailyTaskRow(pair, publicApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }, today, onPair); if (index != tasks.lastIndex) RowDivider() } } }
-            else item { EmptyObligationHint(onDiscover) }
-            item { SectionHeader("They owe you", if (attentionByApp.isEmpty()) "All on track" else "${attentionByApp.values.sumOf { it.size }} need attention") }
-            item { GroupSurface { val entries = attentionByApp.entries.toList(); if (entries.isEmpty()) Text("All testers with active pairs have a positive signal today.", Modifier.padding(16.dp), color = Ink500) else entries.forEachIndexed { index, entry -> AttentionSummary(entry.key, entry.value, ownedApps, onOwnApp); if (index != entries.lastIndex) RowDivider() } } }
+            item { TodaySummaryCard(tasksRemaining, tasks.size) }
+            item { SectionHeader("Your testing today", if (tasksRemaining == 0) "Nothing else for you to do" else "$tasksRemaining app${if (tasksRemaining == 1) "" else "s"} still need you", action = "All obligations", onAction = onObligations) }
+            item { if (pendingTasks.isEmpty()) EmptyTodayState() else GroupSurface { pendingTasks.forEachIndexed { index, pair -> DailyTaskRow(pair, publicApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }, today, onPair, onPrimaryAction); if (index != pendingTasks.lastIndex) RowDivider() } } }
+            item { SectionHeader("Waiting on other testers", if (incoming.isEmpty()) "No reciprocal apps yet" else if (incomingNeedsAction == 0) "Everyone is on track" else "$incomingNeedsAction person${if (incomingNeedsAction == 1) "" else "s"} ${if (incomingNeedsAction == 1) "needs" else "need"} attention") }
+            item { if (incoming.isEmpty()) EmptyIncomingHint(onDiscover) else GroupSurface { incoming.forEachIndexed { index, pair -> PartnerStatusRow(pair, ownedApps, today, onOwnApp, onPair); if (index != incoming.lastIndex) RowDivider() } } }
             item { InlineNotice("Install status is a device observation, not proof of Google Play testing or test quality.") }
         }
     }
@@ -152,7 +153,7 @@ private fun ReadyToPairToday(onDiscover: () -> Unit, onAddApp: () -> Unit) {
     Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(Brand100).padding(20.dp)) {
         Text("You’re ready for your first commitment", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(6.dp))
-        Text("Find an app to test in Discover. If you also want testers for your own app, add it in My apps.", color = Ink500)
+        Text("Explore apps available for testing and join one. In return, that publisher can test your app too.", color = Ink500)
         Spacer(Modifier.height(14.dp))
         Button(onClick = onDiscover, modifier = Modifier.fillMaxWidth().height(50.dp)) { Text("Find an app to test") }
         Spacer(Modifier.height(8.dp))
@@ -167,7 +168,7 @@ private fun GettingStartedGuide() {
         Spacer(Modifier.height(12.dp))
         GuideRow(Icons.Default.Apps, "My apps", "Add and monitor the apps you want testers for.")
         Spacer(Modifier.height(10.dp))
-        GuideRow(Icons.Default.Explore, "Discover", "Join a test group and see the app you need to open.")
+        GuideRow(Icons.Default.Explore, "Discover", "Explore apps available for testing, join a group, and get your app tested in return.")
     }
 }
 
@@ -192,39 +193,72 @@ private fun EmptyObligationHint(onDiscover: () -> Unit) {
 }
 
 @Composable
-private fun MomentumPanel(opened: Int, total: Int) {
-    val fraction = if (total == 0) 0f else opened.toFloat() / total
-    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Brand100).padding(18.dp)) {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
-            Column(Modifier.weight(1f)) {
-                Text(if (opened == total && total > 0) "All committed apps are installed" else "$opened of $total committed apps installed", color = MaterialTheme.colorScheme.onSurface, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
-                Spacer(Modifier.height(5.dp))
-                Text(if (total == 0) "Find an app to test when you are ready." else "${(total - opened).coerceAtLeast(0)} apps still need attention", color = Ink500)
-            }
-            Text("${(fraction * 100).toInt()}%", color = Brand600, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-        }
-        Spacer(Modifier.height(16.dp))
-        Box(Modifier.fillMaxWidth().height(5.dp).clip(RoundedCornerShape(3.dp)).background(MaterialTheme.colorScheme.surface)) {
-            Box(Modifier.fillMaxWidth(fraction.coerceIn(0f, 1f)).height(5.dp).clip(RoundedCornerShape(3.dp)).background(Brand600))
-        }
+private fun TodaySummaryCard(remaining: Int, total: Int) {
+    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(Brand100).padding(20.dp)) {
+        Text(if (remaining == 0) "You're all caught up" else "$remaining app${if (remaining == 1) "" else "s"} need you today", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(6.dp))
+        Text(if (remaining == 0) "You have completed today's testing for all $total committed app${if (total == 1) "" else "s"}." else "Use the action on each row below. TestLoop will show the app name, the person you're helping, and your testing day.", color = Ink500, style = MaterialTheme.typography.bodyLarge)
     }
 }
 
 @Composable
-private fun DailyTaskRow(pair: ReciprocalCommitment, app: PublicApp?, today: LocalDate, onPair: (String) -> Unit) {
+private fun DailyTaskRow(pair: ReciprocalCommitment, app: PublicApp?, today: LocalDate, onPair: (String) -> Unit, onPrimaryAction: (String) -> Unit) {
     val appName = app?.title ?: "Test app"
-    val action = if (pair.youOweSignal.install == InstallSignal.NOT_INSTALLED) "Install" else "Open"
+    val action = when {
+        pair.youOweSignal.install != InstallSignal.INSTALLED -> "Install"
+        pair.youOweSignal.activity != ActivitySignal.OPENED_TODAY -> "Open"
+        else -> "Open again"
+    }
     Row(Modifier.fillMaxWidth().clickable { onPair(pair.commitmentId) }.padding(16.dp).semantics { contentDescription = "You owe them, $appName for ${pair.otherUsername}, ${pair.youOweSignal.install.label}" }, verticalAlignment = Alignment.CenterVertically) {
-        AppMonogram(appName, small = true); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(appName, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold); Text("You test $appName for ${pair.otherUsername}", style = MaterialTheme.typography.bodySmall, color = Ink500); Spacer(Modifier.height(7.dp)); SignalLabel(pair.youOweSignal, compact = true); Spacer(Modifier.height(7.dp)); Text("Day ${pair.elapsedDays(today)} of ${pair.targetDays} · ${pair.daysRemaining(today)} days remaining", style = MaterialTheme.typography.labelMedium, color = Ink500) }
-        FilledTonalButton(onClick = { onPair(pair.commitmentId) }) { Icon(Icons.Default.OpenInNew, null, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(4.dp)); Text(action) }
+        AppMonogram(appName, small = true); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(appName, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold); Text("Test for ${pair.otherUsername}", style = MaterialTheme.typography.bodySmall, color = Ink500); Spacer(Modifier.height(7.dp)); SignalLabel(pair.youOweSignal, compact = true); Spacer(Modifier.height(7.dp)); Text("Day ${pair.elapsedDays(today)} of ${pair.targetDays} · ${pair.daysRemaining(today)} days remaining", style = MaterialTheme.typography.labelMedium, color = Ink500) }
+        FilledTonalButton(onClick = { onPrimaryAction(pair.commitmentId) }) { Icon(Icons.Default.OpenInNew, null, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(4.dp)); Text(action) }
     }
 }
 
 @Composable
-private fun AttentionSummary(ownAppId: String, pairs: List<ReciprocalCommitment>, ownedApps: List<OwnedApp>, onOwnApp: (String, Boolean) -> Unit) {
-    val app = ownedApps.firstOrNull { it.id == ownAppId } ?: return
-    val notInstalled = pairs.count { it.theyOweSignal?.install == InstallSignal.NOT_INSTALLED }
-    Row(Modifier.fillMaxWidth().clickable { onOwnApp(ownAppId, true) }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) { AppMonogram(app.title, small = true); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text("${app.title}: ${pairs.size} people need attention", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold); Text("$notInstalled not installed", style = MaterialTheme.typography.bodySmall, color = Ink500) }; Icon(Icons.Default.ArrowForward, "Open ${app.title}", tint = Brand600) }
+private fun EmptyTodayState() {
+    Column(Modifier.fillMaxWidth().padding(16.dp)) {
+        Icon(Icons.Default.CheckCircle, null, tint = Brand600, modifier = Modifier.size(22.dp))
+        Spacer(Modifier.height(8.dp))
+        Text("Nothing else for you to do today", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Spacer(Modifier.height(4.dp))
+        Text("Your committed apps have been opened today. You can open them again from All obligations if needed.", color = Ink500)
+    }
 }
 
-fun needsAttention(signal: com.testloop.app.domain.DirectionSignal?): Boolean = signal?.install != InstallSignal.INSTALLED
+@Composable
+private fun PartnerStatusRow(pair: ReciprocalCommitment, ownedApps: List<OwnedApp>, today: LocalDate, onOwnApp: (String, Boolean) -> Unit, onPair: (String) -> Unit) {
+    val app = ownedApps.firstOrNull { it.id == pair.currentUserOwnAppId }
+    val appTitle = app?.title ?: "Your app"
+    val signal = pair.theyOweSignal
+    Row(Modifier.fillMaxWidth().clickable { if (app != null) onOwnApp(app.id, true) else onPair(pair.commitmentId) }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+        AppMonogram(appTitle, small = true); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) {
+            Text("${pair.otherUsername} · $appTitle", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+            Text("They test your app · Day ${pair.elapsedDays(today)} of ${pair.targetDays}", style = MaterialTheme.typography.bodySmall, color = Ink500)
+            Spacer(Modifier.height(7.dp))
+            if (signal == null) Text("No status yet", style = MaterialTheme.typography.labelMedium, color = Ink500) else SignalLabel(signal, compact = true)
+        }
+        Icon(Icons.Default.ArrowForward, "See ${pair.otherUsername}'s testing status", tint = Brand600)
+    }
+}
+
+@Composable
+private fun EmptyIncomingHint(onDiscover: () -> Unit) {
+    Column(Modifier.fillMaxWidth().padding(16.dp)) {
+        Text("No one is testing your apps yet", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Spacer(Modifier.height(4.dp))
+        Text("When someone joins one of your app's tests, their name and today's status will appear here.", color = Ink500)
+        Spacer(Modifier.height(12.dp))
+        FilledTonalButton(onClick = onDiscover) { Text("Find an app to test") }
+    }
+}
+
+private fun needsYourAction(pair: ReciprocalCommitment): Boolean = pair.youOweSignal.install != InstallSignal.INSTALLED || pair.youOweSignal.activity != ActivitySignal.OPENED_TODAY
+
+private fun taskPriority(pair: ReciprocalCommitment): Int = when {
+    pair.youOweSignal.install != InstallSignal.INSTALLED -> 0
+    pair.youOweSignal.activity != ActivitySignal.OPENED_TODAY -> 1
+    else -> 2
+}
+
+fun needsAttention(signal: com.testloop.app.domain.DirectionSignal?): Boolean = signal == null || signal.install != InstallSignal.INSTALLED || signal.activity != ActivitySignal.OPENED_TODAY

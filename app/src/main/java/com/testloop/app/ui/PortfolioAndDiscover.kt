@@ -13,17 +13,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,9 +30,12 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,6 +51,7 @@ import com.testloop.app.ui.theme.Brand600
 import com.testloop.app.ui.theme.Ink500
 import java.time.Duration
 import java.time.Instant
+import kotlinx.coroutines.launch
 
 @Composable
 fun MyAppsScreen(padding: PaddingValues, ownedApps: List<OwnedApp>, campaigns: List<Campaign>, commitments: List<ReciprocalCommitment>, onOwnApp: (String, Boolean) -> Unit, onAdd: () -> Unit, onDiscover: () -> Unit, onNotifications: () -> Unit, unread: Int) {
@@ -102,36 +104,35 @@ private fun PortfolioEmpty(onAdd: () -> Unit, onDiscover: () -> Unit) {
 }
 
 @Composable
-fun DiscoverRedesign(padding: PaddingValues, apps: List<PublicApp>, commitments: List<ReciprocalCommitment>, bookmarks: List<AppBookmark>, onOpen: (String) -> Unit, onBookmark: (String) -> Unit, onRemoveBookmark: (String) -> Unit, onAddApp: () -> Unit, onNotifications: () -> Unit, unread: Int) {
+fun DiscoverRedesign(padding: PaddingValues, apps: List<PublicApp>, commitments: List<ReciprocalCommitment>, bookmarks: List<AppBookmark>, onOpen: (String) -> Unit, onBookmark: suspend (String) -> Result<Unit>, onRemoveBookmark: suspend (String) -> Result<Unit>, onAddApp: () -> Unit, onNotifications: () -> Unit, unread: Int) {
     var query by remember { mutableStateOf("") }
-    var filter by remember { mutableStateOf("Open slots") }
+    var filter by remember { mutableStateOf("All apps") }
     var showBookmarksOnly by remember { mutableStateOf(false) }
-    var menuExpanded by remember { mutableStateOf(false) }
+    var optimisticBookmarkOverrides by remember { mutableStateOf<Map<String, Boolean>>(emptyMap()) }
+    val scope = rememberCoroutineScope()
     val joinedAppIds = commitments.filter { it.lifecycle != com.testloop.app.domain.CommitmentLifecycle.PENDING_SETUP }.mapTo(mutableSetOf()) { it.appBeingTestedByCurrentUserId }
-    val bookmarkedById = bookmarks.associateBy { it.appId }
+    val actualBookmarkedIds = bookmarks.mapTo(mutableSetOf()) { it.appId }
+    LaunchedEffect(bookmarks) {
+        optimisticBookmarkOverrides = optimisticBookmarkOverrides.filter { (id, desired) -> (id in actualBookmarkedIds) == desired }
+    }
+    fun isBookmarked(id: String): Boolean = optimisticBookmarkOverrides[id] ?: (id in actualBookmarkedIds)
+    val bookmarkedById = apps.mapNotNull { app -> if (isBookmarked(app.id)) app.id to (bookmarks.firstOrNull { it.appId == app.id } ?: AppBookmark(app.id, Instant.now())) else null }.toMap()
     val filtered = apps
         .filter { it.id !in joinedAppIds }
         .filter { !showBookmarksOnly || it.id in bookmarkedById }
         .filter { it.title.contains(query, true) || it.ownerUsername.contains(query, true) || it.packageName.contains(query, true) }
-        .filter { showBookmarksOnly || if (filter == "Full") it.slotsRemaining == 0 else it.slotsRemaining > 0 }
+        .filter { showBookmarksOnly || when (filter) { "Open" -> it.slotsRemaining > 0; "Full" -> it.slotsRemaining == 0; else -> true } }
         .let { if (filter == "Fewest slots") it.sortedBy { app -> app.slotsRemaining } else it }
     LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(horizontal = Gutter, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { TestLoopTopBar("Discover", "Find an app to test", unreadCount = unread, onNotifications = onNotifications) }
-        item {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End) {
-                Box {
-                    IconButton(onClick = { menuExpanded = true }) { Icon(Icons.Default.MoreVert, "Discover menu") }
-                    DropdownMenu(expanded = menuExpanded, onDismissRequest = { menuExpanded = false }) {
-                        DropdownMenuItem(text = { Text("All apps") }, onClick = { showBookmarksOnly = false; menuExpanded = false })
-                        DropdownMenuItem(text = { Text("Bookmarks (${bookmarks.size})") }, onClick = { showBookmarksOnly = true; menuExpanded = false })
-                    }
-                }
+        item { TestLoopTopBar("Discover", "Explore apps, join their test groups, and get your app tested in return", unreadCount = unread, onNotifications = onNotifications, actionContent = {
+            IconButton(onClick = { showBookmarksOnly = !showBookmarksOnly }) {
+                Icon(if (showBookmarksOnly) Icons.Default.Bookmark else Icons.Default.BookmarkBorder, if (showBookmarksOnly) "Show all apps" else "Show bookmarked apps", tint = Brand600)
             }
-        }
+        }) }
         item { OutlinedTextField(query, { query = it }, modifier = Modifier.fillMaxWidth(), label = { Text("Search apps or usernames") }, leadingIcon = { Icon(Icons.Default.Search, null) }, singleLine = true) }
-        item { Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("Open slots", "New", "Fewest slots", "Full").forEach { label -> FilterChip(selected = filter == label, onClick = { filter = label }, label = { Text(label) }) } } }
+        item { Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("All apps", "Open", "New", "Fewest slots", "Full").forEach { label -> FilterChip(selected = filter == label && !showBookmarksOnly, onClick = { filter = label; showBookmarksOnly = false }, label = { Text(label) }) } } }
         if (filtered.isEmpty()) item { DiscoverEmptyState(apps.isNotEmpty(), onAddApp) }
-        else item { GroupSurface { filtered.forEachIndexed { index, app -> DiscoverRow(app, bookmarkedById[app.id], showBookmarksOnly, onOpen, onBookmark, onRemoveBookmark); if (index != filtered.lastIndex) RowDivider() } } }
+        else item { GroupSurface { filtered.forEachIndexed { index, app -> DiscoverRow(app, bookmarkedById[app.id], onOpen, onBookmark = { id -> optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to true); scope.launch { onBookmark(id).onFailure { optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to false) } } }, onRemoveBookmark = { id -> optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to false); scope.launch { onRemoveBookmark(id).onFailure { optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to true) } } }); if (index != filtered.lastIndex) RowDivider() } } }
     }
 }
 
@@ -151,11 +152,10 @@ private fun DiscoverEmptyState(hasAnyApps: Boolean, onAddApp: () -> Unit) {
 }
 
 @Composable
-private fun DiscoverRow(app: PublicApp, bookmark: AppBookmark?, showBookmarksOnly: Boolean, onOpen: (String) -> Unit, onBookmark: (String) -> Unit, onRemoveBookmark: (String) -> Unit) {
+private fun DiscoverRow(app: PublicApp, bookmark: AppBookmark?, onOpen: (String) -> Unit, onBookmark: (String) -> Unit, onRemoveBookmark: (String) -> Unit) {
     Row(Modifier.fillMaxWidth().clickable { onOpen(app.id) }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
         AppMonogram(app.title); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(app.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold); Text("@${app.ownerUsername} · ${app.postedLabel}", style = MaterialTheme.typography.labelMedium, color = Ink500); if (bookmark != null) Text("Bookmarked ${bookmarkAgeLabel(bookmark.bookmarkedAt)}", style = MaterialTheme.typography.labelSmall, color = Brand600); Spacer(Modifier.height(5.dp)); Text(app.instructions, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall, color = Ink500); Spacer(Modifier.height(7.dp)); Text(if (app.slotsRemaining == 0) "Full" else "${app.slotsRemaining} slots left · 14-day target", style = MaterialTheme.typography.labelMedium, color = if (app.slotsRemaining == 0) Ink500 else Brand600) }
-        if (bookmark == null) IconButton(onClick = { onBookmark(app.id) }) { Icon(Icons.Default.BookmarkBorder, "Bookmark ${app.title}") }
-        else if (showBookmarksOnly) IconButton(onClick = { onRemoveBookmark(app.id) }) { Icon(Icons.Default.Close, "Remove ${app.title} bookmark") }
+        IconButton(onClick = { if (bookmark == null) onBookmark(app.id) else onRemoveBookmark(app.id) }) { Icon(if (bookmark == null) Icons.Default.BookmarkBorder else Icons.Default.Bookmark, if (bookmark == null) "Bookmark ${app.title}" else "Remove ${app.title} bookmark", tint = Brand600) }
         Icon(Icons.Default.ArrowForward, "Open ${app.title}", tint = Brand600)
     }
 }

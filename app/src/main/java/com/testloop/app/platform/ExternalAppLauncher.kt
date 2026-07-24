@@ -2,6 +2,7 @@ package com.testloop.app.platform
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 
 /**
  * Boundary for an explicit, user-initiated attempt to launch one commitment package.
@@ -25,19 +26,33 @@ sealed interface LaunchResult {
  */
 class AndroidExternalAppLauncher(private val context: Context) : ExternalAppLauncher {
     override fun launch(packageName: String): LaunchResult {
-        val intent = Intent(Intent.ACTION_MAIN)
-            .addCategory(Intent.CATEGORY_LAUNCHER)
-            .setPackage(packageName)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val target = packageName.trim()
+        if (!PACKAGE_NAME.matches(target)) return LaunchResult.NotInstalled
+
+        // Do not rebuild a launcher intent with setPackage(). Some Android 15+
+        // launchers (including Flipkart on the Pixel 10) expose a launcher
+        // activity but do not resolve that package-only intent. Android's own
+        // helper returns the exact explicit component the launcher uses.
+        val intent = context.packageManager.getLaunchIntentForPackage(target)
+            ?: return if (isInstalled(target)) LaunchResult.NotLaunchable else LaunchResult.NotInstalled
 
         return try {
-            context.startActivity(intent)
+            context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
             LaunchResult.Opened
         } catch (_: android.content.ActivityNotFoundException) {
             LaunchResult.NotLaunchable
         } catch (_: SecurityException) {
             LaunchResult.Unavailable
         }
+    }
+
+    private fun isInstalled(packageName: String): Boolean = runCatching {
+        context.packageManager.getApplicationInfo(packageName, PackageManager.ApplicationInfoFlags.of(0))
+        true
+    }.getOrDefault(false)
+
+    private companion object {
+        val PACKAGE_NAME = Regex("^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z][A-Za-z0-9_]*)+$")
     }
 
     override fun openUrl(url: String): LaunchResult {

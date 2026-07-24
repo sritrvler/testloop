@@ -18,12 +18,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,6 +39,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,6 +59,7 @@ import com.testloop.app.ui.theme.Brand100
 import com.testloop.app.ui.theme.Brand600
 import com.testloop.app.ui.theme.Ink500
 import java.time.LocalDate
+import kotlinx.coroutines.launch
 
 @Composable
 fun PairDetailScreen(pair: ReciprocalCommitment?, ownedApps: List<OwnedApp>, publicApps: List<PublicApp>, onBack: () -> Unit, onOpen: (String) -> Unit, onOpenLink: (String) -> Unit, onReminder: (String, String) -> Unit) {
@@ -91,10 +97,12 @@ fun PairDetailScreen(pair: ReciprocalCommitment?, ownedApps: List<OwnedApp>, pub
 }
 
 @Composable
-fun CommitmentReadyScreen(commitment: ReciprocalCommitment?, publicApps: List<PublicApp>, ownedApps: List<OwnedApp>, isBookmarked: Boolean, onBack: () -> Unit, onOpenLink: (String) -> Unit, onBookmark: (String) -> Unit, onRemoveBookmark: (String) -> Unit) {
+fun CommitmentReadyScreen(commitment: ReciprocalCommitment?, publicApps: List<PublicApp>, ownedApps: List<OwnedApp>, isBookmarked: Boolean, onBack: () -> Unit, onOpenLink: (String) -> Unit, onBookmark: suspend (String) -> Result<Unit>, onRemoveBookmark: suspend (String) -> Result<Unit>) {
     if (commitment == null) { MissingScreen(onBack); return }
     val app = publicApps.firstOrNull { it.id == commitment.appBeingTestedByCurrentUserId }
     val ownApp = ownedApps.firstOrNull { it.id == commitment.currentUserOwnAppId }
+    var shownBookmarked by remember(isBookmarked) { mutableStateOf(isBookmarked) }
+    val scope = rememberCoroutineScope()
     Column(Modifier.fillMaxSize()) {
         TestLoopTopBar("You're almost ready", app?.title ?: "Test app", onBack = onBack)
         LazyColumn(contentPadding = PaddingValues(Gutter), verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -112,8 +120,21 @@ fun CommitmentReadyScreen(commitment: ReciprocalCommitment?, publicApps: List<Pu
                 Spacer(Modifier.height(8.dp))
                 OutlinedButton(onClick = { app?.let { onOpenLink(it.installUrl) } }, modifier = Modifier.fillMaxWidth(), enabled = app != null) { Text("Install app") }
                 Spacer(Modifier.height(8.dp))
-                if (isBookmarked) OutlinedButton(onClick = { app?.let { onRemoveBookmark(it.id) } }, modifier = Modifier.fillMaxWidth(), enabled = app != null) { Text("Remove bookmark") }
-                else OutlinedButton(onClick = { app?.let { onBookmark(it.id) } }, modifier = Modifier.fillMaxWidth(), enabled = app != null) { Text("Bookmark while waiting") }
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Text(if (shownBookmarked) "Saved to bookmarks" else "Save this app for later", modifier = Modifier.weight(1f), color = Ink500)
+                    IconButton(onClick = {
+                        app?.let {
+                            val wasBookmarked = shownBookmarked
+                            shownBookmarked = !wasBookmarked
+                            scope.launch {
+                                val result = if (wasBookmarked) onRemoveBookmark(it.id) else onBookmark(it.id)
+                                result.onFailure { shownBookmarked = wasBookmarked }
+                            }
+                        }
+                    }, enabled = app != null) {
+                        Icon(if (shownBookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder, if (shownBookmarked) "Remove bookmark" else "Bookmark ${app?.title ?: "app"}", tint = Brand600)
+                    }
+                }
             }
             item {
                 Text("Your reciprocal app", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
@@ -150,23 +171,67 @@ private fun ObligationRow(text: String, signal: DirectionSignal, pair: Reciproca
 
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
-fun OwnAppDetailScreen(appId: String, attentionOnly: Boolean, ownedApps: List<OwnedApp>, campaigns: List<Campaign>, commitments: List<ReciprocalCommitment>, publicApps: List<PublicApp>, onBack: () -> Unit, onPair: (String) -> Unit, onReminder: (String, String) -> Unit, onSwitch: (String) -> Unit) {
+fun OwnAppDetailScreen(appId: String, attentionOnly: Boolean, ownedApps: List<OwnedApp>, campaigns: List<Campaign>, commitments: List<ReciprocalCommitment>, publicApps: List<PublicApp>, onBack: () -> Unit, onPair: (String) -> Unit, onReminder: (String, String) -> Unit, onSwitch: (String) -> Unit, onDelist: suspend (String) -> Result<Unit>, onMarkPublished: suspend (String) -> Result<Unit>) {
     val app = ownedApps.firstOrNull { it.id == appId } ?: run { MissingScreen(onBack); return }
     val campaign = campaigns.firstOrNull { it.ownedAppId == appId }
     val pairs = commitments.filter { it.currentUserOwnAppId == appId && it.lifecycle != CommitmentLifecycle.PENDING_SETUP }
     var filter by remember { mutableIntStateOf(if (attentionOnly) 1 else 0) }
+    var confirmDelist by remember { mutableStateOf(false) }
+    var delisting by remember { mutableStateOf(false) }
+    var markingPublished by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
     val displayed = if (filter == 1) pairs.filter { needsAttention(it.theyOweSignal) } else if (filter == 2) pairs.filter { !needsAttention(it.theyOweSignal) } else pairs
     Column(Modifier.fillMaxSize()) {
-        TestLoopTopBar(app.title, "${campaign?.joinedTesterCount ?: 0} of ${campaign?.requestedTesters ?: 0} testers joined", onBack = onBack)
+        TestLoopTopBar(app.title, "${campaign?.joinedTesterCount ?: 0} of ${campaign?.requestedTesters ?: 0} testers joined", onBack = onBack, actionContent = {
+            IconButton(onClick = { confirmDelist = true }, enabled = !delisting && !markingPublished) {
+                Icon(Icons.Default.DeleteForever, "Delist ${app.title}", tint = MaterialTheme.colorScheme.error)
+            }
+            if (app.playStorePublishedAt == null) {
+                IconButton(onClick = {
+                    markingPublished = true
+                    scope.launch { onMarkPublished(app.id); markingPublished = false }
+                }, enabled = !delisting && !markingPublished) {
+                    Icon(Icons.Default.CheckCircle, "Mark ${app.title} published on Google Play", tint = Brand600)
+                }
+            } else {
+                Icon(Icons.Default.CheckCircle, "Published on Google Play", tint = Brand600, modifier = Modifier.padding(horizontal = 12.dp))
+            }
+        })
         LazyColumn(contentPadding = PaddingValues(Gutter), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             item { OwnAppSwitcher(app, ownedApps, onSwitch) }
             item { DayProgress(campaign?.joinedTesterCount ?: 0, campaign?.requestedTesters ?: 1, campaign?.slotsRemaining ?: 0) }
             item { Text("${campaign?.slotsRemaining ?: 0} slots left", style = MaterialTheme.typography.labelLarge, color = Ink500) }
+            item {
+                if (app.playStorePublishedAt == null) Text("Google Play status: not marked as published", style = MaterialTheme.typography.labelMedium, color = Ink500)
+                else Text("Published on Google Play", style = MaterialTheme.typography.labelLarge, color = Brand600)
+            }
             item { CompactFilterControl(filter, { filter = it }, pairs.size, pairs.count { needsAttention(it.theyOweSignal) }, pairs.count { !needsAttention(it.theyOweSignal) }) }
             if (displayed.isEmpty()) item { Text("Everyone is on track", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold); Text("No tester currently needs attention for this app.", color = Ink500) }
             item { GroupSurface { displayed.forEachIndexed { index, pair -> TesterRow(pair, app, publicApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }, onPair, onReminder); if (index != displayed.lastIndex) RowDivider() } } }
         }
     }
+    if (confirmDelist) AlertDialog(
+        onDismissRequest = { if (!delisting) confirmDelist = false },
+        title = { Text(if (delisting) "Removing from Discover…" else "Delist ${app.title}?") },
+        text = {
+            if (delisting) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    CircularProgressIndicator(modifier = Modifier.width(24.dp).height(24.dp), strokeWidth = 2.dp)
+                    Spacer(Modifier.width(12.dp))
+                    Text("Closing the test campaign and removing this app from Discover. Please wait.")
+                }
+            } else {
+                Text("This closes the test campaign and removes ${app.title} from Discover. This action cannot be undone.")
+            }
+        },
+        confirmButton = {
+            Button(onClick = {
+                delisting = true
+                scope.launch { onDelist(app.id).onSuccess { confirmDelist = false }.also { delisting = false } }
+            }, enabled = !delisting) { Text("Delist app") }
+        },
+        dismissButton = { if (!delisting) OutlinedButton(onClick = { confirmDelist = false }) { Text("Keep app") } }
+    )
 }
 
 @Composable

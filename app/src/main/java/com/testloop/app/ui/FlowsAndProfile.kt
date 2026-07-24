@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,10 +53,15 @@ import com.testloop.app.ui.theme.Brand600
 import com.testloop.app.ui.theme.Ink500
 import java.time.LocalDate
 import java.util.UUID
+import kotlinx.coroutines.launch
+
+private const val MIN_INSTRUCTIONS_LENGTH = 8
+private const val MAX_INSTRUCTIONS_LENGTH = 256
+private const val MAX_DETAILS_LENGTH = 256
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PublicAppDetail(app: PublicApp?, ownedApps: List<OwnedApp>, isBookmarked: Boolean, pendingCommitment: com.testloop.app.domain.ReciprocalCommitment?, onBack: () -> Unit, onJoin: (String, String?) -> Unit, onContinue: (String) -> Unit, onBookmark: (String) -> Unit, onRemoveBookmark: (String) -> Unit, onAdd: () -> Unit) {
+fun PublicAppDetail(app: PublicApp?, ownedApps: List<OwnedApp>, pendingCommitment: com.testloop.app.domain.ReciprocalCommitment?, onBack: () -> Unit, onJoin: (String, String?) -> Unit, onContinue: (String) -> Unit, onAdd: () -> Unit) {
     if (app == null) { MissingScreen(onBack); return }
     var showJoin by remember { mutableStateOf(false) }
     Column(Modifier.fillMaxSize()) {
@@ -63,10 +69,7 @@ fun PublicAppDetail(app: PublicApp?, ownedApps: List<OwnedApp>, isBookmarked: Bo
         Column(Modifier.weight(1f).padding(Gutter), verticalArrangement = Arrangement.spacedBy(18.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) { AppMonogram(app.title); Spacer(Modifier.width(12.dp)); Column { Text(app.title, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold); Text("${app.slotsRemaining} slots left · ${app.postedLabel}", color = Ink500) } }
             SectionHeader("What you will test")
-            GroupSurface { Column(Modifier.padding(16.dp)) { Text("1", color = Brand600, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(6.dp)); Text(app.instructions, style = MaterialTheme.typography.bodyLarge); if (app.details.isNotBlank()) Text(app.details, modifier = Modifier.padding(top = 10.dp), color = Ink500) } }
-            InlineNotice(if (pendingCommitment != null) "You requested this group's access. Install the app to become an active tester." else "Open the Play links only after you confirm a named app-to-app commitment.")
-            if (isBookmarked) OutlinedButton(onClick = { onRemoveBookmark(app.id) }, modifier = Modifier.fillMaxWidth()) { Text("Remove bookmark") }
-            else OutlinedButton(onClick = { onBookmark(app.id) }, modifier = Modifier.fillMaxWidth()) { Text("Bookmark while waiting") }
+            GroupSurface { Column(Modifier.padding(16.dp)) { Text("1", color = Brand600, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(6.dp)); Text(app.instructions, style = MaterialTheme.typography.bodyLarge) } }
             Spacer(Modifier.weight(1f))
             Button(onClick = { if (pendingCommitment != null) onContinue(pendingCommitment.commitmentId) else showJoin = true }, modifier = Modifier.fillMaxWidth().height(52.dp), enabled = pendingCommitment != null || app.slotsRemaining > 0) { Text(if (pendingCommitment != null) "Continue setup" else if (app.slotsRemaining > 0) "Join and choose my app" else "Full") }
         }
@@ -95,7 +98,7 @@ private fun JoinPairSheet(app: PublicApp, ownedApps: List<OwnedApp>, onDismiss: 
 }
 
 @Composable
-fun AddAppFlow(onBack: () -> Unit, onPublished: (OwnedApp, Campaign) -> Unit) {
+fun AddAppFlow(onBack: () -> Unit, onPublished: suspend (OwnedApp, Campaign) -> Result<Unit>) {
     var step by remember { mutableIntStateOf(1) }
     var title by remember { mutableStateOf("") }
     var installUrl by remember { mutableStateOf("") }
@@ -104,6 +107,9 @@ fun AddAppFlow(onBack: () -> Unit, onPublished: (OwnedApp, Campaign) -> Unit) {
     var testerCount by remember { mutableStateOf("12") }
     var instructions by remember { mutableStateOf("") }
     var details by remember { mutableStateOf("") }
+    var publishing by remember { mutableStateOf(false) }
+    var publishError by remember { mutableStateOf<String?>(null) }
+    val scope = rememberCoroutineScope()
     val id = remember { UUID.randomUUID().toString() }
     Column(Modifier.fillMaxSize()) {
         TestLoopTopBar("Add app", "Step $step of 3", onBack = onBack)
@@ -111,10 +117,27 @@ fun AddAppFlow(onBack: () -> Unit, onPublished: (OwnedApp, Campaign) -> Unit) {
             when (step) {
                 1 -> { Text("App identity", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold); Field(title, { title = it }, "App display name"); Field(installUrl, { installUrl = it; PlayLinkValidator.packageFromInstallLink(it)?.let { parsed -> packageName = parsed } }, "Play install link"); Field(packageName, { packageName = it }, "Package ID", "Extracted from your install link. You can correct it.") }
                 2 -> { Text("Closed-test access", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold); Field(optInUrl, { optInUrl = it }, "Play testing opt-in link"); Field(testerCount, { testerCount = it.filter(Char::isDigit) }, "Testers needed", keyboard = KeyboardType.Number); InlineNotice("Use direct Google Play links that match ${if (packageName.isBlank()) "your package ID" else packageName}.") }
-                else -> { Text("Test brief", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold); Field(instructions, { instructions = it }, "What should testers try?", "One simple task is easiest to complete.", lines = 3); Field(details, { details = it }, "Extra details", "Optional", lines = 3); GroupSurface { Column(Modifier.padding(16.dp)) { Text("Preview", style = MaterialTheme.typography.labelLarge, color = Brand600); Text(title.ifBlank { "Your app" }, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold); Text("${testerCount.ifBlank { "0" }} tester target", color = Ink500) } } }
+                else -> {
+                    Text("Test brief", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                    Field(instructions, { instructions = it.take(MAX_INSTRUCTIONS_LENGTH) }, "What should testers try?", "${instructions.length}/$MAX_INSTRUCTIONS_LENGTH characters · Minimum $MIN_INSTRUCTIONS_LENGTH", lines = 3)
+                    Field(details, { details = it.take(MAX_DETAILS_LENGTH) }, "Extra details", "${details.length}/$MAX_DETAILS_LENGTH characters · Optional", lines = 3)
+                    GroupSurface { Column(Modifier.padding(16.dp)) { Text("Preview", style = MaterialTheme.typography.labelLarge, color = Brand600); Text(title.ifBlank { "Your app" }, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold); Text("${testerCount.ifBlank { "0" }} tester target", color = Ink500) } }
+                }
             }
-            Spacer(Modifier.weight(1f)); val canContinue = when (step) { 1 -> title.length > 1 && PlayLinkValidator.isInstallLink(installUrl, packageName) && packageName.contains('.'); 2 -> PlayLinkValidator.isTestingLink(optInUrl, packageName) && testerCount.toIntOrNull() != null; else -> instructions.length >= 8 }
-            Button(onClick = { if (step < 3) step++ else onPublished(OwnedApp("own-$id", title, packageName, installUrl, optInUrl, title, "campaign-$id"), Campaign("campaign-$id", "own-$id", testerCount.toInt(), 0, LocalDate.now())) }, modifier = Modifier.fillMaxWidth().height(52.dp), enabled = canContinue) { Text(if (step == 3) "Publish app" else "Continue") }
+            Spacer(Modifier.weight(1f)); val canContinue = when (step) { 1 -> title.length > 1 && PlayLinkValidator.isInstallLink(installUrl, packageName) && packageName.contains('.'); 2 -> PlayLinkValidator.isTestingLink(optInUrl, packageName) && testerCount.toIntOrNull() != null; else -> instructions.length in MIN_INSTRUCTIONS_LENGTH..MAX_INSTRUCTIONS_LENGTH && details.length <= MAX_DETAILS_LENGTH }
+            publishError?.let { InlineNotice(it) }
+            Button(onClick = {
+                if (step < 3) step++ else {
+                    publishing = true
+                    publishError = null
+                    val app = OwnedApp("own-$id", title, packageName, installUrl, optInUrl, title, "campaign-$id", details)
+                    val campaign = Campaign("campaign-$id", "own-$id", testerCount.toInt(), 0, LocalDate.now(), instructions = instructions)
+                    scope.launch {
+                        onPublished(app, campaign).onFailure { publishError = friendlyPublishError(it) }
+                        publishing = false
+                    }
+                }
+            }, modifier = Modifier.fillMaxWidth().height(52.dp), enabled = canContinue && !publishing) { Text(if (publishing) "Publishing…" else if (step == 3) "Publish app" else "Continue") }
         }
     }
 }

@@ -6,6 +6,21 @@
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
 
+    <!--
+        Android 11+ filters PackageManager results unless the queried app is
+        visible. TestLoop checks only the explicitly committed app, and every
+        Play app a member can commit to is expected to expose a launcher
+        activity. Without this query, an installed app such as
+        com.flipkart.android can be reported as absent and never activate the
+        tester commitment.
+    -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
     <application
         android:allowBackup="true"
         android:label="TestLoop"

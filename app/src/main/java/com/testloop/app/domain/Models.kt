@@ -10,6 +10,12 @@ data class Account(
     val trackingSetupComplete: Boolean = false
 )
 
+data class UsageAccessStatus(
+    val revokedAt: Instant? = null,
+    val deadlineAt: Instant? = null,
+    val listingDeactivated: Boolean = false
+)
+
 data class OwnedApp(
     val id: String,
     val title: String,
@@ -17,7 +23,9 @@ data class OwnedApp(
     val installUrl: String,
     val optInUrl: String,
     val iconSeed: String,
-    val campaignId: String
+    val campaignId: String,
+    val details: String = "",
+    val playStorePublishedAt: Instant? = null
 )
 
 data class Campaign(
@@ -26,7 +34,8 @@ data class Campaign(
     val requestedTesters: Int,
     val joinedTesterCount: Int,
     val startedOn: LocalDate,
-    val isActive: Boolean = true
+    val isActive: Boolean = true,
+    val instructions: String = ""
 ) {
     val slotsRemaining: Int get() = (requestedTesters - joinedTesterCount).coerceAtLeast(0)
 }

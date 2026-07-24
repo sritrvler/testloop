@@ -12,6 +12,7 @@ import com.testloop.app.domain.NotificationKind
 import com.testloop.app.domain.OwnedApp
 import com.testloop.app.domain.PublicApp
 import com.testloop.app.domain.ReciprocalCommitment
+import com.testloop.app.domain.UsageAccessStatus
 import java.time.LocalDate
 import java.time.Instant
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -84,10 +85,30 @@ class DemoTestLoopRepository : TestLoopRepository {
     override val notifications: StateFlow<List<AppNotification>> = _notifications.asStateFlow()
     private val _bookmarks = MutableStateFlow<List<AppBookmark>>(emptyList())
     override val bookmarks: StateFlow<List<AppBookmark>> = _bookmarks.asStateFlow()
+    private val _usageAccess = MutableStateFlow(UsageAccessStatus())
+    override val usageAccess: StateFlow<UsageAccessStatus> = _usageAccess.asStateFlow()
 
     override suspend fun addOwnedApp(app: OwnedApp, campaign: Campaign): Result<Unit> {
         _ownedApps.value += app
         _campaigns.value += campaign
+        return Result.success(Unit)
+    }
+
+    override suspend fun delistOwnedApp(appId: String): Result<Unit> {
+        _ownedApps.value = _ownedApps.value.filterNot { it.id == appId }
+        _campaigns.value = _campaigns.value.filterNot { it.ownedAppId == appId }
+        return Result.success(Unit)
+    }
+
+    override suspend fun markOwnedAppPublished(appId: String): Result<Unit> {
+        _ownedApps.value = _ownedApps.value.map { app ->
+            if (app.id == appId && app.playStorePublishedAt == null) app.copy(playStorePublishedAt = Instant.now()) else app
+        }
+        return Result.success(Unit)
+    }
+
+    override suspend fun syncUsageAccess(hasAccess: Boolean): Result<Unit> {
+        _usageAccess.value = if (hasAccess) UsageAccessStatus() else UsageAccessStatus(revokedAt = Instant.now(), deadlineAt = Instant.now().plusSeconds(6 * 60 * 60))
         return Result.success(Unit)
     }
 

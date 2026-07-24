@@ -4,6 +4,7 @@ import android.content.Intent
 import com.testloop.app.BuildConfig
 import com.testloop.app.domain.Account
 import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.ExternalAuthAction
 import io.github.jan.supabase.auth.FlowType
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.Google
@@ -27,6 +28,13 @@ object SupabaseClientProvider {
             scheme = AUTH_SCHEME
             host = AUTH_HOST
             flowType = FlowType.PKCE
+            defaultExternalAuthAction = ExternalAuthAction.CustomTabs(
+                intentModifier = {
+                    // Do not leave the OAuth tab underneath MainActivity after the
+                    // callback returns; pressing Back should stay within the app.
+                    addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                }
+            )
         }
         install(Postgrest)
     }
@@ -52,7 +60,11 @@ class SupabaseAuthRepository : AuthRepository {
                 _account.value = supabase.auth.currentUserOrNull()?.toAccountWithoutProfile()
             },
             onError = { error ->
-                _authError.value = error.message ?: "Google sign-in could not be completed. Please try again."
+            _authError.value = if (error.message?.contains("cancel", ignoreCase = true) == true) {
+                "Sign-in was cancelled. Tap Continue with Google when you're ready to try again."
+            } else {
+                "We couldn't complete sign-in. Check your connection and try again."
+            }
             }
         )
         // Do not replace a session restored by handleDeeplinks with a stale null value.
