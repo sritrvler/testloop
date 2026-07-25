@@ -253,6 +253,8 @@ fun OwnAppDetailScreen(appId: String, attentionOnly: Boolean, ownedApps: List<Ow
     var testerTargetText by remember(campaign?.requestedTesters) { mutableStateOf(campaign?.requestedTesters?.toString().orEmpty()) }
     var updatingTesterTarget by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    val enrolledTesterCount = campaign?.reservedTesterCount ?: 0
+    val minimumTesterTarget = enrolledTesterCount.coerceAtLeast(1)
     val displayed = if (filter == 1) pairs.filter { needsAttention(it.theyOweSignal) } else if (filter == 2) pairs.filter { !needsAttention(it.theyOweSignal) } else pairs
     Column(Modifier.fillMaxSize()) {
         TestLoopTopBar(app.title, campaign?.progress?.statusLabel() ?: "Waiting for active testers", onBack = onBack, actionContent = {
@@ -318,9 +320,20 @@ fun OwnAppDetailScreen(appId: String, attentionOnly: Boolean, ownedApps: List<Ow
                 Text("Change how many testers you need for this live listing. The update will appear in Discover and in every tester’s progress immediately.", color = Ink500)
                 OutlinedTextField(
                     value = testerTargetText,
-                    onValueChange = { testerTargetText = it.filter(Char::isDigit) },
+                    onValueChange = { value ->
+                        val digits = value.filter(Char::isDigit)
+                        testerTargetText = digits.toIntOrNull()?.let { it.coerceAtLeast(minimumTesterTarget).toString() } ?: digits
+                    },
                     label = { Text("Testers needed") },
-                    supportingText = { Text("Choose 12–100; at least ${campaign.reservedTesterCount} are already reserved.") },
+                    supportingText = {
+                        Text(
+                            if (enrolledTesterCount == 0) {
+                                "No testers are enrolled yet. Choose 1–100 testers."
+                            } else {
+                                "Minimum $enrolledTesterCount — ${if (enrolledTesterCount == 1) "1 tester is" else "$enrolledTesterCount testers are"} already enrolled. Maximum 100."
+                            }
+                        )
+                    },
                     singleLine = true
                 )
             }
@@ -336,7 +349,7 @@ fun OwnAppDetailScreen(appId: String, attentionOnly: Boolean, ownedApps: List<Ow
                         updatingTesterTarget = false
                     }
                 }
-            }, enabled = !updatingTesterTarget && testerTargetText.toIntOrNull()?.let { it in 12..100 && it >= campaign.reservedTesterCount && it != campaign.requestedTesters } == true) {
+            }, enabled = !updatingTesterTarget && testerTargetText.toIntOrNull()?.let { it in minimumTesterTarget..100 && it >= enrolledTesterCount && it != campaign.requestedTesters } == true) {
                 Text(if (updatingTesterTarget) "Saving…" else "Save target")
             }
         },

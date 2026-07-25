@@ -174,7 +174,13 @@ class SupabaseTestLoopRepository(
     }
 
     override suspend fun updateCampaignTesterCount(campaignId: String, requestedTesters: Int): Result<Unit> = runCatching {
-        require(requestedTesters in 12..100) { "Choose between 12 and 100 testers" }
+        val campaign = _campaigns.value.firstOrNull { it.id == campaignId }
+        val enrolledTesterCount = campaign?.reservedTesterCount ?: 0
+        val minimumTesterTarget = enrolledTesterCount.coerceAtLeast(1)
+        require(requestedTesters in minimumTesterTarget..100) {
+            if (enrolledTesterCount == 0) "Choose between 1 and 100 testers"
+            else "The target cannot be lower than the $enrolledTesterCount testers already enrolled"
+        }
         supabase.from("campaigns").update(CampaignTesterCountUpdate(requestedTesters)) {
             filter { eq("id", campaignId) }
         }

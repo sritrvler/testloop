@@ -97,11 +97,15 @@ class DemoTestLoopRepository : TestLoopRepository {
     override suspend fun updateCampaignTesterCount(campaignId: String, requestedTesters: Int): Result<Unit> {
         val campaign = _campaigns.value.firstOrNull { it.id == campaignId }
             ?: return Result.failure(IllegalArgumentException("Campaign not found"))
-        if (requestedTesters !in 12..100) {
-            return Result.failure(IllegalArgumentException("Choose between 12 and 100 testers"))
-        }
-        if (requestedTesters < campaign.reservedTesterCount) {
-            return Result.failure(IllegalArgumentException("The target cannot be lower than the testers already reserved"))
+        val enrolledTesterCount = campaign.reservedTesterCount
+        val minimumTesterTarget = enrolledTesterCount.coerceAtLeast(1)
+        if (requestedTesters !in minimumTesterTarget..100) {
+            return Result.failure(
+                IllegalArgumentException(
+                    if (enrolledTesterCount == 0) "Choose between 1 and 100 testers"
+                    else "The target cannot be lower than the $enrolledTesterCount testers already enrolled"
+                )
+            )
         }
         _campaigns.value = _campaigns.value.map {
             if (it.id == campaignId) it.copy(requestedTesters = requestedTesters) else it

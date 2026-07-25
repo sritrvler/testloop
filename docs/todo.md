@@ -13,16 +13,14 @@ This is the prioritized product checklist for taking the current install-only MV
   - [ ] Verify enrolling with an app already offered in another commitment shows the warning and supports choosing another app or volunteering.
   - [ ] Verify legacy duplicate reciprocal rows collapse to one visible task per tester/app direction.
 - [x] Apply and verify the campaign-target and duplicate-offer Supabase migration in the shared database.
-- [ ] Complete real Google OAuth testing on the emulator and confirm the session survives app restarts.
-- [ ] Test Supabase Row Level Security with multiple users.
-  - [ ] Users can read only data needed for their own listings and commitments.
-  - [ ] Users cannot modify another user's install state.
-  - [ ] Users cannot spoof the reporter or target app identifiers.
-  - [ ] Owners can see the install state for their own committed apps.
-- [ ] Remove legacy activity-tracking fields, demo activity values, and unused activity code from the production path.
+- [x] Complete real Google OAuth testing on the emulator/device and confirm the session survives app restarts.
+- [x] Test Supabase Row Level Security with multiple users.
+  - [x] Users can read only data needed for their own listings and commitments.
+  - [x] Users cannot modify another user's install state.
+  - [x] Users cannot spoof the reporter or target app identifiers.
+  - [x] Owners can see the install state for their own committed apps.
 - [ ] Add basic report, block, and moderation controls before opening the beta to strangers.
 - [ ] Define the install-status refresh behavior clearly in the UI so users know when the signal was last checked.
-- [ ] Verify the app never requests Usage Access, broad package inventory access, or battery-heavy background tracking.
 
 ## P1: Required for Play Store launch
 
