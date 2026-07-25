@@ -72,27 +72,32 @@ class SupabaseTestLoopRepository(
         // A listing permission problem must not hide the publisher's own apps.
         // The database migration grants the helper permission; this fallback
         // keeps My apps usable while Discover is temporarily unavailable.
-        val listings = runCatching {
-            supabase.from("public_app_listings").select().decodeList<PublicListingRow>()
-        }.getOrDefault(emptyList())
+        val listings = supabase.from("public_app_listings").select().decodeList<PublicListingRow>()
         var commitmentRows = supabase.from("reciprocal_commitments").select().decodeList<CommitmentRow>()
         val profileRows = supabase.from("profiles").select().decodeList<TesterProfileRow>()
 
-        // Report only the current tester's explicitly committed packages when
-        // TestLoop returns to the foreground. Install detection does not need
-        // Usage Access; daily open evidence is optional and remains unavailable
-        // when that separate Android setting is off.
-        commitmentRows.filter { it.testerId == userId }.forEach { commitment ->
-            reportInstallStatusInternal(commitment, listings, userId)
+        // Map only commitments that belong to this signed-in user, either as
+        // tester or publisher. Install detection is the only device signal.
+        commitmentRows = supabase.from("reciprocal_commitments").select().decodeList()
+        val visibleCommitmentRows = commitmentRows.filter { row ->
+            row.testerId == userId || listings.firstOrNull { it.campaignId == row.campaignId }?.ownerId == userId
+        }
+        visibleCommitmentRows.forEach { commitment ->
+            runCatching { reportInstallStatusInternal(commitment, listings, userId) }
         }
         // Install activation happens in the database trigger, so read the
-        // commitments again before publishing UI state.
+        // commitments and observations again before publishing UI state.
         commitmentRows = supabase.from("reciprocal_commitments").select().decodeList()
 
         _ownedApps.value = activeOwnRows.map { it.toOwnedApp(campaignRows.firstOrNull { campaign -> campaign.ownedAppId == it.id }?.id) }
         val listingsByCampaign = listings.associateBy { it.campaignId }
         _campaigns.value = campaignRows.map { campaign ->
-            campaign.toCampaign().copy(joinedTesterCount = listingsByCampaign[campaign.id]?.joinedTesterCount ?: 0)
+            campaign.toCampaign(listingsByCampaign[campaign.id]?.joinedTesterCount ?: 0).copy(
+                releaseApprovedAt = activeOwnRows.firstOrNull { it.id == campaign.ownedAppId }?.playStorePublishedAt?.let(Instant::parse),
+                reservedTesterCount = listingsByCampaign[campaign.id]?.let { listing ->
+                    (listing.requestedTesters - listing.slotsRemaining).coerceAtLeast(0)
+                } ?: 0
+            )
         }
         // Keep joined listings in this cache so commitment details can still
         // resolve the app name and both Play links. Discover filters joined
@@ -101,20 +106,38 @@ class SupabaseTestLoopRepository(
             .filter { it.id !in ownIds }
             .map { it.toPublicApp() }
 
-        val installRows = commitmentRows.flatMap { commitment ->
+        val installRows = visibleCommitmentRows.flatMap { commitment ->
             supabase.from("commitment_install_states").select {
                 filter {
                     eq("commitment_id", commitment.id)
                 }
             }.decodeList<InstallStateRow>()
         }
-        val openRows = commitmentRows.flatMap { commitment ->
+        val openRows = visibleCommitmentRows.flatMap { commitment ->
             runCatching {
                 supabase.from("commitment_daily_open_states").select { filter { eq("commitment_id", commitment.id) } }
                     .decodeList<DailyOpenRow>()
             }.getOrDefault(emptyList())
         }
-        _commitments.value = commitmentRows.map { it.toCommitment(listings, _ownedApps.value, profileRows, installRows, openRows, userId) }
+        val reminderRows = visibleCommitmentRows.flatMap { commitment ->
+            runCatching {
+                supabase.from("reminders").select { filter { eq("commitment_id", commitment.id) } }
+                    .decodeList<ReminderRow>()
+            }.getOrDefault(emptyList())
+        }
+        val mappedCommitments = visibleCommitmentRows.map { row ->
+            row.toCommitment(listings, _ownedApps.value, profileRows, installRows, openRows, userId, reminderRows)
+        }
+        _commitments.value = mappedCommitments
+            .groupBy { Pair(it.otherUserId, it.currentUserOwnAppId) }
+            .values
+            .map { duplicates ->
+                duplicates.maxWithOrNull(
+                    compareBy<ReciprocalCommitment> { if (it.lifecycle == CommitmentLifecycle.ACTIVE) 1 else 0 }
+                        .thenBy { installRank(it.youOweSignal.install) }
+                        .thenBy { activityRank(it.youOweSignal.activity) }
+                ) ?: duplicates.first()
+            }
         _notifications.value = supabase.from("notifications").select {
             filter { eq("recipient_id", userId) }
         }.decodeList<NotificationRow>().map { it.toNotification() }
@@ -132,7 +155,8 @@ class SupabaseTestLoopRepository(
                 title = app.title.trim(),
                 packageName = app.packageName.trim(),
                 installUrl = app.installUrl.trim(),
-                optInUrl = app.optInUrl.trim(),
+                optInUrl = app.optInUrl?.trim()?.ifBlank { null },
+                groupUrl = app.groupUrl.trim(),
                 iconSeed = app.iconSeed,
                 details = app.details.trim(),
                 category = "Productivity",
@@ -146,6 +170,14 @@ class SupabaseTestLoopRepository(
                 instructions = campaign.instructions.trim()
             )
         )
+        refresh().getOrThrow()
+    }
+
+    override suspend fun updateCampaignTesterCount(campaignId: String, requestedTesters: Int): Result<Unit> = runCatching {
+        require(requestedTesters in 12..100) { "Choose between 12 and 100 testers" }
+        supabase.from("campaigns").update(CampaignTesterCountUpdate(requestedTesters)) {
+            filter { eq("id", campaignId) }
+        }
         refresh().getOrThrow()
     }
 
@@ -180,7 +212,6 @@ class SupabaseTestLoopRepository(
     override suspend fun joinCampaign(publicAppId: String, ownAppId: String?): Result<ReciprocalCommitment> = runCatching {
         val userId = requireUserId()
         val offeredAppId = ownAppId?.takeIf { id -> _ownedApps.value.any { it.id == id } }
-            ?: error("Choose one of your apps to offer in return")
         val listing = _discoverApps.value.firstOrNull { it.id == publicAppId }
             ?: error("That listing is no longer available")
         val listingRow = supabase.from("public_app_listings").select {
@@ -233,13 +264,14 @@ class SupabaseTestLoopRepository(
         val pair = _commitments.value.firstOrNull { it.commitmentId == commitmentId }
             ?: error("Commitment not found")
         val targetAppId = pair.currentUserOwnAppId ?: error("One-way commitments do not support reciprocal reminders")
+        val appTitle = _ownedApps.value.firstOrNull { it.id == targetAppId }?.title ?: "your test app"
         supabase.from("reminders").insert(
             ReminderInsert(
                 commitmentId = commitmentId,
                 senderId = userId,
                 recipientId = pair.otherUserId,
                 targetOwnedAppId = targetAppId,
-                message = "Please check in on ${_ownedApps.value.firstOrNull { it.id == targetAppId }?.title ?: "the app"} today."
+                message = "Quick check-in: open TestLoop when you have a moment so we can update your testing status for $appTitle. It helps keep the shared test on track."
             )
         )
         refresh().getOrThrow()
@@ -258,7 +290,16 @@ class SupabaseTestLoopRepository(
     }
 
     private suspend fun reportInstallStatusInternal(commitment: CommitmentRow, listings: List<PublicListingRow>, userId: String) {
-        val listing = listings.firstOrNull { it.campaignId == commitment.campaignId } ?: return
+        val sourceListing = listings.firstOrNull { it.campaignId == commitment.campaignId } ?: run {
+            return
+        }
+        val listing = if (sourceListing.ownerId == userId) {
+            listings.firstOrNull { it.id == commitment.currentUserOwnedAppId }
+        } else {
+            sourceListing
+        } ?: run {
+            return
+        }
         val installed = installReporter.isInstalled(listing.packageName)
         supabase.from("commitment_install_states").upsert(
             InstallStateUpsert(
@@ -294,14 +335,15 @@ private data class OwnedAppRow(
     val title: String,
     @SerialName("package_name") val packageName: String,
     @SerialName("install_url") val installUrl: String,
-    @SerialName("opt_in_url") val optInUrl: String,
+    @SerialName("opt_in_url") val optInUrl: String? = null,
+    @SerialName("group_url") val groupUrl: String? = null,
     @SerialName("icon_seed") val iconSeed: String = "",
     val details: String = "",
     val category: String = "Productivity",
     @SerialName("play_store_published_at") val playStorePublishedAt: String? = null,
     val lifecycle: String = "published"
 ) {
-    fun toOwnedApp(campaignId: String?, details: String = this.details) = OwnedApp(id, title, packageName, installUrl, optInUrl, iconSeed, campaignId.orEmpty(), details, playStorePublishedAt?.let(Instant::parse))
+    fun toOwnedApp(campaignId: String?, details: String = this.details) = OwnedApp(id, title, packageName, installUrl, optInUrl, iconSeed, campaignId.orEmpty(), details, playStorePublishedAt?.let(Instant::parse), groupUrl.orEmpty())
 }
 
 @Serializable
@@ -310,7 +352,8 @@ private data class OwnedAppInsert(
     val title: String,
     @SerialName("package_name") val packageName: String,
     @SerialName("install_url") val installUrl: String,
-    @SerialName("opt_in_url") val optInUrl: String,
+    @SerialName("opt_in_url") val optInUrl: String?,
+    @SerialName("group_url") val groupUrl: String,
     @SerialName("icon_seed") val iconSeed: String,
     val details: String,
     val category: String,
@@ -346,9 +389,13 @@ private data class CampaignRow(
     @SerialName("requested_testers") val requestedTesters: Int,
     val instructions: String = "",
     @SerialName("started_on") val startedOn: String,
-    val lifecycle: String = "active"
+    val lifecycle: String = "active",
+    @SerialName("target_days") val targetDays: Int = 14,
+    @SerialName("testing_started_at") val testingStartedAt: String? = null,
+    @SerialName("testing_completed_at") val testingCompletedAt: String? = null,
+    @SerialName("progress_reset_at") val progressResetAt: String? = null
 ) {
-    fun toCampaign() = Campaign(id, ownedAppId, requestedTesters, 0, parseDate(startedOn), isActive = lifecycle == "active", instructions = instructions)
+    fun toCampaign(activeTesterCount: Int = 0) = Campaign(id, ownedAppId, requestedTesters, activeTesterCount, parseDate(startedOn), isActive = lifecycle == "active", instructions = instructions, targetDays = targetDays, activeTesterCount = activeTesterCount, testingStartedAt = testingStartedAt?.let(Instant::parse), testingCompletedAt = testingCompletedAt?.let(Instant::parse), progressResetAt = progressResetAt?.let(Instant::parse))
 }
 
 @Serializable
@@ -357,6 +404,11 @@ private data class CampaignInsert(
     @SerialName("requested_testers") val requestedTesters: Int,
     val instructions: String,
     val lifecycle: String = "active"
+)
+
+@Serializable
+private data class CampaignTesterCountUpdate(
+    @SerialName("requested_testers") val requestedTesters: Int
 )
 
 @Serializable
@@ -373,17 +425,24 @@ private data class PublicListingRow(
     @SerialName("owner_id") val ownerId: String,
     @SerialName("owner_username") val ownerUsername: String,
     @SerialName("install_url") val installUrl: String,
-    @SerialName("opt_in_url") val optInUrl: String,
+    @SerialName("opt_in_url") val optInUrl: String? = null,
+    @SerialName("group_url") val groupUrl: String? = null,
     @SerialName("campaign_id") val campaignId: String,
     @SerialName("requested_testers") val requestedTesters: Int,
     @SerialName("joined_tester_count") val joinedTesterCount: Int,
+    @SerialName("slots_remaining") val slotsRemaining: Int = requestedTesters,
     val instructions: String,
     val details: String = "",
     val category: String = "Productivity",
     @SerialName("started_on") val startedOn: String = "",
-    @SerialName("created_at") val createdAt: String = ""
+    @SerialName("created_at") val createdAt: String = "",
+    @SerialName("target_days") val targetDays: Int = 14,
+    @SerialName("testing_started_at") val testingStartedAt: String? = null,
+    @SerialName("testing_completed_at") val testingCompletedAt: String? = null,
+    @SerialName("progress_reset_at") val progressResetAt: String? = null,
+    @SerialName("play_store_published_at") val releaseApprovedAt: String? = null
 ) {
-    fun toPublicApp() = PublicApp(id, title, packageName, ownerId, ownerUsername, installUrl, optInUrl, requestedTesters, joinedTesterCount, instructions, details, category, postedLabel(createdAt), title)
+    fun toPublicApp() = PublicApp(id, title, packageName, ownerId, ownerUsername, installUrl, optInUrl, requestedTesters, joinedTesterCount, instructions, details, category, postedLabel(createdAt), title, campaignId, targetDays, joinedTesterCount, testingStartedAt?.let(Instant::parse), testingCompletedAt?.let(Instant::parse), progressResetAt?.let(Instant::parse), releaseApprovedAt?.let(Instant::parse), groupUrl.orEmpty(), (requestedTesters - slotsRemaining).coerceAtLeast(0))
 }
 
 @Serializable
@@ -396,7 +455,7 @@ private data class CommitmentRow(
     val lifecycle: String = "pending_setup",
     @SerialName("joined_at") val joinedAt: String
 ) {
-    fun toCommitment(listings: List<PublicListingRow>, ownApps: List<OwnedApp>, profiles: List<TesterProfileRow>, summaries: List<InstallStateRow>, openRows: List<DailyOpenRow>, userId: String): ReciprocalCommitment {
+    fun toCommitment(listings: List<PublicListingRow>, ownApps: List<OwnedApp>, profiles: List<TesterProfileRow>, summaries: List<InstallStateRow>, openRows: List<DailyOpenRow>, userId: String, reminders: List<ReminderRow> = emptyList()): ReciprocalCommitment {
         val listing = listings.firstOrNull { it.campaignId == campaignId }
         val isPublisher = listing?.ownerId == userId
         val otherUserId = if (isPublisher) testerId else listing?.ownerId.orEmpty()
@@ -411,6 +470,7 @@ private data class CommitmentRow(
             targetDays = targetDays,
             youOweSignal = summaries.signalFor(id, userId, if (isPublisher) currentUserOwnedAppId else listing?.id, openRows),
             theyOweSignal = if (isPublisher) summaries.signalFor(id, testerId, listing?.id, openRows) else currentUserOwnedAppId?.let { summaries.signalFor(id, listing?.ownerId.orEmpty(), it, openRows) },
+            youCanSendReminder = reminders.none { it.commitmentId == id && it.senderId == userId && it.reminderDate == LocalDate.now(ZoneOffset.UTC).toString() },
             lifecycle = lifecycle.toCommitmentLifecycle()
         )
     }
@@ -489,6 +549,13 @@ private data class ReminderInsert(
 )
 
 @Serializable
+private data class ReminderRow(
+    @SerialName("commitment_id") val commitmentId: String,
+    @SerialName("sender_id") val senderId: String,
+    @SerialName("reminder_date") val reminderDate: String
+)
+
+@Serializable
 private data class NotificationRow(
     val id: String,
     val kind: String,
@@ -515,6 +582,18 @@ private fun String?.toInstallSignal() = when (this) {
     "installed" -> InstallSignal.INSTALLED
     "not_installed" -> InstallSignal.NOT_INSTALLED
     else -> InstallSignal.UNAVAILABLE
+}
+
+private fun installRank(signal: InstallSignal): Int = when (signal) {
+    InstallSignal.INSTALLED -> 2
+    InstallSignal.NOT_INSTALLED -> 1
+    InstallSignal.UNAVAILABLE -> 0
+}
+
+private fun activityRank(signal: ActivitySignal): Int = when (signal) {
+    ActivitySignal.OPENED_TODAY -> 2
+    ActivitySignal.NOT_DETECTED -> 1
+    ActivitySignal.UNAVAILABLE -> 0
 }
 
 private fun String.toCommitmentLifecycle() = when (this) {

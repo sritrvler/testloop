@@ -47,6 +47,7 @@ import com.testloop.app.domain.AppBookmark
 import com.testloop.app.domain.OwnedApp
 import com.testloop.app.domain.PublicApp
 import com.testloop.app.domain.ReciprocalCommitment
+import com.testloop.app.domain.statusLabel
 import com.testloop.app.ui.theme.Brand600
 import com.testloop.app.ui.theme.Ink500
 import java.time.Duration
@@ -80,7 +81,7 @@ private fun OwnAppRow(app: OwnedApp, campaign: Campaign?, pairs: List<Reciprocal
     Row(Modifier.fillMaxWidth().clickable { onOwnApp(app.id, false) }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
         AppMonogram(app.title); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) {
             Text(app.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-            Text("$count of $requested testers · ${(campaign?.slotsRemaining ?: 0)} slots left", style = MaterialTheme.typography.bodySmall, color = Ink500)
+            Text(campaign?.progress?.statusLabel() ?: "$count of $requested testers", style = MaterialTheme.typography.bodySmall, color = Ink500)
             Spacer(Modifier.height(9.dp)); androidx.compose.foundation.layout.Box(Modifier.fillMaxWidth().height(4.dp).background(com.testloop.app.ui.theme.Brand100)) { androidx.compose.foundation.layout.Box(Modifier.fillMaxWidth(if (requested == 0) 0f else count.toFloat() / requested).height(4.dp).background(Brand600)) }
             Spacer(Modifier.height(8.dp)); Text(if (attention == 0) "All active today" else "$attention need attention", style = MaterialTheme.typography.labelMedium, color = if (attention == 0) com.testloop.app.ui.theme.Success700 else com.testloop.app.ui.theme.Attention700)
         }
@@ -154,7 +155,7 @@ private fun DiscoverEmptyState(hasAnyApps: Boolean, onAddApp: () -> Unit) {
 @Composable
 private fun DiscoverRow(app: PublicApp, bookmark: AppBookmark?, onOpen: (String) -> Unit, onBookmark: (String) -> Unit, onRemoveBookmark: (String) -> Unit) {
     Row(Modifier.fillMaxWidth().clickable { onOpen(app.id) }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-        AppMonogram(app.title); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(app.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold); Text("@${app.ownerUsername} · ${app.postedLabel}", style = MaterialTheme.typography.labelMedium, color = Ink500); if (bookmark != null) Text("Bookmarked ${bookmarkAgeLabel(bookmark.bookmarkedAt)}", style = MaterialTheme.typography.labelSmall, color = Brand600); Spacer(Modifier.height(5.dp)); Text(app.instructions, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall, color = Ink500); Spacer(Modifier.height(7.dp)); Text(if (app.slotsRemaining == 0) "Full" else "${app.slotsRemaining} slots left · 14-day target", style = MaterialTheme.typography.labelMedium, color = if (app.slotsRemaining == 0) Ink500 else Brand600) }
+        AppMonogram(app.title); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(app.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold); Text("@${app.ownerUsername} · ${app.postedLabel}", style = MaterialTheme.typography.labelMedium, color = Ink500); if (bookmark != null) Text("Bookmarked ${bookmarkAgeLabel(bookmark.bookmarkedAt)}", style = MaterialTheme.typography.labelSmall, color = Brand600); Spacer(Modifier.height(5.dp)); Text(app.instructions, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall, color = Ink500); Spacer(Modifier.height(7.dp)); Text(app.progress.statusLabel(), style = MaterialTheme.typography.labelMedium, color = if (app.slotsRemaining == 0) Ink500 else Brand600) }
         IconButton(onClick = { if (bookmark == null) onBookmark(app.id) else onRemoveBookmark(app.id) }) { Icon(if (bookmark == null) Icons.Default.BookmarkBorder else Icons.Default.Bookmark, if (bookmark == null) "Bookmark ${app.title}" else "Remove ${app.title} bookmark", tint = Brand600) }
         Icon(Icons.Default.ArrowForward, "Open ${app.title}", tint = Brand600)
     }

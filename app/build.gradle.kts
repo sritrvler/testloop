@@ -30,8 +30,8 @@ android {
         applicationId = "com.testloop.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 12
-        versionName = "0.1.4"
+        versionCode = 13
+        versionName = "0.1.5"
         buildConfigField("String", "SUPABASE_URL", "\"https://ndmamltbrhpehjzcwkwv.supabase.co\"")
         buildConfigField("String", "SUPABASE_ANON_KEY", "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kbWFtbHRicmhwZWhqemN3a3d2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3NzkyNjgsImV4cCI6MjEwMDM1NTI2OH0.3sK3zKL9kFCLd8oR6ZQWiEiDvY8egy-gwu7lh0mUI2o\"")
     }

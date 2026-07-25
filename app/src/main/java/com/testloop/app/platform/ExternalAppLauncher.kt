@@ -17,6 +17,7 @@ sealed interface LaunchResult {
     data object Opened : LaunchResult
     data object NotInstalled : LaunchResult
     data object NotLaunchable : LaunchResult
+    data object Blocked : LaunchResult
     data object Unavailable : LaunchResult
 }
 
@@ -56,6 +57,7 @@ class AndroidExternalAppLauncher(private val context: Context) : ExternalAppLaun
     }
 
     override fun openUrl(url: String): LaunchResult {
+        if (!PlayUrlPolicy.isAllowedUrl(url)) return LaunchResult.Blocked
         return try {
             context.startActivity(
                 Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url))

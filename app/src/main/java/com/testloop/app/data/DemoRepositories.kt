@@ -94,6 +94,21 @@ class DemoTestLoopRepository : TestLoopRepository {
         return Result.success(Unit)
     }
 
+    override suspend fun updateCampaignTesterCount(campaignId: String, requestedTesters: Int): Result<Unit> {
+        val campaign = _campaigns.value.firstOrNull { it.id == campaignId }
+            ?: return Result.failure(IllegalArgumentException("Campaign not found"))
+        if (requestedTesters !in 12..100) {
+            return Result.failure(IllegalArgumentException("Choose between 12 and 100 testers"))
+        }
+        if (requestedTesters < campaign.reservedTesterCount) {
+            return Result.failure(IllegalArgumentException("The target cannot be lower than the testers already reserved"))
+        }
+        _campaigns.value = _campaigns.value.map {
+            if (it.id == campaignId) it.copy(requestedTesters = requestedTesters) else it
+        }
+        return Result.success(Unit)
+    }
+
     override suspend fun delistOwnedApp(appId: String): Result<Unit> {
         _ownedApps.value = _ownedApps.value.filterNot { it.id == appId }
         _campaigns.value = _campaigns.value.filterNot { it.ownedAppId == appId }
@@ -115,6 +130,10 @@ class DemoTestLoopRepository : TestLoopRepository {
     override suspend fun joinCampaign(publicAppId: String, ownAppId: String?): Result<ReciprocalCommitment> {
         val publicApp = _discoverApps.value.find { it.id == publicAppId } ?: return Result.failure(IllegalArgumentException("Campaign not found"))
         if (_commitments.value.any { it.appBeingTestedByCurrentUserId == publicAppId }) return Result.failure(IllegalStateException("Already joined"))
+        if (ownAppId != null && _commitments.value.any {
+                it.currentUserOwnAppId == ownAppId &&
+                    it.lifecycle in setOf(CommitmentLifecycle.PENDING_SETUP, CommitmentLifecycle.ACTIVE)
+            }) return Result.failure(IllegalStateException("That app is already being offered in another active commitment"))
         val pair = ReciprocalCommitment("pair-$publicAppId", publicAppId, ownAppId, publicApp.ownerId, publicApp.ownerUsername, today, youOweSignal = DirectionSignal(InstallSignal.NOT_INSTALLED, ActivitySignal.UNAVAILABLE), theyOweSignal = ownAppId?.let { DirectionSignal(InstallSignal.NOT_INSTALLED, ActivitySignal.UNAVAILABLE) }, lifecycle = CommitmentLifecycle.PENDING_SETUP)
         _commitments.value += pair
         return Result.success(pair)

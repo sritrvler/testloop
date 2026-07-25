@@ -32,6 +32,7 @@ interface TestLoopRepository {
     val bookmarks: StateFlow<List<AppBookmark>>
     val usageAccess: StateFlow<UsageAccessStatus>
     suspend fun addOwnedApp(app: OwnedApp, campaign: Campaign): Result<Unit>
+    suspend fun updateCampaignTesterCount(campaignId: String, requestedTesters: Int): Result<Unit>
     suspend fun delistOwnedApp(appId: String): Result<Unit>
     suspend fun markOwnedAppPublished(appId: String): Result<Unit>
     suspend fun syncUsageAccess(hasAccess: Boolean): Result<Unit>

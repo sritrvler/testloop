@@ -9,7 +9,10 @@ This is the prioritized product checklist for taking the current install-only MV
   - [ ] User B joins one of User A's listings.
   - [ ] Both users install each other's committed apps.
   - [ ] Verify installed, not installed, unavailable, reciprocal, and not-testing-back states.
-  - [ ] Verify tester slot counts when users join, leave, and change commitments.
+  - [ ] Verify tester slot counts when users join, leave, change commitments, and when a publisher edits the live tester target.
+  - [ ] Verify enrolling with an app already offered in another commitment shows the warning and supports choosing another app or volunteering.
+  - [ ] Verify legacy duplicate reciprocal rows collapse to one visible task per tester/app direction.
+- [x] Apply and verify the campaign-target and duplicate-offer Supabase migration in the shared database.
 - [ ] Complete real Google OAuth testing on the emulator and confirm the session survives app restarts.
 - [ ] Test Supabase Row Level Security with multiple users.
   - [ ] Users can read only data needed for their own listings and commitments.
@@ -58,6 +61,10 @@ This is the prioritized product checklist for taking the current install-only MV
 ## Already completed
 
 - [x] Install-only tracking model implemented.
+- [x] Live publishers can edit the required tester target, with the change reflected in progress, slots, Discover, and tester views.
+- [x] Duplicate reciprocal app offers are guarded, with a volunteer enrollment path when no unused app is available.
+- [x] Duplicate tester rows are deduplicated in home, obligations, and app-management views.
+- [x] Home task section renamed to “Your tasks today” and tester/app detail layouts reflowed for narrow screens.
 - [x] Legacy daily activity table removed from the deployed Supabase schema.
 - [x] Battery-friendly explicit refresh approach selected.
 - [x] Google OAuth deep-link duplicate-activity issue fixed.

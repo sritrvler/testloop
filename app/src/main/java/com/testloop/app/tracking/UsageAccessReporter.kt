@@ -15,7 +15,6 @@ interface UsageAccessReporter {
     fun openSettings()
     fun openedOn(packageName: String, day: LocalDate = LocalDate.now()): Boolean?
 }
-
 /**
  * Reads Android's daily aggregate only after the person has enabled Usage Access.
  * Callers pass one explicit commitment package. No package inventory or duration

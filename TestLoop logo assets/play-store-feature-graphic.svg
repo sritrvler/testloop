@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="500" viewBox="0 0 1024 500" role="img" aria-labelledby="title desc">
+  <title id="title">TestLoop Play Store feature graphic</title>
+  <desc id="desc">White TestLoop lockup centered on a deep blue gradient background.</desc>
+  <defs>
+    <linearGradient id="feature-bg" x1="0" y1="0" x2="1024" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#17256F"/>
+      <stop offset="1" stop-color="#0B1552"/>
+    </linearGradient>
+    <linearGradient id="feature-mark" x1="250" y1="0" x2="750" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#E9ECFF"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="500" fill="url(#feature-bg)"/>
+  <g transform="translate(132 93) scale(.64)" fill="url(#feature-mark)" fill-rule="evenodd">
+    <path d="M284 40H204C115 40 44 110 44 200s71 160 160 160h16c10 0 18-8 18-18 0-30-20-56-50-56h-24c-54 0-88-36-88-86s34-86 88-86h80c10 0 18-8 18-18V58c0-10-8-18-18-18Z"/>
+    <path d="M316 40h80c89 0 160 70 160 160s-71 160-160 160h-16c-10 0-18-8-18-18 0-30 20-56 50-56h24c54 0 88-36 88-86s-34-86-88-86h-80c-10 0-18-8-18-18V58c0-10 8-18 18-18Z"/>
+    <path d="M202 166h196c6 0 10 4 10 10v26c0 6-4 10-10 10h-58v84c0 34-18 56-40 64-22-8-40-30-40-64v-84h-58c-6 0-10-4-10-10v-26c0-6 4-10 10-10Z"/>
+  </g>
+  <text x="510" y="310" fill="#FFFFFF" font-family="Avenir Next, Arial, sans-serif" font-size="126" font-weight="600" letter-spacing="-4">TestLoop</text>
+</svg>

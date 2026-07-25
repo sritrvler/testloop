@@ -2,6 +2,10 @@ package com.testloop.app
 
 import android.os.Bundle
 import android.content.Intent
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -22,7 +26,10 @@ class MainActivity : ComponentActivity() {
     private val repository by lazy { SupabaseTestLoopRepository(applicationContext, auth) }
     private val externalAppLauncher by lazy { AndroidExternalAppLauncher(applicationContext) }
     private val usageAccessReporter by lazy { AndroidUsageAccessReporter(applicationContext) }
+    private val eveningReminderScheduler by lazy { com.testloop.app.notifications.EveningReminderScheduler(applicationContext) }
+    private var notificationPermissionAsked = false
     private var usageAccessGranted by mutableStateOf(false)
+    private val requestNotificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,19 +45,30 @@ class MainActivity : ComponentActivity() {
                         externalAppLauncher,
                         usageAccessGranted,
                         onOpenUsageAccess = { usageAccessReporter.openSettings() },
-                        isUsageAccessGrantedNow = { usageAccessReporter.isGranted() }
+                        isUsageAccessGrantedNow = { usageAccessReporter.isGranted() },
+                        onScheduleEveningReminder = { pendingCount, singleAppName -> eveningReminderScheduler.schedule(pendingCount, singleAppName) },
+                        onRequestNotificationPermission = ::requestNotificationPermissionIfNeeded
                     )
                 }
             }
         }
     }
 
+    private fun requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            !notificationPermissionAsked &&
+            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationPermissionAsked = true
+            requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         usageAccessGranted = usageAccessReporter.isGranted()
-        if (auth.account.value != null) lifecycleScope.launch {
-            repository.syncUsageAccess(usageAccessGranted)
-            repository.refresh()
+        if (!auth.account.value?.id.isNullOrBlank() && auth.account.value?.id != "pending") {
+            lifecycleScope.launch { repository.refresh() }
         }
     }
 

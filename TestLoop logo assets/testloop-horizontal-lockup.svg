@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="480" viewBox="0 0 1600 480" role="img" aria-labelledby="title desc">
+  <title id="title">TestLoop horizontal logo lockup</title>
+  <desc id="desc">Editable blue gradient TestLoop symbol with wordmark.</desc>
+  <defs>
+    <linearGradient id="testloop-blue" x1="40" y1="0" x2="560" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3E52F5"/>
+      <stop offset="1" stop-color="#1B2B99"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(48 40) scale(.72)">
+    <g fill="url(#testloop-blue)" fill-rule="evenodd">
+      <path d="M284 40H204C115 40 44 110 44 200s71 160 160 160h16c10 0 18-8 18-18 0-30-20-56-50-56h-24c-54 0-88-36-88-86s34-86 88-86h80c10 0 18-8 18-18V58c0-10-8-18-18-18Z"/>
+      <path d="M316 40h80c89 0 160 70 160 160s-71 160-160 160h-16c-10 0-18-8-18-18 0-30 20-56 50-56h24c54 0 88-36 88-86s-34-86-88-86h-80c-10 0-18-8-18-18V58c0-10 8-18 18-18Z"/>
+      <path d="M202 166h196c6 0 10 4 10 10v26c0 6-4 10-10 10h-58v84c0 34-18 56-40 64-22-8-40-30-40-64v-84h-58c-6 0-10-4-10-10v-26c0-6 4-10 10-10Z"/>
+    </g>
+  </g>
+  <text x="640" y="305" fill="#17266F" font-family="Avenir Next, Arial, sans-serif" font-size="164" font-weight="600" letter-spacing="-5">TestLoop</text>
+</svg>

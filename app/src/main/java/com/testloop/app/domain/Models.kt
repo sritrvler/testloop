@@ -21,11 +21,12 @@ data class OwnedApp(
     val title: String,
     val packageName: String,
     val installUrl: String,
-    val optInUrl: String,
+    val optInUrl: String?,
     val iconSeed: String,
     val campaignId: String,
     val details: String = "",
-    val playStorePublishedAt: Instant? = null
+    val playStorePublishedAt: Instant? = null,
+    val groupUrl: String = ""
 )
 
 data class Campaign(
@@ -35,9 +36,44 @@ data class Campaign(
     val joinedTesterCount: Int,
     val startedOn: LocalDate,
     val isActive: Boolean = true,
-    val instructions: String = ""
+    val instructions: String = "",
+    val targetDays: Int = 14,
+    val activeTesterCount: Int = joinedTesterCount,
+    val testingStartedAt: Instant? = null,
+    val testingCompletedAt: Instant? = null,
+    val progressResetAt: Instant? = null,
+    val releaseApprovedAt: Instant? = null,
+    val reservedTesterCount: Int = joinedTesterCount
 ) {
-    val slotsRemaining: Int get() = (requestedTesters - joinedTesterCount).coerceAtLeast(0)
+    val slotsRemaining: Int get() = (requestedTesters - reservedTesterCount).coerceAtLeast(0)
+    val testingStatus: CampaignTestingStatus
+        get() = when {
+            releaseApprovedAt == null -> CampaignTestingStatus.WAITING_FOR_RELEASE
+            testingCompletedAt != null -> CampaignTestingStatus.COMPLETE
+            testingStartedAt != null -> CampaignTestingStatus.IN_PROGRESS
+            progressResetAt != null -> CampaignTestingStatus.RESET_WAITING
+            else -> CampaignTestingStatus.WAITING_FOR_TESTERS
+        }
+    val progress: CampaignProgress get() = CampaignProgress(requestedTesters, activeTesterCount, targetDays, testingStatus, testingStartedAt, releaseApprovedAt)
+}
+
+enum class CampaignTestingStatus { WAITING_FOR_RELEASE, WAITING_FOR_TESTERS, IN_PROGRESS, RESET_WAITING, COMPLETE }
+
+data class CampaignProgress(
+    val requiredTesters: Int,
+    val activeTesterCount: Int,
+    val targetDays: Int,
+    val status: CampaignTestingStatus,
+    val testingStartedAt: Instant? = null,
+    val releaseApprovedAt: Instant? = null
+)
+
+fun CampaignProgress.statusLabel(): String = when (status) {
+    CampaignTestingStatus.WAITING_FOR_RELEASE -> "Waiting for approved release · $activeTesterCount/$requiredTesters installed"
+    CampaignTestingStatus.WAITING_FOR_TESTERS -> "Waiting for $requiredTesters active testers · $activeTesterCount/$requiredTesters installed"
+    CampaignTestingStatus.RESET_WAITING -> "Progress reset · $activeTesterCount/$requiredTesters active testers"
+    CampaignTestingStatus.IN_PROGRESS -> "14-day countdown active · $activeTesterCount/$requiredTesters active testers"
+    CampaignTestingStatus.COMPLETE -> "$targetDays-day test complete · $activeTesterCount/$requiredTesters active testers"
 }
 
 data class PublicApp(
@@ -47,16 +83,34 @@ data class PublicApp(
     val ownerId: String,
     val ownerUsername: String,
     val installUrl: String,
-    val optInUrl: String,
+    val optInUrl: String?,
     val requestedTesters: Int,
     val joinedTesterCount: Int,
     val instructions: String,
     val details: String = "",
     val category: String = "Productivity",
     val postedLabel: String = "Posted today",
-    val iconSeed: String = title
+    val iconSeed: String = title,
+    val campaignId: String = "",
+    val targetDays: Int = 14,
+    val activeTesterCount: Int = joinedTesterCount,
+    val testingStartedAt: Instant? = null,
+    val testingCompletedAt: Instant? = null,
+    val progressResetAt: Instant? = null,
+    val releaseApprovedAt: Instant? = null,
+    val groupUrl: String = "",
+    val reservedTesterCount: Int = joinedTesterCount
 ) {
-    val slotsRemaining: Int get() = (requestedTesters - joinedTesterCount).coerceAtLeast(0)
+    val slotsRemaining: Int get() = (requestedTesters - reservedTesterCount).coerceAtLeast(0)
+    val testingStatus: CampaignTestingStatus
+        get() = when {
+            releaseApprovedAt == null -> CampaignTestingStatus.WAITING_FOR_RELEASE
+            testingCompletedAt != null -> CampaignTestingStatus.COMPLETE
+            testingStartedAt != null -> CampaignTestingStatus.IN_PROGRESS
+            progressResetAt != null -> CampaignTestingStatus.RESET_WAITING
+            else -> CampaignTestingStatus.WAITING_FOR_TESTERS
+        }
+    val progress: CampaignProgress get() = CampaignProgress(requestedTesters, activeTesterCount, targetDays, testingStatus, testingStartedAt, releaseApprovedAt)
 }
 
 enum class InstallSignal(val label: String) {

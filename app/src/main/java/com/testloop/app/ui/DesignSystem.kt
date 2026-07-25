@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material.icons.filled.HourglassEmpty
 import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -68,13 +69,13 @@ fun MemberAvatar(name: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SignalLabel(signal: DirectionSignal, compact: Boolean = false) {
+fun SignalLabel(signal: DirectionSignal, compact: Boolean = false, waitingForTester: Boolean = false) {
     val (text, icon, tint, background) = when {
         signal.install == InstallSignal.NOT_INSTALLED -> Quad("Install needed", Icons.Default.ErrorOutline, Attention700, Attention100)
-        signal.install == InstallSignal.UNAVAILABLE -> Quad("Can't check install", Icons.Default.ErrorOutline, Ink500, Brand100)
+        signal.install == InstallSignal.UNAVAILABLE -> Quad("Install check pending", Icons.Default.HourglassEmpty, Ink500, Brand100)
         signal.activity == ActivitySignal.OPENED_TODAY -> Quad("Opened today", Icons.Default.CheckCircle, Success700, Success100)
         signal.activity == ActivitySignal.NOT_DETECTED -> Quad("Not opened today", Icons.Default.ErrorOutline, Attention700, Attention100)
-        signal.activity == ActivitySignal.UNAVAILABLE -> Quad("Open status unavailable", Icons.Default.ErrorOutline, Ink500, Brand100)
+        signal.activity == ActivitySignal.UNAVAILABLE -> Quad(if (waitingForTester) "Waiting for TestLoop check" else "Open status unavailable", Icons.Default.ErrorOutline, Ink500, Brand100)
         else -> Quad("Installed", Icons.Default.CheckCircle, Success700, Success100)
     }
     Row(
@@ -93,27 +94,27 @@ fun InstallLabel(signal: DirectionSignal) {
     val (text, tint, background) = when (signal.install) {
         InstallSignal.INSTALLED -> Triple("Installed", Success700, Success100)
         InstallSignal.NOT_INSTALLED -> Triple("Not installed", Attention700, Attention100)
-        InstallSignal.UNAVAILABLE -> Triple("Install status unavailable", Ink500, Brand100)
+        InstallSignal.UNAVAILABLE -> Triple("Install check pending", Ink500, Brand100)
     }
     Text(text, modifier = Modifier.clip(RoundedCornerShape(10.dp)).background(background).padding(horizontal = 8.dp, vertical = 5.dp).semantics { contentDescription = text }, style = MaterialTheme.typography.labelMedium, color = tint)
 }
 
 /** Shows the two device signals that matter to a testing commitment. */
 @Composable
-fun EvidenceLabels(signal: DirectionSignal, compact: Boolean = true) {
+fun EvidenceLabels(signal: DirectionSignal, compact: Boolean = true, waitingForTester: Boolean = false) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         InstallLabel(signal)
         Spacer(Modifier.width(6.dp))
-        ActivityLabel(signal)
+        ActivityLabel(signal, waitingForTester)
     }
 }
 
 @Composable
-private fun ActivityLabel(signal: DirectionSignal) {
+private fun ActivityLabel(signal: DirectionSignal, waitingForTester: Boolean = false) {
     val (text, tint, background) = when (signal.activity) {
         ActivitySignal.OPENED_TODAY -> Triple("Opened today", Success700, Success100)
         ActivitySignal.NOT_DETECTED -> Triple("Not opened today", Attention700, Attention100)
-        ActivitySignal.UNAVAILABLE -> Triple("Open status unavailable", Ink500, Brand100)
+        ActivitySignal.UNAVAILABLE -> Triple(if (waitingForTester) "Waiting for TestLoop check" else "Open status unavailable", Ink500, Brand100)
     }
     Text(text, modifier = Modifier.clip(RoundedCornerShape(10.dp)).background(background).padding(horizontal = 8.dp, vertical = 5.dp).semantics { contentDescription = text }, style = MaterialTheme.typography.labelMedium, color = tint)
 }

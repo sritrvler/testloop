@@ -70,6 +70,7 @@ import com.testloop.app.data.AuthRepository
 import com.testloop.app.data.TestLoopRepository
 import com.testloop.app.domain.AppNotification
 import com.testloop.app.domain.AppBookmark
+import com.testloop.app.domain.CommitmentLifecycle
 import com.testloop.app.domain.InstallSignal
 import com.testloop.app.domain.OwnedApp
 import com.testloop.app.domain.PublicApp
@@ -101,7 +102,7 @@ private sealed interface AppScreen {
 }
 
 @Composable
-fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, externalAppLauncher: ExternalAppLauncher, usageAccessGranted: Boolean, onOpenUsageAccess: () -> Unit, isUsageAccessGrantedNow: () -> Boolean) {
+fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, externalAppLauncher: ExternalAppLauncher, usageAccessGranted: Boolean, onOpenUsageAccess: () -> Unit, isUsageAccessGrantedNow: () -> Boolean, onScheduleEveningReminder: (pendingCount: Int, singleAppName: String?) -> Unit, onRequestNotificationPermission: () -> Unit) {
     val account by auth.account.collectAsState()
     val providerAuthError by auth.authError.collectAsState()
     val ownedApps by repo.ownedApps.collectAsState()
@@ -111,12 +112,32 @@ fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, externalAppLaunc
     val notifications by repo.notifications.collectAsState()
     val bookmarks by repo.bookmarks.collectAsState()
     val usageAccessStatus by repo.usageAccess.collectAsState()
+    val activeTestingCommitments = commitments.filter {
+        it.lifecycle == CommitmentLifecycle.ACTIVE &&
+            (discoverApps.any { app -> app.id == it.appBeingTestedByCurrentUserId } ||
+                ownedApps.any { app -> app.id == it.appBeingTestedByCurrentUserId }) &&
+            (it.currentUserOwnAppId == null || ownedApps.any { app -> app.id == it.currentUserOwnAppId })
+    }
+    val activeCommitmentCount = activeTestingCommitments.size
+    val ownedAppIdsInUse = commitments
+        .filter { it.currentUserOwnAppId != null && it.lifecycle in setOf(CommitmentLifecycle.PENDING_SETUP, CommitmentLifecycle.ACTIVE) }
+        .mapNotNull { it.currentUserOwnAppId }
+        .toSet()
+    val pendingTestingCommitments = activeTestingCommitments.filter {
+        it.youOweSignal.install != InstallSignal.INSTALLED ||
+            it.youOweSignal.activity != com.testloop.app.domain.ActivitySignal.OPENED_TODAY
+    }
+    val singlePendingAppName = pendingTestingCommitments.singleOrNull()?.let { pair ->
+        discoverApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }?.title
+            ?: ownedApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }?.title
+    }
     val scope = rememberCoroutineScope()
     val snackbars = remember { SnackbarHostState() }
     var screenHistory by remember { mutableStateOf(listOf<AppScreen>(AppScreen.Welcome)) }
     var authError by remember { mutableStateOf<String?>(null) }
     var usernameError by remember { mutableStateOf<String?>(null) }
     var savingUsername by remember { mutableStateOf(false) }
+    var dataLoaded by remember { mutableStateOf(false) }
     var liveUsageAccessGranted by remember { mutableStateOf(usageAccessGranted) }
     fun snack(text: String) = scope.launch { snackbars.showSnackbar(text) }
     fun navigate(next: AppScreen) {
@@ -130,6 +151,12 @@ fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, externalAppLaunc
     }
     val screen = screenHistory.last()
 
+    LaunchedEffect(account?.id, pendingTestingCommitments.size, singlePendingAppName) {
+        val scheduledPendingCount = if (account == null) 0 else pendingTestingCommitments.size
+        onScheduleEveningReminder(scheduledPendingCount, if (scheduledPendingCount == 1) singlePendingAppName else null)
+        if (scheduledPendingCount > 0) onRequestNotificationPermission()
+    }
+
     LaunchedEffect(usageAccessGranted) {
         liveUsageAccessGranted = usageAccessGranted
     }
@@ -140,10 +167,22 @@ fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, externalAppLaunc
 
     LaunchedEffect(account) {
         if (account != null && screen == AppScreen.Welcome) {
-            replace(if (account?.username.isNullOrBlank()) AppScreen.Username else AppScreen.Main())
+            replace(
+                when {
+                    account?.username.isNullOrBlank() -> AppScreen.Username
+                    account?.trackingSetupComplete != true -> AppScreen.Tracking
+                    else -> AppScreen.Main()
+                }
+            )
         }
         if (account != null && !account!!.id.equals("pending", ignoreCase = true)) {
-            repo.refresh().onFailure { authError = userFriendlyError(it, "We couldn't load your apps right now. Check your connection and try again.") }
+            dataLoaded = false
+            repo.refresh()
+                .onSuccess { dataLoaded = true }
+                .onFailure {
+                    dataLoaded = true
+                    authError = userFriendlyError(it, "We couldn't load your apps right now. Check your connection and try again.")
+                }
         }
     }
 
@@ -156,16 +195,10 @@ fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, externalAppLaunc
         }
     }
 
-    LaunchedEffect(account?.id, usageAccessGranted) {
-        if (account != null && !account!!.id.equals("pending", ignoreCase = true)) {
-            repo.syncUsageAccess(liveUsageAccessGranted)
-        }
-    }
-
-    LaunchedEffect(account?.id) {
-        if (account != null && !account!!.id.equals("pending", ignoreCase = true)) {
+    LaunchedEffect(account?.id, account?.trackingSetupComplete, activeCommitmentCount, usageAccessGranted) {
+        if (account?.trackingSetupComplete == true && !account!!.id.equals("pending", ignoreCase = true)) {
             liveUsageAccessGranted = isUsageAccessGrantedNow()
-            repo.syncUsageAccess(liveUsageAccessGranted)
+            if (liveUsageAccessGranted || activeCommitmentCount > 0) repo.syncUsageAccess(liveUsageAccessGranted)
         }
     }
 
@@ -177,31 +210,38 @@ fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, externalAppLaunc
         scope.launch {
             val pair = commitments.firstOrNull { it.commitmentId == id }
             val publicApp = pair?.let { selected -> discoverApps.firstOrNull { it.id == selected.appBeingTestedByCurrentUserId } }
-            if (pair == null || publicApp == null) {
+            val ownedTarget = pair?.let { selected -> ownedApps.firstOrNull { it.id == selected.appBeingTestedByCurrentUserId } }
+            val targetTitle = publicApp?.title ?: ownedTarget?.title
+            val targetInstallUrl = publicApp?.installUrl ?: ownedTarget?.installUrl
+            val targetPackageName = publicApp?.packageName ?: ownedTarget?.packageName
+            if (pair == null || targetTitle == null || targetInstallUrl == null || targetPackageName == null) {
                 snack("This test app is no longer available. Open the commitment to review it.")
                 return@launch
             }
 
             if (pair.youOweSignal.install != InstallSignal.INSTALLED) {
-                when (externalAppLauncher.openUrl(publicApp.installUrl)) {
-                    LaunchResult.Opened -> snack("Opening Google Play for ${publicApp.title}. Install it, then come back to TestLoop.")
+                when (externalAppLauncher.openUrl(targetInstallUrl)) {
+                    LaunchResult.Opened -> snack("Opening Google Play for $targetTitle. Install it, then come back to TestLoop.")
+                    LaunchResult.Blocked -> snack("This install link was blocked. TestLoop only opens approved Google Play links.")
                     else -> snack("We couldn't open Google Play. Open the commitment to see the install link.")
                 }
                 return@launch
             }
 
-            val result = externalAppLauncher.launch(publicApp.packageName)
+            val result = externalAppLauncher.launch(targetPackageName)
             if (result != LaunchResult.Unavailable) repo.reportInstallStatus(id)
             snack(when (result) {
-                LaunchResult.Opened -> "Opening ${publicApp.title}. Use it for today's test, then come back here."
-                LaunchResult.NotInstalled -> "${publicApp.title} isn't installed on this phone. Tap Install to get it."
-                LaunchResult.NotLaunchable -> "${publicApp.title} is installed but Android can't launch it. Open the commitment to review the app link."
-                LaunchResult.Unavailable -> "Android couldn't open ${publicApp.title} right now. Try again."
+                LaunchResult.Opened -> "Opening $targetTitle. Use it for today's test, then come back here."
+                LaunchResult.NotInstalled -> "$targetTitle isn't installed on this phone. Tap Install to get it."
+                LaunchResult.NotLaunchable -> "$targetTitle is installed but Android can't launch it. Open the commitment to review the app link."
+                LaunchResult.Blocked -> "This app link was blocked because it is not an approved Google Play link."
+                LaunchResult.Unavailable -> "Android couldn't open $targetTitle right now. Try again."
             })
         }
     }
 
-    if (account != null && !liveUsageAccessGranted) {
+    val usageAccessEnforced = account?.trackingSetupComplete == true && activeCommitmentCount > 0
+    if (usageAccessEnforced && !liveUsageAccessGranted) {
         UsageAccessRequiredScreen(usageAccessStatus, onOpenUsageAccess)
     } else when (val current = screen) {
         AppScreen.Welcome -> WelcomeRedesign(
@@ -227,11 +267,21 @@ fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, externalAppLaunc
                 savingUsername = false
             }
         })
-        AppScreen.Tracking -> TrackingSetup(usageAccessGranted = liveUsageAccessGranted, onOpenUsageAccess = onOpenUsageAccess, onContinue = { replace(AppScreen.Main()) })
-        is AppScreen.Main -> MainShell(current.destination, account?.username.orEmpty(), liveUsageAccessGranted, ownedApps, campaigns, discoverApps, commitments, bookmarks, notifications, snackbars,
+        AppScreen.Tracking -> TrackingSetup(
+            usageAccessGranted = liveUsageAccessGranted,
+            onOpenUsageAccess = onOpenUsageAccess,
+            onContinue = {
+                scope.launch {
+                    auth.completeTrackingSetup()
+                        .onSuccess { replace(AppScreen.Main()) }
+                        .onFailure { snack(userFriendlyError(it, "We couldn't finish setup. Please try again.")) }
+                }
+            }
+        )
+        is AppScreen.Main -> MainShell(current.destination, account?.username.orEmpty(), liveUsageAccessGranted, dataLoaded, ownedApps, campaigns, discoverApps, commitments, bookmarks, notifications, snackbars,
             onDestination = { replace(AppScreen.Main(it)) }, onNotification = { navigate(AppScreen.Notifications) }, onPair = { navigate(AppScreen.PairDetail(it)) }, onPrimaryAction = ::performPrimaryAction, onOwnApp = { id, attention -> navigate(AppScreen.OwnDetail(id, attention)) }, onDiscover = { navigate(AppScreen.PublicDetail(it)) }, onBookmark = { id -> repo.bookmarkApp(id).onSuccess { snack("Saved to bookmarks — you're ready to find it again") }.onFailure { snack(userFriendlyError(it, "We couldn't save this bookmark. Check your connection and try again.")) } }, onRemoveBookmark = { id -> repo.removeBookmark(id).onSuccess { snack("Bookmark removed") }.onFailure { snack(userFriendlyError(it, "We couldn't remove this bookmark. Check your connection and try again.")) } }, onAddApp = { navigate(AppScreen.AddApp) }, onObligations = { navigate(AppScreen.Obligations) })
         is AppScreen.PublicDetail -> PublicAppDetail(
-            discoverApps.firstOrNull { it.id == current.appId }, ownedApps,
+            discoverApps.firstOrNull { it.id == current.appId }, ownedApps, ownedAppIdsInUse,
             pendingCommitment = commitments.firstOrNull { it.appBeingTestedByCurrentUserId == current.appId && it.lifecycle == com.testloop.app.domain.CommitmentLifecycle.PENDING_SETUP },
             onBack = ::back,
             onJoin = { publicId, ownId -> scope.launch { val result = repo.joinCampaign(publicId, ownId); result.onSuccess { navigate(AppScreen.CommitmentReady(it.commitmentId)); snack("You're in! Your test commitment with @${it.otherUsername} is ready 🎉") }.onFailure { snack(userFriendlyError(it, "We couldn't create this commitment. The app may no longer be available—go back and try another one.")) } } },
@@ -241,17 +291,19 @@ fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, externalAppLaunc
         is AppScreen.CommitmentReady -> CommitmentReadyScreen(commitments.firstOrNull { it.commitmentId == current.commitmentId }, discoverApps, ownedApps, isBookmarked = commitments.firstOrNull { it.commitmentId == current.commitmentId }?.let { pair -> bookmarks.any { it.appId == pair.appBeingTestedByCurrentUserId } } == true, onBack = ::back, onOpenLink = { url ->
             when (externalAppLauncher.openUrl(url)) {
                 LaunchResult.Opened -> Unit
+                LaunchResult.Blocked -> snack("This group link was blocked. TestLoop only opens Google Play testing links.")
                 else -> snack("This link couldn't be opened. Make sure Google Play is installed, then try again.")
             }
         }, onBookmark = { id -> repo.bookmarkApp(id).onSuccess { snack("Saved to bookmarks — you're ready to find it again") }.onFailure { snack(userFriendlyError(it, "We couldn't save this bookmark. Check your connection and try again.")) } }, onRemoveBookmark = { id -> repo.removeBookmark(id).onSuccess { snack("Bookmark removed") }.onFailure { snack(userFriendlyError(it, "We couldn't remove this bookmark. Check your connection and try again.")) } })
-        is AppScreen.PairDetail -> PairDetailScreen(commitments.firstOrNull { it.commitmentId == current.commitmentId }, ownedApps, discoverApps, onBack = ::back, onOpen = ::performPrimaryAction, onOpenLink = { url ->
+        is AppScreen.PairDetail -> PairDetailScreen(commitments.firstOrNull { it.commitmentId == current.commitmentId }, ownedApps, campaigns, discoverApps, onBack = ::back, onOpen = ::performPrimaryAction, onOpenLink = { url ->
             when (externalAppLauncher.openUrl(url)) {
                 LaunchResult.Opened -> Unit
+                LaunchResult.Blocked -> snack("This group link was blocked. TestLoop only opens Google Play testing links.")
                 else -> snack("This link couldn't be opened. Make sure Google Play is installed, then try again.")
             }
-        }, onReminder = { id, person -> scope.launch { repo.sendReminder(id); snack("Reminder sent to @$person — they'll see it today") } })
-        is AppScreen.OwnDetail -> OwnAppDetailScreen(current.appId, current.attentionOnly, ownedApps, campaigns, commitments, discoverApps, onBack = ::back, onPair = { navigate(AppScreen.PairDetail(it)) }, onReminder = { id, person -> scope.launch { repo.sendReminder(id).onSuccess { snack("Reminder sent to @$person — they'll see it today") }.onFailure { snack(userFriendlyError(it, "We couldn't send the reminder. Check your connection and try again.")) } } }, onSwitch = { replace(AppScreen.OwnDetail(it)) }, onDelist = { id -> repo.delistOwnedApp(id).onSuccess { replace(AppScreen.Main(MainDestination.APPS)); snack("Your app has been removed from Discover") }.onFailure { snack(userFriendlyError(it, "We couldn't remove this app from Discover. Check your connection and try again.")) } }, onMarkPublished = { id -> repo.markOwnedAppPublished(id).onSuccess { snack("Your app has been successfully published on Google Play! 🎉") }.onFailure { snack(userFriendlyError(it, "We couldn't update your Google Play status. Check your connection and try again.")) } })
-        AppScreen.Obligations -> ObligationsScreen(commitments, ownedApps, discoverApps, onBack = ::back, onPair = { navigate(AppScreen.PairDetail(it)) })
+        }, onReminder = { id, person -> scope.launch { repo.sendReminder(id).onSuccess { snack("Helpful check-in sent to @$person") }.onFailure { snack(userFriendlyError(it, "We couldn’t send the check-in. Check your connection and try again.")) } } })
+        is AppScreen.OwnDetail -> OwnAppDetailScreen(current.appId, current.attentionOnly, ownedApps, campaigns, commitments, discoverApps, onBack = ::back, onPair = { navigate(AppScreen.PairDetail(it)) }, onReminder = { id, person -> scope.launch { repo.sendReminder(id).onSuccess { snack("Reminder sent to @$person — they'll see it today") }.onFailure { snack(userFriendlyError(it, "We couldn't send the reminder. Check your connection and try again.")) } } }, onSwitch = { replace(AppScreen.OwnDetail(it)) }, onDelist = { id -> repo.delistOwnedApp(id).onSuccess { replace(AppScreen.Main(MainDestination.APPS)); snack("Your app has been removed from Discover") }.onFailure { snack(userFriendlyError(it, "We couldn't remove this app from Discover. Check your connection and try again.")) } }, onMarkPublished = { id -> repo.markOwnedAppPublished(id).onSuccess { snack("Your app has been successfully published on Google Play! 🎉") }.onFailure { snack(userFriendlyError(it, "We couldn't update your Google Play status. Check your connection and try again.")) } }, onUpdateTesterCount = { id, count -> repo.updateCampaignTesterCount(id, count).onSuccess { snack("Tester target updated to $count. Discover and progress are now up to date.") }.onFailure { snack(userFriendlyError(it, "We couldn't update the tester target. Check your connection and try again.")) } })
+        AppScreen.Obligations -> ObligationsScreen(commitments, ownedApps, campaigns, discoverApps, onBack = ::back, onPair = { navigate(AppScreen.PairDetail(it)) })
         AppScreen.Notifications -> NotificationsRedesign(notifications, onBack = ::back, onOpenPair = { navigate(AppScreen.PairDetail(it)) })
         AppScreen.AddApp -> AddAppFlow(onBack = ::back, onPublished = { app, campaign ->
             repo.addOwnedApp(app, campaign).onSuccess {
@@ -263,13 +315,13 @@ fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, externalAppLaunc
 }
 
 @Composable
-private fun MainShell(destination: MainDestination, username: String, usageAccessGranted: Boolean, ownedApps: List<OwnedApp>, campaigns: List<com.testloop.app.domain.Campaign>, discoverApps: List<PublicApp>, commitments: List<ReciprocalCommitment>, bookmarks: List<AppBookmark>, notifications: List<AppNotification>, snackbars: SnackbarHostState, onDestination: (MainDestination) -> Unit, onNotification: () -> Unit, onPair: (String) -> Unit, onPrimaryAction: (String) -> Unit, onOwnApp: (String, Boolean) -> Unit, onDiscover: (String) -> Unit, onBookmark: suspend (String) -> Result<Unit>, onRemoveBookmark: suspend (String) -> Result<Unit>, onAddApp: () -> Unit, onObligations: () -> Unit) {
+private fun MainShell(destination: MainDestination, username: String, usageAccessGranted: Boolean, dataLoaded: Boolean, ownedApps: List<OwnedApp>, campaigns: List<com.testloop.app.domain.Campaign>, discoverApps: List<PublicApp>, commitments: List<ReciprocalCommitment>, bookmarks: List<AppBookmark>, notifications: List<AppNotification>, snackbars: SnackbarHostState, onDestination: (MainDestination) -> Unit, onNotification: () -> Unit, onPair: (String) -> Unit, onPrimaryAction: (String) -> Unit, onOwnApp: (String, Boolean) -> Unit, onDiscover: (String) -> Unit, onBookmark: suspend (String) -> Result<Unit>, onRemoveBookmark: suspend (String) -> Result<Unit>, onAddApp: () -> Unit, onObligations: () -> Unit) {
     Scaffold(containerColor = MaterialTheme.colorScheme.background, snackbarHost = { SnackbarHost(snackbars) }, bottomBar = { BottomNavigation(destination, onDestination) }) { padding ->
         // The top app bars apply their own status-bar inset. Keep only room for
         // the bottom navigation so the main content does not get a duplicate top gap.
         val contentPadding = PaddingValues(bottom = 96.dp)
         when (destination) {
-            MainDestination.TODAY -> TodayRedesign(contentPadding, username, commitments, ownedApps, discoverApps, onPair, onPrimaryAction, onOwnApp, onNotification, notifications.count { it.isUnread }, onObligations = onObligations, onAddApp = onAddApp, onDiscover = { onDestination(MainDestination.DISCOVER) })
+            MainDestination.TODAY -> TodayRedesign(contentPadding, username, dataLoaded, commitments, ownedApps, campaigns, discoverApps, onPair, onPrimaryAction, onOwnApp, onNotification, notifications.count { it.isUnread }, onObligations = onObligations, onAddApp = onAddApp, onDiscover = { onDestination(MainDestination.DISCOVER) })
             MainDestination.APPS -> MyAppsScreen(contentPadding, ownedApps, campaigns, commitments, onOwnApp, onAddApp, onDiscover = { onDestination(MainDestination.DISCOVER) }, onNotifications = onNotification, unread = notifications.count { it.isUnread })
             MainDestination.DISCOVER -> DiscoverRedesign(contentPadding, discoverApps, commitments, bookmarks, onDiscover, onBookmark = onBookmark, onRemoveBookmark = onRemoveBookmark, onAddApp = onAddApp, onNotifications = onNotification, unread = notifications.count { it.isUnread })
             MainDestination.PROFILE -> ProfileRedesign(padding, username, usageAccessGranted, onNotification, notifications.count { it.isUnread })
