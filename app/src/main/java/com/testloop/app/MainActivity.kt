@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import com.testloop.app.data.SupabaseAuthRepository
 import com.testloop.app.data.SupabaseTestLoopRepository
 import com.testloop.app.platform.AndroidExternalAppLauncher
+import com.testloop.app.platform.FeedbackForm
 import com.testloop.app.tracking.AndroidUsageAccessReporter
 import com.testloop.app.ui.TestLoopApp
 import com.testloop.app.ui.theme.TestLoopTheme
@@ -43,6 +44,7 @@ class MainActivity : ComponentActivity() {
                         auth,
                         repository,
                         externalAppLauncher,
+                        FeedbackForm.url(),
                         usageAccessGranted,
                         onOpenUsageAccess = { usageAccessReporter.openSettings() },
                         isUsageAccessGrantedNow = { usageAccessReporter.isGranted() },

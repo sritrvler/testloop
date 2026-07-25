@@ -105,7 +105,7 @@ private sealed interface AppScreen {
 }
 
 @Composable
-fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, externalAppLauncher: ExternalAppLauncher, usageAccessGranted: Boolean, onOpenUsageAccess: () -> Unit, isUsageAccessGrantedNow: () -> Boolean, onScheduleEveningReminder: (pendingCount: Int, singleAppName: String?) -> Unit, onRequestNotificationPermission: () -> Unit) {
+fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, externalAppLauncher: ExternalAppLauncher, feedbackUrl: String, usageAccessGranted: Boolean, onOpenUsageAccess: () -> Unit, isUsageAccessGrantedNow: () -> Boolean, onScheduleEveningReminder: (pendingCount: Int, singleAppName: String?) -> Unit, onRequestNotificationPermission: () -> Unit) {
     val account by auth.account.collectAsState()
     val providerAuthError by auth.authError.collectAsState()
     val ownedApps by repo.ownedApps.collectAsState()
@@ -282,7 +282,13 @@ fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, externalAppLaunc
             }
         )
         is AppScreen.Main -> MainShell(current.destination, account?.username.orEmpty(), liveUsageAccessGranted, dataLoaded, ownedApps, campaigns, discoverApps, commitments, bookmarks, notifications, snackbars,
-            onDestination = { replace(AppScreen.Main(it)) }, onNotification = { navigate(AppScreen.Notifications) }, onPair = { navigate(AppScreen.PairDetail(it)) }, onPrimaryAction = ::performPrimaryAction, onOwnApp = { id, attention -> navigate(AppScreen.OwnDetail(id, attention)) }, onDiscover = { navigate(AppScreen.PublicDetail(it)) }, onBookmark = { id -> repo.bookmarkApp(id).onSuccess { snack("Saved to bookmarks — you're ready to find it again") }.onFailure { snack(userFriendlyError(it, "We couldn't save this bookmark. Check your connection and try again.")) } }, onRemoveBookmark = { id -> repo.removeBookmark(id).onSuccess { snack("Bookmark removed") }.onFailure { snack(userFriendlyError(it, "We couldn't remove this bookmark. Check your connection and try again.")) } }, onAddApp = { navigate(AppScreen.AddApp) }, onObligations = { navigate(AppScreen.Obligations) })
+            onDestination = { replace(AppScreen.Main(it)) }, onNotification = { navigate(AppScreen.Notifications) }, onFeedback = {
+                when (externalAppLauncher.openFeedbackUrl(feedbackUrl)) {
+                    LaunchResult.Opened -> Unit
+                    LaunchResult.Blocked -> snack("This feedback link is not trusted")
+                    else -> snack("We couldn't open the feedback form. Try again in a moment.")
+                }
+            }, onPair = { navigate(AppScreen.PairDetail(it)) }, onPrimaryAction = ::performPrimaryAction, onOwnApp = { id, attention -> navigate(AppScreen.OwnDetail(id, attention)) }, onDiscover = { navigate(AppScreen.PublicDetail(it)) }, onBookmark = { id -> repo.bookmarkApp(id).onSuccess { snack("Saved to bookmarks — you're ready to find it again") }.onFailure { snack(userFriendlyError(it, "We couldn't save this bookmark. Check your connection and try again.")) } }, onRemoveBookmark = { id -> repo.removeBookmark(id).onSuccess { snack("Bookmark removed") }.onFailure { snack(userFriendlyError(it, "We couldn't remove this bookmark. Check your connection and try again.")) } }, onAddApp = { navigate(AppScreen.AddApp) }, onObligations = { navigate(AppScreen.Obligations) })
         is AppScreen.PublicDetail -> PublicAppDetail(
             discoverApps.firstOrNull { it.id == current.appId }, ownedApps, ownedAppIdsInUse,
             pendingCommitment = commitments.firstOrNull { it.appBeingTestedByCurrentUserId == current.appId && it.lifecycle == com.testloop.app.domain.CommitmentLifecycle.PENDING_SETUP },
@@ -318,7 +324,7 @@ fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, externalAppLaunc
 }
 
 @Composable
-private fun MainShell(destination: MainDestination, username: String, usageAccessGranted: Boolean, dataLoaded: Boolean, ownedApps: List<OwnedApp>, campaigns: List<com.testloop.app.domain.Campaign>, discoverApps: List<PublicApp>, commitments: List<ReciprocalCommitment>, bookmarks: List<AppBookmark>, notifications: List<AppNotification>, snackbars: SnackbarHostState, onDestination: (MainDestination) -> Unit, onNotification: () -> Unit, onPair: (String) -> Unit, onPrimaryAction: (String) -> Unit, onOwnApp: (String, Boolean) -> Unit, onDiscover: (String) -> Unit, onBookmark: suspend (String) -> Result<Unit>, onRemoveBookmark: suspend (String) -> Result<Unit>, onAddApp: () -> Unit, onObligations: () -> Unit) {
+private fun MainShell(destination: MainDestination, username: String, usageAccessGranted: Boolean, dataLoaded: Boolean, ownedApps: List<OwnedApp>, campaigns: List<com.testloop.app.domain.Campaign>, discoverApps: List<PublicApp>, commitments: List<ReciprocalCommitment>, bookmarks: List<AppBookmark>, notifications: List<AppNotification>, snackbars: SnackbarHostState, onDestination: (MainDestination) -> Unit, onNotification: () -> Unit, onFeedback: () -> Unit, onPair: (String) -> Unit, onPrimaryAction: (String) -> Unit, onOwnApp: (String, Boolean) -> Unit, onDiscover: (String) -> Unit, onBookmark: suspend (String) -> Result<Unit>, onRemoveBookmark: suspend (String) -> Result<Unit>, onAddApp: () -> Unit, onObligations: () -> Unit) {
     Scaffold(containerColor = MaterialTheme.colorScheme.background, snackbarHost = { SnackbarHost(snackbars) }, bottomBar = { BottomNavigation(destination, onDestination) }) { padding ->
         // The top app bars apply their own status-bar inset. Keep only room for
         // the bottom navigation so the main content does not get a duplicate top gap.
@@ -327,7 +333,7 @@ private fun MainShell(destination: MainDestination, username: String, usageAcces
             MainDestination.TODAY -> TodayRedesign(contentPadding, username, dataLoaded, commitments, ownedApps, campaigns, discoverApps, onPair, onPrimaryAction, onOwnApp, onNotification, notifications.count { it.isUnread }, onObligations = onObligations, onAddApp = onAddApp, onDiscover = { onDestination(MainDestination.DISCOVER) })
             MainDestination.APPS -> MyAppsScreen(contentPadding, ownedApps, campaigns, commitments, onOwnApp, onAddApp, onDiscover = { onDestination(MainDestination.DISCOVER) }, onNotifications = onNotification, unread = notifications.count { it.isUnread })
             MainDestination.DISCOVER -> DiscoverRedesign(contentPadding, discoverApps, commitments, bookmarks, onDiscover, onBookmark = onBookmark, onRemoveBookmark = onRemoveBookmark, onAddApp = onAddApp, onNotifications = onNotification, unread = notifications.count { it.isUnread })
-            MainDestination.PROFILE -> ProfileRedesign(padding, username, usageAccessGranted, onNotification, notifications.count { it.isUnread })
+            MainDestination.PROFILE -> ProfileRedesign(padding, username, usageAccessGranted, onNotification, onFeedback, notifications.count { it.isUnread })
         }
     }
 }

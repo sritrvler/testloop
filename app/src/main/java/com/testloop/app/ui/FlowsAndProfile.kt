@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.ChatBubbleOutline
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PrivacyTip
@@ -187,4 +188,48 @@ fun NotificationsRedesign(notifications: List<AppNotification>, onBack: () -> Un
 private fun NotificationRow(notification: AppNotification, onOpenPair: (String) -> Unit) { Row(Modifier.fillMaxWidth().clickable { notification.commitmentId?.let(onOpenPair) }.padding(16.dp), verticalAlignment = Alignment.Top) { Icon(Icons.Default.Notifications, null, tint = Brand600); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(notification.title, fontWeight = FontWeight.SemiBold); Text(notification.message, style = MaterialTheme.typography.bodySmall, color = Ink500); Text(notification.relativeTime, style = MaterialTheme.typography.labelSmall, color = Ink500, modifier = Modifier.padding(top = 5.dp)) }; if (notification.isUnread) androidx.compose.material3.Badge() } }
 
 @Composable
-fun ProfileRedesign(padding: PaddingValues, username: String, usageAccessGranted: Boolean, onNotifications: () -> Unit, unread: Int) { LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(Gutter), verticalArrangement = Arrangement.spacedBy(16.dp)) { item { TestLoopTopBar("Profile", unreadCount = unread, onNotifications = onNotifications) }; item { Row(verticalAlignment = Alignment.CenterVertically) { MemberAvatar(username); Spacer(Modifier.width(12.dp)); Column { Text("@${username.ifBlank { "you" }}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold); Text("Your Google email stays private", color = Ink500) } } }; item { GroupSurface { listOf("Install checks" to "Checked when you return to TestLoop", "Notifications" to "Manage reminders and quiet hours", "Privacy and data" to "TestLoop checks only committed apps", "Blocked members" to "No blocked members", "Help and report a problem" to "Get support").forEachIndexed { index, (title, body) -> Column(Modifier.padding(16.dp)) { Text(title, fontWeight = FontWeight.SemiBold); Text(body, style = MaterialTheme.typography.bodySmall, color = Ink500) }; if (index != 4) RowDivider() } } }; item { Text("Delete account", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelLarge, modifier = Modifier.padding(12.dp)) } } }
+fun ProfileRedesign(padding: PaddingValues, username: String, usageAccessGranted: Boolean, onNotifications: () -> Unit, onFeedback: () -> Unit, unread: Int) {
+    val helpTitle = "Help and report a problem"
+    LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(Gutter), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        item { TestLoopTopBar("Profile", unreadCount = unread, onNotifications = onNotifications) }
+        item {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                MemberAvatar(username)
+                Spacer(Modifier.width(12.dp))
+                Column {
+                    Text("@${username.ifBlank { "you" }}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text("Your Google email stays private", color = Ink500)
+                }
+            }
+        }
+        item {
+            GroupSurface {
+                listOf(
+                    "Install checks" to "Checked when you return to TestLoop",
+                    "Notifications" to "Manage reminders and quiet hours",
+                    "Privacy and data" to "TestLoop checks only committed apps",
+                    "Blocked members" to "No blocked members",
+                    helpTitle to "Tell us what happened or what you’d like to see",
+                ).forEachIndexed { index, (title, body) ->
+                    val isHelp = title == helpTitle
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable(enabled = isHelp, onClick = onFeedback)
+                            .padding(16.dp)
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Column(Modifier.weight(1f)) {
+                                Text(title, fontWeight = FontWeight.SemiBold)
+                                Text(body, style = MaterialTheme.typography.bodySmall, color = Ink500)
+                            }
+                            if (isHelp) Icon(Icons.Default.ChatBubbleOutline, contentDescription = "Send feedback", tint = Brand600)
+                        }
+                    }
+                    if (index != 4) RowDivider()
+                }
+            }
+        }
+        item { Text("Delete account", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelLarge, modifier = Modifier.padding(12.dp)) }
+    }
+}

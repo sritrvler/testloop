@@ -3,6 +3,8 @@ package com.testloop.app.platform
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import androidx.browser.customtabs.CustomTabsIntent
 
 /**
  * Boundary for an explicit, user-initiated attempt to launch one commitment package.
@@ -11,6 +13,7 @@ import android.content.pm.PackageManager
 interface ExternalAppLauncher {
     fun launch(packageName: String): LaunchResult
     fun openUrl(url: String): LaunchResult
+    fun openFeedbackUrl(url: String): LaunchResult
 }
 
 sealed interface LaunchResult {
@@ -58,16 +61,34 @@ class AndroidExternalAppLauncher(private val context: Context) : ExternalAppLaun
 
     override fun openUrl(url: String): LaunchResult {
         if (!PlayUrlPolicy.isAllowedUrl(url)) return LaunchResult.Blocked
+        return startExternalUrl(url)
+    }
+
+    override fun openFeedbackUrl(url: String): LaunchResult {
+        if (!FeedbackForm.isAllowedUrl(url)) return LaunchResult.Blocked
         return try {
-            context.startActivity(
-                Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url))
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            )
+            val customTabsIntent = CustomTabsIntent.Builder().build()
+            // This launcher is created with applicationContext, so Android
+            // requires a new-task flag when Custom Tabs starts its activity.
+            customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            customTabsIntent.launchUrl(context, Uri.parse(url))
             LaunchResult.Opened
         } catch (_: android.content.ActivityNotFoundException) {
-            LaunchResult.NotLaunchable
+            startExternalUrl(url)
         } catch (_: SecurityException) {
             LaunchResult.Unavailable
         }
+    }
+
+    private fun startExternalUrl(url: String): LaunchResult = try {
+        context.startActivity(
+            Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
+        LaunchResult.Opened
+    } catch (_: android.content.ActivityNotFoundException) {
+        LaunchResult.NotLaunchable
+    } catch (_: SecurityException) {
+        LaunchResult.Unavailable
     }
 }
