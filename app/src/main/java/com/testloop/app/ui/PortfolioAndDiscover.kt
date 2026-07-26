@@ -48,11 +48,11 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.testloop.app.domain.Campaign
 import com.testloop.app.domain.AppBookmark
+import com.testloop.app.domain.CommitmentLifecycle
 import com.testloop.app.domain.OwnedApp
 import com.testloop.app.domain.PublicApp
 import com.testloop.app.domain.ReciprocalCommitment
 import com.testloop.app.domain.isCurrentTester
-import com.testloop.app.domain.discoverStateLabel
 import com.testloop.app.domain.dailyTaskUnlocked
 import com.testloop.app.domain.isDiscoverableForJoin
 import com.testloop.app.domain.statusLabel
@@ -137,7 +137,11 @@ fun DiscoverRedesign(padding: PaddingValues, apps: List<PublicApp>, ownedAppIds:
     var hideMyApps by remember { mutableStateOf(true) }
     var optimisticBookmarkOverrides by remember { mutableStateOf<Map<String, Boolean>>(emptyMap()) }
     val scope = rememberCoroutineScope()
-    val joinedAppIds = commitments.filter { it.lifecycle != com.testloop.app.domain.CommitmentLifecycle.PENDING_SETUP }.mapTo(mutableSetOf()) { it.appBeingTestedByCurrentUserId }
+    // A left commitment is historical. It must not hide a newly reopened
+    // replacement slot from the former tester (or block a replacement join).
+    val joinedAppIds = commitments
+        .filter { isDiscoverJoinBlocked(it.lifecycle) }
+        .mapTo(mutableSetOf()) { it.appBeingTestedByCurrentUserId }
     val actualBookmarkedIds = bookmarks.mapTo(mutableSetOf()) { it.appId }
     LaunchedEffect(bookmarks) {
         optimisticBookmarkOverrides = optimisticBookmarkOverrides.filter { (id, desired) -> (id in actualBookmarkedIds) == desired }
@@ -151,7 +155,7 @@ fun DiscoverRedesign(padding: PaddingValues, apps: List<PublicApp>, ownedAppIds:
         .filter { it.title.contains(query, true) || it.ownerUsername.contains(query, true) || it.packageName.contains(query, true) }
         .filter { it.id in ownedAppIds || showBookmarksOnly || when (filter) { "Open" -> it.slotsRemaining > 0; "Full" -> it.slotsRemaining == 0; else -> true } }
         .let { if (filter == "Fewest slots") it.sortedBy { app -> app.slotsRemaining } else it }
-        .let { list -> if (hideMyApps) list.filterNot { it.id in ownedAppIds } else list }
+        .let { list -> list.filter { app -> shouldShowDiscoverApp(app, ownedAppIds, hideMyApps) } }
     val ownerPreviews = filtered.filter { it.id in ownedAppIds }
     val joinableApps = filtered.filterNot { it.id in ownedAppIds }
     Column(Modifier.fillMaxSize().padding(padding)) {
@@ -201,6 +205,12 @@ fun DiscoverRedesign(padding: PaddingValues, apps: List<PublicApp>, ownedAppIds:
     }
 }
 
+internal fun shouldShowDiscoverApp(app: PublicApp, ownedAppIds: Set<String>, hideMyApps: Boolean): Boolean =
+    !hideMyApps || app.id !in ownedAppIds
+
+internal fun isDiscoverJoinBlocked(lifecycle: CommitmentLifecycle): Boolean =
+    lifecycle in setOf(CommitmentLifecycle.PENDING_SETUP, CommitmentLifecycle.ACTIVE)
+
 @Composable
 private fun DiscoverEmptyState(hasAnyApps: Boolean, onAddApp: () -> Unit) {
     Column(Modifier.fillMaxWidth().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -225,7 +235,11 @@ private fun DiscoverRow(app: PublicApp, isOwnerPreview: Boolean, bookmark: AppBo
             Spacer(Modifier.height(5.dp))
             Text(app.instructions, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall, color = Ink500)
             Spacer(Modifier.height(5.dp))
-            Text(if (isOwnerPreview && app.replacementOpen && app.slotsRemaining > 0) "Replacement slot open · Your listing" else if (isOwnerPreview) "Preview only · Your app" else app.discoverStateLabel(), style = MaterialTheme.typography.labelMedium, color = Brand600, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(
+                if (isOwnerPreview) "Your listing · ${discoverTesterCountLabel(app)}" else discoverTesterCountLabel(app),
+                style = MaterialTheme.typography.labelMedium,
+                color = Brand600
+            )
             if (!isOwnerPreview && bookmark != null) Text("Saved ${bookmarkAgeLabel(bookmark.bookmarkedAt)}", style = MaterialTheme.typography.labelSmall, color = Brand600, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
         if (!isOwnerPreview) {
@@ -234,6 +248,15 @@ private fun DiscoverRow(app: PublicApp, isOwnerPreview: Boolean, bookmark: AppBo
             Text("Preview", style = MaterialTheme.typography.labelMedium, color = Brand600, maxLines = 1)
         }
         Icon(Icons.Default.ArrowForward, if (isOwnerPreview) "Preview ${app.title}" else "Open ${app.title}", tint = Brand600, modifier = Modifier.padding(start = 4.dp))
+    }
+}
+
+internal fun discoverTesterCountLabel(app: PublicApp): String {
+    val needed = app.slotsRemaining
+    val testerWord = if (needed == 1) "tester" else "testers"
+    return when {
+        needed > 0 -> "$needed $testerWord needed · ${app.reservedTesterCount}/${app.requestedTesters} slots filled"
+        else -> "All ${app.requestedTesters} tester slots filled"
     }
 }
 
