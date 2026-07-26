@@ -1,0 +1,87 @@
+package:com.android.chrome
+package:com.android.vending
+package:com.google.android.apps.accessibility.voiceaccess
+package:com.google.android.apps.adm
+package:com.google.android.apps.ai.icons
+package:com.google.android.apps.aiwallpapers
+package:com.google.android.apps.authenticator2
+package:com.google.android.apps.bard
+package:com.google.android.apps.camera.services
+package:com.google.android.apps.carrier.carrierwifi
+package:com.google.android.apps.carrier.log
+package:com.google.android.apps.cbrsnetworkmonitor
+package:com.google.android.apps.chromecast.app
+package:com.google.android.apps.credentialmanager
+package:com.google.android.apps.customization.pixel
+package:com.google.android.apps.diagnosticstool
+package:com.google.android.apps.docs
+package:com.google.android.apps.docs.editors.docs
+package:com.google.android.apps.docs.editors.sheets
+package:com.google.android.apps.dreamliner
+package:com.google.android.apps.emojiwallpaper
+package:com.google.android.apps.gcs
+package:com.google.android.apps.healthdata
+package:com.google.android.apps.helprtc
+package:com.google.android.apps.internal.betterbug
+package:com.google.android.apps.magicportrait
+package:com.google.android.apps.maps
+package:com.google.android.apps.messaging
+package:com.google.android.apps.nbu.files
+package:com.google.android.apps.nbu.paisa.user
+package:com.google.android.apps.nexuslauncher
+package:com.google.android.apps.photos
+package:com.google.android.apps.pixel.agent
+package:com.google.android.apps.pixel.aurelius
+package:com.google.android.apps.pixel.creativeassistant
+package:com.google.android.apps.pixel.customizationbundle
+package:com.google.android.apps.pixel.dcservice
+package:com.google.android.apps.pixel.nowplaying
+package:com.google.android.apps.pixel.psi
+package:com.google.android.apps.pixel.relationships
+package:com.google.android.apps.pixel.support
+package:com.google.android.apps.playconsole
+package:com.google.android.apps.privacy.wildlife
+package:com.google.android.apps.pulse
+package:com.google.android.apps.recorder
+package:com.google.android.apps.restore
+package:com.google.android.apps.retaildemo.preload
+package:com.google.android.apps.safetyhub
+package:com.google.android.apps.scone
+package:com.google.android.apps.security.securityhub
+package:com.google.android.apps.setupwizard.searchselector
+package:com.google.android.apps.stargate
+package:com.google.android.apps.subscriptions.red
+package:com.google.android.apps.tachyon
+package:com.google.android.apps.tasks
+package:com.google.android.apps.tips
+package:com.google.android.apps.translate
+package:com.google.android.apps.turbo
+package:com.google.android.apps.walletnfcrel
+package:com.google.android.apps.wallpaper
+package:com.google.android.apps.wallpaper.pixel
+package:com.google.android.apps.wear.companion
+package:com.google.android.apps.weather
+package:com.google.android.apps.wellbeing
+package:com.google.android.apps.work.clouddpc
+package:com.google.android.apps.work.oobconfig
+package:com.google.android.apps.youtube.music
+package:com.google.android.appsearch.apk
+package:com.google.android.gms
+package:com.google.android.gms.location.history
+package:com.google.android.gms.supervision
+    versionCode=85233230 minSdk=32 targetSdk=37
+    versionName=52.3.32-31 [0] [PR] 949272982
+    lastUpdateTime=2026-07-21 20:26:07
+      firstInstallTime=2020-01-01 05:30:07
+    versionCode=85073730 minSdk=31 targetSdk=36
+    versionName=50.7.37-31 [0] [PR] 912671916
+    lastUpdateTime=1970-01-01 05:29:59
+      firstInstallTime=1970-01-01 05:29:59
+    versionCode=262931035 minSdk=35 targetSdk=37
+    versionName=26.29.31 (260400-952280416)
+    lastUpdateTime=2026-07-24 20:59:01
+      firstInstallTime=2020-01-01 05:30:08
+    versionCode=261136035 minSdk=35 targetSdk=37
+    versionName=26.11.36 (260400-892401869)
+    lastUpdateTime=1970-01-01 05:29:59
+      firstInstallTime=1970-01-01 05:29:59

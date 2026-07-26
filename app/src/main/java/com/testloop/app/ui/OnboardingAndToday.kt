@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import com.testloop.app.domain.AppNotification
 import com.testloop.app.domain.ActivitySignal
 import com.testloop.app.domain.Campaign
+import com.testloop.app.domain.CampaignRiskDecision
 import com.testloop.app.domain.CampaignProgress
 import com.testloop.app.domain.CampaignTestingStatus
 import com.testloop.app.domain.dailyTaskUnlocked
@@ -173,9 +174,8 @@ private fun AllTestersCaughtUp() {
 @Composable
 private fun OwnerCampaignActionBanner(campaigns: List<Campaign>, onOwnApp: (String, Boolean) -> Unit) {
     val first = campaigns.first()
-    val replacementNeeded = campaigns.any { it.testingStatus == CampaignTestingStatus.RESTART_PENDING }
     Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(Brand100).padding(16.dp)) {
-        Text(if (replacementNeeded) "Campaign decision needed" else "Campaign ready for your review", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Text(ownerCampaignActionTitle(campaigns), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         Spacer(Modifier.height(4.dp))
         Text(
             if (campaigns.size == 1) first.progress.statusLabel()
@@ -186,6 +186,16 @@ private fun OwnerCampaignActionBanner(campaigns: List<Campaign>, onOwnApp: (Stri
         Spacer(Modifier.height(10.dp))
         Button(onClick = { onOwnApp(first.ownedAppId, true) }, modifier = Modifier.fillMaxWidth()) { Text("Review campaign") }
     }
+}
+
+internal fun ownerCampaignActionTitle(campaigns: List<Campaign>): String = when {
+    campaigns.any { it.testingStatus == CampaignTestingStatus.RESTART_PENDING } -> "Replacement tester needed"
+    campaigns.any { it.testingStatus == CampaignTestingStatus.READY_TO_RESTART } -> "Restart confirmation needed"
+    campaigns.any {
+        it.testingStatus == CampaignTestingStatus.AT_RISK ||
+            (it.testingStatus == CampaignTestingStatus.WAITING_FOR_TESTERS && it.riskDecision == CampaignRiskDecision.CONTINUE)
+    } -> "Campaign decision needed"
+    else -> "Campaign ready for your review"
 }
 
 private fun timeGreeting(time: LocalTime = LocalTime.now()): String = when (time.hour) {

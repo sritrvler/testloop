@@ -83,8 +83,9 @@ class SupabaseTestLoopRepository(
         // Map only commitments that belong to this signed-in user, either as
         // tester or publisher. Install detection is the only device signal.
         commitmentRows = supabase.from("reciprocal_commitments").select().decodeList()
+        val ownedCampaignIds = campaignRows.mapTo(mutableSetOf()) { it.id }
         val visibleCommitmentRows = commitmentRows.filter { row ->
-            row.testerId == userId || listings.firstOrNull { it.campaignId == row.campaignId }?.ownerId == userId
+            row.testerId == userId || row.campaignId in ownedCampaignIds
         }
         visibleCommitmentRows
             .filter { it.lifecycle == "active" || it.id in deviceCheckEnabledCommitmentIds }
@@ -95,20 +96,11 @@ class SupabaseTestLoopRepository(
         // commitments and observations again before publishing UI state.
         commitmentRows = supabase.from("reciprocal_commitments").select().decodeList()
         val updatedVisibleCommitmentRows = commitmentRows.filter { row ->
-            row.testerId == userId || listings.firstOrNull { it.campaignId == row.campaignId }?.ownerId == userId
+            row.testerId == userId || row.campaignId in ownedCampaignIds
         }
 
         _ownedApps.value = activeOwnRows.map { it.toOwnedApp(campaignRows.firstOrNull { campaign -> campaign.ownedAppId == it.id }?.id) }
         val listingsByCampaign = listings.associateBy { it.campaignId }
-        _campaigns.value = campaignRows.map { campaign ->
-            campaign.toCampaign(listingsByCampaign[campaign.id]?.joinedTesterCount ?: 0).copy(
-                releaseApprovedAt = activeOwnRows.firstOrNull { it.id == campaign.ownedAppId }?.playStorePublishedAt?.let(Instant::parse),
-                reservedTesterCount = listingsByCampaign[campaign.id]?.let { listing ->
-                    (listing.requestedTesters - listing.slotsRemaining).coerceAtLeast(0)
-                } ?: 0,
-                replacementOpen = campaign.replacementOpen && (listingsByCampaign[campaign.id]?.slotsRemaining ?: 0) > 0
-            )
-        }
         // Keep joined listings in this cache so commitment details can still
         // resolve the app name and both Play links. Discover filters joined
         // listings at the UI boundary, while own listings are excluded here.
@@ -123,6 +115,29 @@ class SupabaseTestLoopRepository(
                     eq("commitment_id", commitment.id)
                 }
             }.decodeList<InstallStateRow>()
+        }
+        _campaigns.value = campaignRows.map { campaign ->
+            val campaignCommitments = updatedVisibleCommitmentRows.filter { it.campaignId == campaign.id }
+            val reserved = campaignCommitments.count { it.lifecycle == "pending_setup" || it.lifecycle == "active" }
+            val active = campaignCommitments
+                .filter { it.lifecycle == "active" }
+                .filter { commitment ->
+                    installRows.any {
+                        it.commitmentId == commitment.id &&
+                            it.reporterId == commitment.testerId &&
+                            it.targetOwnedAppId == campaign.ownedAppId &&
+                            it.status == "installed"
+                    }
+                }
+                .distinctBy { it.testerId }
+                .size
+            val listing = listingsByCampaign[campaign.id]
+            val isOwner = campaign.id in ownedCampaignIds
+            campaign.toCampaign(if (isOwner) active else (listing?.joinedTesterCount ?: active)).copy(
+                releaseApprovedAt = activeOwnRows.firstOrNull { it.id == campaign.ownedAppId }?.playStorePublishedAt?.let(Instant::parse),
+                reservedTesterCount = if (isOwner) reserved else listing?.let { (it.requestedTesters - it.slotsRemaining).coerceAtLeast(0) } ?: reserved,
+                replacementOpen = campaign.replacementOpen && (if (isOwner) campaign.requestedTesters - reserved else listing?.slotsRemaining ?: 0) > 0
+            )
         }
         val openRows = updatedVisibleCommitmentRows.flatMap { commitment ->
             runCatching {
@@ -227,6 +242,12 @@ class SupabaseTestLoopRepository(
 
     override suspend fun chooseCampaignRiskDecision(campaignId: String, decision: CampaignRiskDecision, affectedCommitmentId: String?): Result<Unit> = runCatching {
         requireUserId()
+        if (decision == CampaignRiskDecision.REOPEN) {
+            supabase.postgrest.rpc("reopen_campaign_replacement", CampaignActionParams(campaignId))
+                .decodeList<CampaignActionRow>().firstOrNull() ?: error("Replacement slot could not be reopened")
+            refresh().getOrThrow()
+            return@runCatching
+        }
         require(decision != CampaignRiskDecision.RESTART || !affectedCommitmentId.isNullOrBlank()) {
             "Choose the tester commitment to release before requesting a replacement"
         }
@@ -310,6 +331,7 @@ class SupabaseTestLoopRepository(
         val row = supabase.from("reciprocal_commitments").select {
             filter { eq("id", commitmentId); eq("tester_id", userId) }
         }.decodeSingle<CommitmentRow>()
+        require(row.lifecycle in setOf("pending_setup", "active")) { "A left commitment is terminal" }
         val listingRows = supabase.from("public_app_listings").select {
             filter { eq("campaign_id", row.campaignId) }
         }.decodeList<PublicListingRow>()
@@ -560,19 +582,21 @@ private data class CommitmentRow(
 ) {
     fun toCommitment(listings: List<PublicListingRow>, ownApps: List<OwnedApp>, profiles: List<TesterProfileRow>, summaries: List<InstallStateRow>, openRows: List<DailyOpenRow>, userId: String, reminders: List<ReminderRow> = emptyList()): ReciprocalCommitment {
         val listing = listings.firstOrNull { it.campaignId == campaignId }
-        val isPublisher = listing?.ownerId == userId
+        val ownedCampaignApp = ownApps.firstOrNull { it.campaignId == campaignId }
+        val isPublisher = listing?.ownerId == userId || ownedCampaignApp != null
         val otherUserId = if (isPublisher) testerId else listing?.ownerId.orEmpty()
         val otherUser = if (isPublisher) profiles.firstOrNull { it.id == testerId }?.username ?: "tester" else listing?.ownerUsername ?: "member"
+        val ownerAppId = listing?.id ?: ownedCampaignApp?.id
         return ReciprocalCommitment(
             commitmentId = id,
             appBeingTestedByCurrentUserId = if (isPublisher) currentUserOwnedAppId.orEmpty() else listing?.id.orEmpty(),
-            currentUserOwnAppId = if (isPublisher) listing?.id else currentUserOwnedAppId,
+            currentUserOwnAppId = if (isPublisher) ownerAppId else currentUserOwnedAppId,
             otherUserId = otherUserId,
             otherUsername = otherUser,
             joinedOn = parseDate(joinedAt),
             targetDays = targetDays,
             youOweSignal = summaries.signalFor(id, userId, if (isPublisher) currentUserOwnedAppId else listing?.id, openRows),
-            theyOweSignal = if (isPublisher) summaries.signalFor(id, testerId, listing?.id, openRows) else currentUserOwnedAppId?.let { summaries.signalFor(id, listing?.ownerId.orEmpty(), it, openRows) },
+            theyOweSignal = if (isPublisher) summaries.signalFor(id, testerId, ownerAppId, openRows) else currentUserOwnedAppId?.let { summaries.signalFor(id, listing?.ownerId.orEmpty(), it, openRows) },
             youCanSendReminder = reminders.none { it.commitmentId == id && it.senderId == userId && it.reminderDate == LocalDate.now(ZoneOffset.UTC).toString() },
             lifecycle = lifecycle.toCommitmentLifecycle()
         )
@@ -721,6 +745,7 @@ private fun String.toCommitmentLifecycle() = when (this) {
 private fun String?.toRiskDecision() = when (this) {
     "continue" -> CampaignRiskDecision.CONTINUE
     "restart" -> CampaignRiskDecision.RESTART
+    "reopen" -> CampaignRiskDecision.REOPEN
     "defer" -> CampaignRiskDecision.DECIDE_LATER
     else -> null
 }
@@ -729,6 +754,7 @@ private val CampaignRiskDecision.rpcValue: String
     get() = when (this) {
         CampaignRiskDecision.CONTINUE -> "continue"
         CampaignRiskDecision.RESTART -> "restart"
+        CampaignRiskDecision.REOPEN -> "reopen"
         CampaignRiskDecision.DECIDE_LATER -> "defer"
     }
 

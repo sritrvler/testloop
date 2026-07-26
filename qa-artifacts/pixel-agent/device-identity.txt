@@ -1,0 +1,10 @@
+timestamp_utc=2026-07-26T14:53:12Z
+timestamp_local=2026-07-26T20:23:13+0530
+58261FDCR006X9
+Pixel 10
+Google
+17
+37
+google/frankel/frankel:17/CP2A.260705.006/15641320:user/release-keys
+Physical size: 1080x2424
+Physical density: 420

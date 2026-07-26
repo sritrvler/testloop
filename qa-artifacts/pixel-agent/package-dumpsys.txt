@@ -1,0 +1,562 @@
+Activity Resolver Table:
+  Schemes:
+      testloop:
+        68fcd6b com.testloop.app/.MainActivity filter a1fb561
+          Action: "android.intent.action.VIEW"
+          Category: "android.intent.category.DEFAULT"
+          Category: "android.intent.category.BROWSABLE"
+          Scheme: "testloop"
+          Authority: "auth-callback": -1
+
+  Non-Data Actions:
+      android.intent.action.MAIN:
+        68fcd6b com.testloop.app/.MainActivity filter 79340c8
+          Action: "android.intent.action.MAIN"
+          Category: "android.intent.category.LAUNCHER"
+
+Receiver Resolver Table:
+  Non-Data Actions:
+      androidx.profileinstaller.action.SAVE_PROFILE:
+        8ffa174 com.testloop.app/androidx.profileinstaller.ProfileInstallReceiver filter 3f67ee3
+          Action: "androidx.profileinstaller.action.SAVE_PROFILE"
+      androidx.profileinstaller.action.INSTALL_PROFILE:
+        8ffa174 com.testloop.app/androidx.profileinstaller.ProfileInstallReceiver filter bc1469d
+          Action: "androidx.profileinstaller.action.INSTALL_PROFILE"
+      androidx.profileinstaller.action.SKIP_FILE:
+        8ffa174 com.testloop.app/androidx.profileinstaller.ProfileInstallReceiver filter f3d1712
+          Action: "androidx.profileinstaller.action.SKIP_FILE"
+      androidx.profileinstaller.action.BENCHMARK_OPERATION:
+        8ffa174 com.testloop.app/androidx.profileinstaller.ProfileInstallReceiver filter 12f60e0
+          Action: "androidx.profileinstaller.action.BENCHMARK_OPERATION"
+      android.intent.action.BOOT_COMPLETED:
+        2c9f886 com.testloop.app/.notifications.EveningReminderReceiver filter 75bd547
+          Action: "android.intent.action.BOOT_COMPLETED"
+          Action: "com.testloop.app.action.EVENING_REMINDER"
+      com.testloop.app.action.EVENING_REMINDER:
+        2c9f886 com.testloop.app/.notifications.EveningReminderReceiver filter 75bd547
+          Action: "android.intent.action.BOOT_COMPLETED"
+          Action: "com.testloop.app.action.EVENING_REMINDER"
+
+Domain verification status:
+
+Permissions:
+  Permission [com.testloop.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION] (6a25b29):
+    sourcePackage=com.testloop.app
+    uid=10607 gids=[] type=0 prot=signature
+    perm=PermissionInfo{49aa4b6 com.testloop.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION}
+    flags=0x0
+
+Registered ContentProviders:
+  com.testloop.app/androidx.startup.InitializationProvider:
+    Provider{ecbc5b7 com.testloop.app/androidx.startup.InitializationProvider}
+
+ContentProvider Authorities:
+  [com.testloop.app.androidx-startup]:
+    Provider{ecbc5b7 com.testloop.app/androidx.startup.InitializationProvider}
+      applicationInfo=ApplicationInfo{59d7eae com.testloop.app}
+
+Key Set Manager:
+  [com.testloop.app]
+      Signing KeySets: 505
+
+Packages:
+  Package [com.testloop.app] (1cc2bf0):
+    appId=10607
+    pccId=-1
+    pkg=Package{62e448d com.testloop.app}
+    codePath=/data/app/~~z5-0CfqA2KBiMNBfI8fmGg==/com.testloop.app-XUxExgfgBnU5-uGGxRu-dA==
+    resourcePath=/data/app/~~z5-0CfqA2KBiMNBfI8fmGg==/com.testloop.app-XUxExgfgBnU5-uGGxRu-dA==
+    legacyNativeLibraryDir=/data/app/~~z5-0CfqA2KBiMNBfI8fmGg==/com.testloop.app-XUxExgfgBnU5-uGGxRu-dA==/lib
+    extractNativeLibs=false
+    primaryCpuAbi=arm64-v8a
+    secondaryCpuAbi=null
+    cpuAbiOverride=null
+    versionCode=13 minSdk=26 targetSdk=35
+    minExtensionVersions=[]
+    versionName=0.1.5
+    hiddenApiEnforcementPolicy=2
+    usesNonSdkApi=false
+    splits=[base]
+    apkSigningVersion=2
+    flags=[ DEBUGGABLE HAS_CODE ALLOW_CLEAR_USER_DATA ALLOW_BACKUP KILL_AFTER_RESTORE ]
+    privateFlags=[ PRIVATE_FLAG_ACTIVITIES_RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION ALLOW_AUDIO_PLAYBACK_CAPTURE PRIVATE_FLAG_ALLOW_NATIVE_HEAP_POINTER_TAGGING ]
+    forceQueryable=false
+    pageSizeCompat=0
+    queriesIntents=[Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] }]
+    scannedAsStoppedSystemApp=false
+    supportsScreens=[small, medium, large, xlarge, resizeable, anyDensity]
+    timeStamp=2026-07-26 20:14:43
+    lastUpdateTime=2026-07-26 20:15:00
+    installerPackageName=null
+    installerPackageUid=-1
+    initiatingPackageName=com.android.shell
+    originatingPackageName=null
+    packageSource=1
+    appMetadataFilePath=null
+    appMetadataSource=0
+    signatures=PackageSignatures{1617a2d version:2, signatures:[4bf6eaaf], past signatures:[]}
+    installPermissionsFixed=false
+    pkgFlags=[ DEBUGGABLE HAS_CODE ALLOW_CLEAR_USER_DATA ALLOW_BACKUP KILL_AFTER_RESTORE ]
+    privatePkgFlags=[ PRIVATE_FLAG_ACTIVITIES_RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION ALLOW_AUDIO_PLAYBACK_CAPTURE PRIVATE_FLAG_ALLOW_NATIVE_HEAP_POINTER_TAGGING ]
+    apexModuleName=null
+    declared permissions:
+      com.testloop.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION: prot=signature
+    requested permissions:
+      android.permission.POST_NOTIFICATIONS
+      android.permission.ACCESS_LOCAL_NETWORK
+      com.testloop.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+      android.permission.RECEIVE_BOOT_COMPLETED
+      android.permission.INTERNET
+      android.permission.PACKAGE_USAGE_STATS
+      android.permission.ACCESS_NETWORK_STATE
+    install permissions:
+      com.testloop.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION: granted=true
+      android.permission.RECEIVE_BOOT_COMPLETED: granted=true
+      android.permission.INTERNET: granted=true
+      android.permission.PACKAGE_USAGE_STATS: granted=false, flags=[ USER_SET]
+      android.permission.ACCESS_NETWORK_STATE: granted=true
+    User 0: ceDataInode=720603 deDataInode=691869 pccCeDataInode=0 pccDeDataInode=0 installed=true hidden=false suspended=false appLockEnabled=false distractionFlags=0 stopped=false notLaunched=false enabled=0 instant=false virtual=false quarantined=false
+      installReason=0
+      dataDir=/data/user/0/com.testloop.app
+      firstInstallTime=2026-07-26 13:01:33
+      uninstallReason=0
+      overlay paths:
+        /product/overlay/NavigationBarModeGestural/NavigationBarModeGesturalOverlay.apk
+        /product/overlay/AmbientCueOverlay.apk
+        /data/resource-cache/com.android.systemui-neutral-Ki2N.frro
+        /data/resource-cache/com.android.systemui-accent-zCHe.frro
+        /data/resource-cache/com.android.systemui-dynamic-NNBE.frro
+      legacy overlay paths:
+        /product/overlay/NavigationBarModeGestural/NavigationBarModeGesturalOverlay.apk
+        /product/overlay/AmbientCueOverlay.apk
+      gids=[3003]
+      runtime permissions:
+        android.permission.POST_NOTIFICATIONS: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]
+        android.permission.ACCESS_LOCAL_NETWORK: granted=true, flags=[ REVOKE_WHEN_REQUESTED|USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]
+
+Queries:
+  system apps queryable: false
+  queries via forceQueryable:
+  queries via package name:
+  queries via component:
+    com.google.android.as.oss:
+      com.testloop.app
+    com.google.android.apps.camera.services:
+      com.testloop.app
+    com.google.android.apps.diagnosticstool:
+      com.testloop.app
+    com.google.android.as:
+      com.testloop.app
+    com.google.android.apps.messaging:
+      com.testloop.app
+    bus.tickets.intrcity:
+      com.testloop.app
+    com.google.android.settings.intelligence:
+      com.testloop.app
+    com.google.android.apps.accessibility.voiceaccess:
+      com.testloop.app
+    com.verizon.mips.services:
+      com.testloop.app
+    com.fitbit.FitbitMobile:
+      com.testloop.app
+    in.indwealth:
+      com.testloop.app
+    com.divum.MoneyControl:
+      com.testloop.app
+    com.fusionmedia.investing:
+      com.testloop.app
+    com.instagram.android:
+      com.testloop.app
+    in.swiggy.android:
+      com.testloop.app
+    com.whatsapp:
+      com.testloop.app
+    com.salon_surf:
+      com.testloop.app
+    in.amazon.mShop.android.shopping:
+      com.testloop.app
+    com.flipkart.android:
+      com.testloop.app
+    com.bt.bms:
+      com.testloop.app
+    com.zeptoconsumerapp:
+      com.testloop.app
+    com.facebook.katana:
+      com.testloop.app
+    in.startv.hotstar:
+      com.testloop.app
+    com.axis.mobile:
+      com.testloop.app
+    com.application.zomato:
+      com.testloop.app
+    com.truecaller:
+      com.testloop.app
+    in.redbus.android:
+      com.testloop.app
+    com.myntra.android:
+      com.testloop.app
+    org.cris.aikyam:
+      com.testloop.app
+    com.sbi.lotusintouch:
+      com.testloop.app
+    in.org.npci.upiapp:
+      com.testloop.app
+    com.meesho.supply:
+      com.testloop.app
+    com.rapido.passenger:
+      com.testloop.app
+    com.disha.quickride:
+      com.testloop.app
+    com.mobikwik_new:
+      com.testloop.app
+    com.application.zomato.district:
+      com.testloop.app
+    com.magicpin.local:
+      com.testloop.app
+    com.eaglefleet.redtaxi:
+      com.testloop.app
+    com.agoda.mobile.consumer:
+      com.testloop.app
+    com.adobe.reader:
+      com.testloop.app
+    com.camerasideas.instashot:
+      com.testloop.app
+    com.usfb.roarbank:
+      com.testloop.app
+    cards.uni.app.credit:
+      com.testloop.app
+    com.evamall.evacustomer:
+      com.testloop.app
+    com.csam.icici.bank.imobile:
+      com.testloop.app
+    net.one97.paytm:
+      com.testloop.app
+    com.yum.kfc:
+      com.testloop.app
+    com.yahoo.mobile.client.android.mail:
+      com.testloop.app
+    product.clicklabs.jugnoo:
+      com.testloop.app
+    com.realme.link:
+      com.testloop.app
+    com.creditcard.onecard:
+      com.testloop.app
+    com.hyugalife:
+      com.testloop.app
+    com.phonepe.app:
+      com.testloop.app
+    com.fedmobile:
+      com.testloop.app
+    com.aranoah.healthkart.plus:
+      com.testloop.app
+    com.iexceed.ib.digitalbankingprod:
+      com.testloop.app
+    com.acko.android:
+      com.testloop.app
+    com.easemytrip.android:
+      com.testloop.app
+    com.yatra.base:
+      com.testloop.app
+    com.religare.healthinsurance:
+      com.testloop.app
+    com.pittvandewitt.wavelet:
+      com.testloop.app
+    com.olacabs.customer:
+      com.testloop.app
+    in.medibuddy:
+      com.testloop.app
+    com.jio.media.ondemand:
+      com.testloop.app
+    com.nic.mparivahan:
+      com.testloop.app
+    in.irisbyyes.app:
+      com.testloop.app
+    com.cmcltd.CDSL:
+      com.testloop.app
+    com.digilocker.android:
+      com.testloop.app
+    com.mcdonalds.mobileapp:
+      com.testloop.app
+    com.idfcfirstbank.optimus:
+      com.testloop.app
+    com.savaari.app:
+      com.testloop.app
+    money.myhubble:
+      com.testloop.app
+    com.klook:
+      com.testloop.app
+    com.oyo.consumer:
+      com.testloop.app
+    com.bhpl.tacobell:
+      com.testloop.app
+    us.zoom.videomeetings:
+      com.testloop.app
+    com.healthplix.patient:
+      com.testloop.app
+    com.reglobe.cashify:
+      com.testloop.app
+    in.swiggy.android.toing:
+      com.testloop.app
+    com.audible.application:
+      com.testloop.app
+    com.invoqhealth.loophealth.patient:
+      com.testloop.app
+    com.testloop.app:
+      com.google.android.documentsui
+      com.goldencrow.bloom
+      com.google.android.apps.weather
+      com.google.android.apps.nbu.files
+      com.google.android.apps.recorder
+      com.google.android.apps.pixel.creativeassistant
+      com.google.android.apps.diagnosticstool
+      com.google.android.apps.tips
+      com.google.android.apps.bard
+      com.google.android.apps.messaging
+      com.verizon.services
+      bus.tickets.intrcity
+      com.google.audio.hearing.visualization.accessibility.scribe
+      com.google.android.apps.pixel.agent
+      com.google.android.deskclock
+      com.google.android.projection.gearhead
+      com.google.android.dialer
+      com.google.android.googlequicksearchbox
+      com.google.android.GoogleCamera
+      com.google.android.apps.safetyhub
+      com.google.android.accessibility.soundamplifier
+      com.google.android.contacts
+      com.google.android.videos
+      com.google.android.apps.accessibility.voiceaccess
+      com.google.android.apps.photos
+      com.google.android.calendar
+      com.google.android.apps.tachyon
+      com.google.android.apps.maps
+      com.google.android.apps.credentialmanager
+      com.google.android.youtube
+      com.google.android.gm
+      com.google.android.apps.docs
+      com.google.android.calculator
+      com.android.chrome
+      com.google.android.apps.youtube.music
+      com.google.android.inputmethod.latin
+      com.google.android.apps.pixel.nowplaying
+      [app id 10227 not installed]
+      com.microsoft.teams
+      com.google.android.cellbroadcastreceiver
+      com.dennistan95.eko
+      com.android.virtualization.terminal
+      com.fitbit.FitbitMobile
+      com.google.android.apps.wear.companion
+      com.google.android.apps.chromecast.app
+      com.google.android.apps.walletnfcrel
+      com.mubarak.mbcompass
+      com.google.android.apps.adm
+      com.google.android.apps.subscriptions.red
+      org.mozilla.firefox
+      com.spotify.music
+      com.zerodha.kite3
+      in.indwealth
+      com.zerodha.coin
+      ee.dustland.android.minesweeper
+      com.divum.MoneyControl
+      com.fusionmedia.investing
+      com.reddit.frontpage
+      com.instagram.android
+      com.gendra.zodiacdaily
+      com.chess
+      in.swiggy.android
+      com.whatsapp
+      org.telegram.messenger
+      com.salon_surf
+      in.amazon.mShop.android.shopping
+      org.videolan.vlc
+      com.twitter.android
+      com.flipkart.android
+      com.bt.bms
+      com.gear6games.sky_claim
+      com.openai.chatgpt
+      com.dreamplug.androidapp
+      com.google.android.keep
+      com.zeptoconsumerapp
+      com.daamitt.walnut.app
+      com.facebook.katana
+      in.startv.hotstar
+      naukriApp.appModules.login
+      com.whereismytrain.android
+      com.ambitionbox.android
+      com.anthropic.claude
+      com.axis.mobile
+      com.application.zomato
+      com.glassdoor.app
+      com.truecaller
+      in.redbus.android
+      com.google.android.apps.nbu.paisa.user
+      com.techmash.playo
+      com.teamblind.blind
+      com.myntra.android
+      com.ashpatx.tomood
+      org.cris.aikyam
+      com.jio.myjio
+      com.senoldemirci.tensec
+      com.sbi.lotusintouch
+      in.org.npci.upiapp
+      air.app.scb.breeze.android.main.in.prod
+      com.zinghr.app
+      com.meesho.supply
+      com.rapido.passenger
+      com.disha.quickride
+      com.apollo.patientapp
+      com.mobikwik_new
+      com.application.zomato.district
+      com.ubercab
+      trai.gov.in.dnd
+      com.magicpin.local
+      com.Splitwise.SplitwiseMobile
+      in.goindigo.android
+      com.eaglefleet.redtaxi
+      com.agoda.mobile.consumer
+      com.quora.android
+      com.adobe.reader
+      com.camerasideas.instashot
+      com.app.abhibus
+      com.usfb.roarbank
+      cards.uni.app.credit
+      com.strava
+      com.org.iimjobs
+      com.google.android.apps.translate
+      com.evamall.evacustomer
+      com.discord
+      com.makemytrip
+      in.burgerking.android
+      com.csam.icici.bank.imobile
+      net.one97.paytm
+      com.yum.kfc
+      com.google.android.apps.docs.editors.sheets
+      com.maximeeck.era
+      com.airasia.mobile
+      com.jpl.jiomart
+      com.yahoo.mobile.client.android.mail
+      product.clicklabs.jugnoo
+      com.hirist.jobseeker
+      com.excellonsoft.bajajtriumph
+      org.digiyatra.org
+      com.bigbasket.mobileapp
+      com.buyhatke.assistant
+      com.airindiaexpress.AIX
+      com.realme.link
+      com.net.pvr
+      com.hostelworld.app
+      com.creditcard.onecard
+      com.fixdot.ultra
+      com.hyugalife
+      in.zeta.android
+      com.socialnmobile.dictapps.notepad.color.note
+      com.phonepe.app
+      com.fedmobile
+      com.aranoah.healthkart.plus
+      com.niksoftware.snapseed
+      com.microsoft.skydrive
+      com.urbanclap.urbanclap
+      com.booking
+      com.thousandshores.tribit
+      com.Dominos
+      com.bets.airindia.ui
+      com.app.altgraaf
+      com.iexceed.ib.digitalbankingprod
+      com.naukriGulf.app
+      com.webwerks.saiapplication
+      com.phonegap.rxpal
+      com.acko.android
+      com.hdfcbank.payzapp
+      ch.protonvpn.android
+      com.easemytrip.android
+      com.onsurity
+      com.coherendz.vaave
+      com.godigit.digit
+      com.yatra.base
+      com.Slack
+      com.religare.healthinsurance
+      com.pittvandewitt.wavelet
+      com.olacabs.customer
+      in.medibuddy
+      in.dreamfolks
+      com.jio.media.ondemand
+      com.nic.mparivahan
+      in.irisbyyes.app
+      net.skyscanner.android.main
+      com.google.android.apps.docs.editors.docs
+      com.cmcltd.CDSL
+      org.zwanoo.android.speedtest
+      in.mobility.cumta
+      com.goibibo
+      com.adobe.scan.android
+      com.digilocker.android
+      com.mcdonalds.mobileapp
+      com.flipkart.shopsy
+      com.idfcfirstbank.optimus
+      net.androgames.compass
+      com.savaari.app
+      money.myhubble
+      flar2.devcheck
+      com.noctuasoftware.stellarium_free
+      com.klook
+      com.oyo.consumer
+      com.google.android.apps.authenticator2
+      com.bt.inx
+      com.google.android.apps.tasks
+      com.google.android.apps.playconsole
+      com.cyb3rko.flashdim
+      com.bhpl.tacobell
+      com.fishbowlmedia.fishbowl
+      com.google.ar.lens
+      com.isteer.vaahna
+      in.ndhm.phr
+      io.lntinfotech.AIStaxpayer
+      cx.indianoil.in
+      com.olx.southasia
+      com.jio.jioplay.tv
+      com.upwork.android.apps.main
+      com.akshat.comparify
+      com.gamebasic.decibel
+      us.zoom.videomeetings
+      cris.railmadad
+      com.google.android.apps.pixel.aurelius
+      com.mixplorer
+      com.nibbleapps.fitmencook
+      money.super.payments
+      com.goodreads
+      com.duolingo
+      com.healthplix.patient
+      com.flightradar24free
+      com.reglobe.cashify
+      in.swiggy.android.toing
+      com.habitshareapp
+      com.audible.application
+      com.indeed.android.jobsearch
+      com.linkedin.android
+      com.easydiner
+      com.india.fitpass
+      com.invoqhealth.loophealth.patient
+      com.revolut.retail.india
+      com.marikag.ninoaspace
+      in.gov.uidai.pehchaan
+      com.grofers.customerapp
+      com.clearpath.tracker
+    com.revolut.retail.india:
+      com.testloop.app
+    in.gov.uidai.pehchaan:
+      com.testloop.app
+  queryable via interaction:
+    User 0:
+      [com.android.DeviceAsWebcam,com.android.localtransport,com.android.keychain,com.google.android.repairmode,com.android.qns,com.google.pixel.camera.services,com.android.location.fused,com.android.server.telecom,com.android.inputdevices,com.google.SSRestartDetector,com.google.android.satellite,com.android.providers.settings,com.android.settings,com.google.android.settings.future.biometrics.faceenroll,com.android.dynsystem,android,com.google.android.iwlan]:
+        com.testloop.app
+      com.google.android.gms:
+        com.testloop.app
+      com.google.android.inputmethod.latin:
+        com.testloop.app
+  queryable via uses-library:
+
+Dexopt state:
+  [com.testloop.app]
+    path: /data/app/~~z5-0CfqA2KBiMNBfI8fmGg==/com.testloop.app-XUxExgfgBnU5-uGGxRu-dA==/base.apk
+      arm64: [status=run-from-apk] [reason=unknown] [primary-abi]
+        [location is error]

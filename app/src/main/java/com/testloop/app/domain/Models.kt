@@ -57,8 +57,8 @@ data class Campaign(
             testingCompletedAt != null -> CampaignTestingStatus.COMPLETE
             closedTestConfirmedAt == null && activeTesterCount < requestedTesters -> CampaignTestingStatus.WAITING_FOR_TESTERS
             closedTestConfirmedAt == null -> CampaignTestingStatus.READY_FOR_OWNER_CONFIRMATION
-            riskDecision == CampaignRiskDecision.RESTART && restartConfirmedAt == null && activeTesterCount < requestedTesters -> CampaignTestingStatus.RESTART_PENDING
-            riskDecision == CampaignRiskDecision.RESTART && restartConfirmedAt == null -> CampaignTestingStatus.READY_TO_RESTART
+            riskDecision in setOf(CampaignRiskDecision.RESTART, CampaignRiskDecision.REOPEN) && restartConfirmedAt == null && activeTesterCount < requestedTesters -> CampaignTestingStatus.RESTART_PENDING
+            riskDecision in setOf(CampaignRiskDecision.RESTART, CampaignRiskDecision.REOPEN) && restartConfirmedAt == null -> CampaignTestingStatus.READY_TO_RESTART
             testingStartedAt != null && activeTesterCount < requestedTesters -> CampaignTestingStatus.AT_RISK
             testingStartedAt != null -> CampaignTestingStatus.IN_PROGRESS
             else -> CampaignTestingStatus.WAITING_FOR_TESTERS
@@ -66,7 +66,7 @@ data class Campaign(
     val progress: CampaignProgress get() = CampaignProgress(requestedTesters, activeTesterCount, targetDays, testingStatus, testingStartedAt, releaseApprovedAt, closedTestConfirmedAt, riskDecision, replacementOpen, replacementJoinedAt, restartConfirmedAt)
 }
 
-enum class CampaignRiskDecision { CONTINUE, RESTART, DECIDE_LATER }
+enum class CampaignRiskDecision { CONTINUE, RESTART, REOPEN, DECIDE_LATER }
 
 enum class CampaignTestingStatus { WAITING_FOR_TESTERS, READY_FOR_OWNER_CONFIRMATION, IN_PROGRESS, AT_RISK, RESTART_PENDING, READY_TO_RESTART, COMPLETE }
 
@@ -109,7 +109,7 @@ fun CampaignProgress.ownerActionRequired(): Boolean = status in setOf(
     CampaignTestingStatus.AT_RISK,
     CampaignTestingStatus.RESTART_PENDING,
     CampaignTestingStatus.READY_TO_RESTART
-)
+) || (status == CampaignTestingStatus.WAITING_FOR_TESTERS && riskDecision == CampaignRiskDecision.CONTINUE)
 
 fun Campaign.portfolioActivityLabel(attention: Int): String = when {
     testingStatus == CampaignTestingStatus.READY_FOR_OWNER_CONFIRMATION -> "Waiting for your confirmation"
@@ -158,8 +158,8 @@ data class PublicApp(
             testingCompletedAt != null -> CampaignTestingStatus.COMPLETE
             closedTestConfirmedAt == null && activeTesterCount < requestedTesters -> CampaignTestingStatus.WAITING_FOR_TESTERS
             closedTestConfirmedAt == null -> CampaignTestingStatus.READY_FOR_OWNER_CONFIRMATION
-            riskDecision == CampaignRiskDecision.RESTART && restartConfirmedAt == null && activeTesterCount < requestedTesters -> CampaignTestingStatus.RESTART_PENDING
-            riskDecision == CampaignRiskDecision.RESTART && restartConfirmedAt == null -> CampaignTestingStatus.READY_TO_RESTART
+            riskDecision in setOf(CampaignRiskDecision.RESTART, CampaignRiskDecision.REOPEN) && restartConfirmedAt == null && activeTesterCount < requestedTesters -> CampaignTestingStatus.RESTART_PENDING
+            riskDecision in setOf(CampaignRiskDecision.RESTART, CampaignRiskDecision.REOPEN) && restartConfirmedAt == null -> CampaignTestingStatus.READY_TO_RESTART
             testingStartedAt != null && activeTesterCount < requestedTesters -> CampaignTestingStatus.AT_RISK
             testingStartedAt != null -> CampaignTestingStatus.IN_PROGRESS
             else -> CampaignTestingStatus.WAITING_FOR_TESTERS
@@ -169,7 +169,7 @@ data class PublicApp(
 
 fun PublicApp.isDiscoverableForJoin(): Boolean =
     !(riskDecision == CampaignRiskDecision.CONTINUE && activeTesterCount < requestedTesters) &&
-        !(riskDecision == CampaignRiskDecision.RESTART && restartConfirmedAt == null && (!replacementOpen || slotsRemaining == 0))
+        !(riskDecision in setOf(CampaignRiskDecision.RESTART, CampaignRiskDecision.REOPEN) && restartConfirmedAt == null && (!replacementOpen || slotsRemaining == 0))
 
 fun PublicApp.discoverStateLabel(): String = if (replacementOpen && slotsRemaining > 0) {
     if (slotsRemaining == 1) "Replacement tester needed · 1 replacement slot open" else "Replacement testers needed · $slotsRemaining replacement slots open"
@@ -197,6 +197,9 @@ data class DirectionSignal(
 )
 
 enum class CommitmentLifecycle { PENDING_SETUP, ACTIVE, COMPLETED, LEFT }
+
+/** LEFT is terminal history, never a current tester or obligation. */
+fun CommitmentLifecycle.isCurrentTester(): Boolean = this == CommitmentLifecycle.ACTIVE
 
 /** A named pair between one external app and one selected owned app. */
 data class ReciprocalCommitment(

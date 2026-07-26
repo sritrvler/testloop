@@ -1,0 +1,20 @@
+    versionCode=13 minSdk=26 targetSdk=35
+    versionName=0.1.5
+    lastUpdateTime=2026-07-26 20:15:00
+    installerPackageName=null
+    pkgFlags=[ DEBUGGABLE HAS_CODE ALLOW_CLEAR_USER_DATA ALLOW_BACKUP KILL_AFTER_RESTORE ]
+    requested permissions:
+      android.permission.POST_NOTIFICATIONS
+      android.permission.ACCESS_LOCAL_NETWORK
+      com.testloop.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+      android.permission.RECEIVE_BOOT_COMPLETED
+      android.permission.INTERNET
+      android.permission.PACKAGE_USAGE_STATS
+      android.permission.ACCESS_NETWORK_STATE
+    install permissions:
+      firstInstallTime=2026-07-26 13:01:33
+      runtime permissions:
+        android.permission.POST_NOTIFICATIONS: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]
+        android.permission.ACCESS_LOCAL_NETWORK: granted=true, flags=[ REVOKE_WHEN_REQUESTED|USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]
+
+Queries:

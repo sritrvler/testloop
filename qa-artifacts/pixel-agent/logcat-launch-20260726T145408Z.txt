@@ -1,0 +1,1051 @@
+--------- beginning of kernel
+07-26 11:58:20.758     0     0 I trusty  : --ACFW Config marking secure--
+07-26 11:58:20.758     0     0 I trusty  : --ACFW Config marking secure--
+07-26 11:58:20.758     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 11:58:20.758     0     0 I trusty  : --ACFW Config marking secure--
+07-26 11:58:20.758     0     0 I trusty  : --ACFW Config marking secure--
+07-26 11:58:20.758     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 11:58:20.758     0     0 I trusty  : --ACFW Config marking secure--
+07-26 11:58:20.758     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 11:58:20.758     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 11:58:20.758     0     0 I trusty  : --ACFW Config marking secure--
+07-26 11:58:20.758     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 11:58:20.758     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 11:58:20.758     0     0 I trusty  : --ACFW Config marking secure--
+07-26 11:58:20.758     0     0 I trusty  : --ACFW Config marking secure--
+07-26 11:58:20.758     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 11:58:20.758     0     0 I trusty  : --ACFW Config marking secure--
+07-26 11:58:20.758     0     0 I trusty  : ROTLAYER2: 120: WTPI_LoadRootOfTrust: error opening keybox on TP. Attempting TDP.
+07-26 11:58:20.758     0     0 I trusty  : ROTLAYER2: 125: WTPI_LoadRootOfTrust: error opening keybox: -2
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:00:51.505     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:01:07.263     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:01:15.796     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:01:15.796     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:07:24.602     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:07:26.186     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:16:05.871     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:16:05.872     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:16:05.872     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:16:05.872     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:19:09.826     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:19:19.782     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:19:19.782     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:19:54.778     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:19:54.778     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:19:55.280     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:19:57.728     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:20:07.601     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:21:18.344     0     0 I trusty  : 606790.297:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 12:21:43.018     0     0 I trusty  : 606814.969:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 12:22:46.705     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:22:46.706     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:22:46.709     0     0 I trusty  : logging.cc: 91: ***"faceauth": :40: TZ-TPU Wakelock acquired.
+07-26 12:22:46.709     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationCreate
+07-26 12:22:46.709     0     0 I trusty  : logging.cc: 91: ***: :349: Faceauth product version 6.2.0
+07-26 12:22:46.709     0     0 I trusty  : gxp_device_impl: 76: TZ-DSP Wakelock acquired.
+07-26 12:22:46.733     0     0 I trusty  : gxp_device_impl: 460: Loaded GXP library:
+07-26 12:22:46.733     0     0 I trusty  : gxp_device_impl: 462:  - Name: tuscany_dsp_lib
+07-26 12:22:46.733     0     0 I trusty  : gxp_device_impl: 463:  - Functions: ExtractThumbnailKernel,Yuv2RgbKernel
+07-26 12:22:46.733     0     0 I trusty  : logging.cc: 91: ***: :100: Creating dsp pal.
+07-26 12:22:46.848     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:22:46.851     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:22:46.851     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:22:46.901     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:22:47.016     0     0 I trusty  : 606878.968:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 12:22:47.060     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:22:47.060     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:22:47.060     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.099     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.129     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.162     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.193     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.227     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.264     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.298     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.331     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.365     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.400     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.433     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.466     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.499     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.532     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.571     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.598     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.636     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.668     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.699     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.739     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.766     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.800     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.834     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.870     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.905     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.939     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:47.970     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.003     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.038     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.072     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.105     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.138     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.179     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.210     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.245     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.280     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.307     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.338     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.380     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.408     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.442     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.475     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.510     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.541     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.580     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:22:48.587     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDecide
+07-26 12:22:48.587     0     0 I trusty  : logging.cc: 91: ***: :163: Auth decision: timeout
+07-26 12:22:48.639     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:22:48.641     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:22:48.641     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:22:48.644     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:22:48.689     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDelete
+07-26 12:22:48.695     0     0 I trusty  : gxp_device_impl: 89: TZ-DSP Wakelock released.
+07-26 12:22:48.696     0     0 I trusty  : logging.cc: 91: ***"faceauth": :50: TZ-TPU Wakelock released.
+07-26 12:22:48.702     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 2469888, maximum footprint: 7286784
+07-26 12:22:48.727     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:22:48.727     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:22:48.727     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:22:48.727     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:23:16.531     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:23:16.531     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:23:16.531     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:23:16.532     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:23:16.533     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:23:16.533     0     0 I trusty  : logging.cc: 91: ***"faceauth": :40: TZ-TPU Wakelock acquired.
+07-26 12:23:16.533     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationCreate
+07-26 12:23:16.539     0     0 I trusty  : logging.cc: 91: ***: :349: Faceauth product version 6.2.0
+07-26 12:23:16.539     0     0 I trusty  : gxp_device_impl: 76: TZ-DSP Wakelock acquired.
+07-26 12:23:16.547     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:23:16.565     0     0 I trusty  : gxp_device_impl: 460: Loaded GXP library:
+07-26 12:23:16.566     0     0 I trusty  : gxp_device_impl: 462:  - Name: tuscany_dsp_lib
+07-26 12:23:16.566     0     0 I trusty  : gxp_device_impl: 463:  - Functions: ExtractThumbnailKernel,Yuv2RgbKernel
+07-26 12:23:16.566     0     0 I trusty  : logging.cc: 91: ***: :100: Creating dsp pal.
+07-26 12:23:16.623     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:23:16.623     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:23:16.628     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:16.669     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:16.699     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:16.732     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:16.766     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:16.799     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:16.834     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:16.870     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:16.894     0     0 I trusty  : 606908.847:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 12:23:16.900     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:16.934     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:16.968     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.001     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.036     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.070     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.103     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.137     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.170     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.202     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.237     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.271     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.305     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.337     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.371     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.409     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.440     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.473     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.506     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.539     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.572     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.605     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.640     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.672     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.707     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.739     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.772     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.848     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:23:17.848     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.854     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.874     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.908     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.943     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:17.974     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:18.016     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:18.046     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:18.087     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:18.117     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:18.152     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:23:18.158     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDecide
+07-26 12:23:18.158     0     0 I trusty  : logging.cc: 91: ***: :163: Auth decision: timeout
+07-26 12:23:18.210     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:23:18.213     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:23:18.217     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:23:18.217     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:23:18.254     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDelete
+07-26 12:23:18.266     0     0 I trusty  : gxp_device_impl: 89: TZ-DSP Wakelock released.
+07-26 12:23:18.266     0     0 I trusty  : logging.cc: 91: ***"faceauth": :50: TZ-TPU Wakelock released.
+07-26 12:23:18.268     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 2469888, maximum footprint: 7286784
+07-26 12:23:18.287     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:23:18.287     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:23:18.287     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:23:18.287     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:23:18.287     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:23:22.735     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:23:22.739     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:23:22.739     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:23:22.739     0     0 I trusty  : 606914.691:E:[SG_ERR] 0x00070016 0x821fc83b 3812
+07-26 12:23:22.747     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:23:22.751     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:23:22.754     0     0 I trusty  : logging.cc: 91: ***"faceauth": :40: TZ-TPU Wakelock acquired.
+07-26 12:23:22.757     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationCreate
+07-26 12:23:22.757     0     0 I trusty  : logging.cc: 91: ***: :349: Faceauth product version 6.2.0
+07-26 12:23:22.757     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:23:22.757     0     0 I trusty  : gxp_device_impl: 76: TZ-DSP Wakelock acquired.
+07-26 12:23:22.776     0     0 I trusty  : WARN: system/keymint/ta/src/lib.rs:1331 failing DeviceBegin request with error Error { location: Some(ErrorLocation { file: "system/keymint/ta/src/operation.rs", line: 725 }), kind: Hal(KeyUserNotAuthenticated, "now Timestamp { milliseconds: 606914729 } is
+07-26 12:23:22.776     0     0 I trusty  :  later than auth token time Timestamp { milliseconds: 603483842 } + 15 seconds") }
+07-26 12:23:22.785     0     0 I trusty  : gxp_device_impl: 460: Loaded GXP library:
+07-26 12:23:22.785     0     0 I trusty  : gxp_device_impl: 462:  - Name: tuscany_dsp_lib
+07-26 12:23:22.785     0     0 I trusty  : gxp_device_impl: 463:  - Functions: ExtractThumbnailKernel,Yuv2RgbKernel
+07-26 12:23:22.785     0     0 I trusty  : logging.cc: 91: ***: :100: Creating dsp pal.
+07-26 12:23:22.797     0     0 I trusty  : 606914.748:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 12:23:22.807     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDelete
+07-26 12:23:22.813     0     0 I trusty  : gxp_device_impl: 89: TZ-DSP Wakelock released.
+07-26 12:23:22.813     0     0 I trusty  : logging.cc: 91: ***"faceauth": :50: TZ-TPU Wakelock released.
+07-26 12:23:22.840     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 2469888, maximum footprint: 7286784
+07-26 12:23:22.842     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:23:22.842     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:23:22.842     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:23:22.842     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:23:22.890     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:23:22.890     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:23:22.890     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:23:22.905     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:23:22.944     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:23:22.944     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:23:22.945     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: TzResetLockout
+07-26 12:23:22.945     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 2469888, maximum footprint: 7286784
+07-26 12:23:23.957     0     0 I trusty  : 606915.910:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 12:26:51.845     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:26:51.848     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:26:51.851     0     0 I trusty  : logging.cc: 91: ***"faceauth": :40: TZ-TPU Wakelock acquired.
+07-26 12:26:51.851     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationCreate
+07-26 12:26:51.853     0     0 I trusty  : logging.cc: 91: ***: :349: Faceauth product version 6.2.0
+07-26 12:26:51.853     0     0 I trusty  : gxp_device_impl: 76: TZ-DSP Wakelock acquired.
+07-26 12:26:51.876     0     0 I trusty  : gxp_device_impl: 460: Loaded GXP library:
+07-26 12:26:51.876     0     0 I trusty  : gxp_device_impl: 462:  - Name: tuscany_dsp_lib
+07-26 12:26:51.876     0     0 I trusty  : gxp_device_impl: 463:  - Functions: ExtractThumbnailKernel,Yuv2RgbKernel
+07-26 12:26:51.876     0     0 I trusty  : logging.cc: 91: ***: :100: Creating dsp pal.
+07-26 12:26:51.986     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:26:51.986     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:26:51.987     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:26:52.030     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:26:52.171     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:26:52.171     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:26:52.193     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:26:52.235     0     0 I trusty  : 607124.187:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 12:26:52.238     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:26:52.239     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:26:52.270     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:26:52.277     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:26:52.305     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:26:52.308     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:26:52.308     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:26:52.310     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:26:52.315     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:26:52.315     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:26:52.318     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:26:52.318     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:26:52.320     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:26:52.320     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:26:52.320     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:26:52.322     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:26:52.330     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDecide
+07-26 12:26:52.330     0     0 I trusty  : logging.cc: 91: ***: :163: Auth decision: authenticated
+07-26 12:26:52.390     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:26:52.390     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:26:52.394     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:26:52.408     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:26:52.439     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:26:52.439     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:26:52.441     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDelete
+07-26 12:26:52.449     0     0 I trusty  : gxp_device_impl: 89: TZ-DSP Wakelock released.
+07-26 12:26:52.449     0     0 I trusty  : logging.cc: 91: ***"faceauth": :50: TZ-TPU Wakelock released.
+07-26 12:26:52.456     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 1867776, maximum footprint: 7286784
+07-26 12:26:52.458     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:26:52.463     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:26:52.467     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:26:52.467     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:26:52.762     0     0 I trusty  : 607124.715:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 12:31:58.269     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:31:58.272     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:31:58.292     0     0 I trusty  : logging.cc: 91: ***"faceauth": :40: TZ-TPU Wakelock acquired.
+07-26 12:31:58.292     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationCreate
+07-26 12:31:58.292     0     0 I trusty  : logging.cc: 91: ***: :349: Faceauth product version 6.2.0
+07-26 12:31:58.292     0     0 I trusty  : gxp_device_impl: 76: TZ-DSP Wakelock acquired.
+07-26 12:31:58.302     0     0 I trusty  : gxp_device_impl: 460: Loaded GXP library:
+07-26 12:31:58.302     0     0 I trusty  : gxp_device_impl: 462:  - Name: tuscany_dsp_lib
+07-26 12:31:58.302     0     0 I trusty  : gxp_device_impl: 463:  - Functions: ExtractThumbnailKernel,Yuv2RgbKernel
+07-26 12:31:58.302     0     0 I trusty  : logging.cc: 91: ***: :100: Creating dsp pal.
+07-26 12:31:58.520     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:31:58.520     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:31:58.520     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:31:58.573     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:31:58.679     0     0 I trusty  : 607430.632:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 12:31:58.730     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:31:58.731     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:31:58.731     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:31:58.769     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:31:58.800     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:31:58.836     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:31:58.873     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:31:58.899     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:31:58.933     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:31:58.969     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:31:58.998     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:31:59.031     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDelete
+07-26 12:31:59.042     0     0 I trusty  : gxp_device_impl: 89: TZ-DSP Wakelock released.
+07-26 12:31:59.042     0     0 I trusty  : logging.cc: 91: ***"faceauth": :50: TZ-TPU Wakelock released.
+07-26 12:31:59.052     0     0 I trusty  : 607431.003:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 12:31:59.066     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 1867776, maximum footprint: 7286784
+07-26 12:31:59.066     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:31:59.066     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:31:59.118     0     0 I trusty  : WARN: system/keymint/ta/src/lib.rs:1331 failing DeviceBegin request with error Error { location: Some(ErrorLocation { file: "system/keymint/ta/src/operation.rs", line: 725 }), kind: Hal(KeyUserNotAuthenticated, "now Timestamp { milliseconds: 607431071 } is
+07-26 12:31:59.118     0     0 I trusty  :  later than auth token time Timestamp { milliseconds: 607124284 } + 15 seconds") }
+07-26 12:31:59.140     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:31:59.144     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:31:59.144     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:31:59.183     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:31:59.231     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:31:59.231     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:31:59.233     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: TzResetLockout
+07-26 12:31:59.233     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 1867776, maximum footprint: 7286784
+07-26 12:32:00.128     0     0 I trusty  : 607432.081:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 12:40:50.890     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:40:50.895     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:40:50.896     0     0 I trusty  : logging.cc: 91: ***"faceauth": :40: TZ-TPU Wakelock acquired.
+07-26 12:40:50.896     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationCreate
+07-26 12:40:50.900     0     0 I trusty  : logging.cc: 91: ***: :349: Faceauth product version 6.2.0
+07-26 12:40:50.900     0     0 I trusty  : gxp_device_impl: 76: TZ-DSP Wakelock acquired.
+07-26 12:40:50.930     0     0 I trusty  : gxp_device_impl: 460: Loaded GXP library:
+07-26 12:40:50.930     0     0 I trusty  : gxp_device_impl: 462:  - Name: tuscany_dsp_lib
+07-26 12:40:50.936     0     0 I trusty  : gxp_device_impl: 463:  - Functions: ExtractThumbnailKernel,Yuv2RgbKernel
+07-26 12:40:50.936     0     0 I trusty  : logging.cc: 91: ***: :100: Creating dsp pal.
+07-26 12:40:50.987     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:40:50.987     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:40:50.991     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:40:51.010     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:40:51.098     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:40:51.099     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:40:51.123     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:40:51.145     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:40:51.176     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:40:51.214     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:40:51.244     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:40:51.269     0     0 I trusty  : 607963.220:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 12:40:51.282     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:40:51.309     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:40:51.350     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:40:51.380     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:40:51.414     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:40:51.443     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:40:51.490     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:40:51.517     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:40:51.548     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:40:51.583     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:40:51.593     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDelete
+07-26 12:40:51.600     0     0 I trusty  : gxp_device_impl: 89: TZ-DSP Wakelock released.
+07-26 12:40:51.600     0     0 I trusty  : logging.cc: 91: ***"faceauth": :50: TZ-TPU Wakelock released.
+07-26 12:40:51.612     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 1867776, maximum footprint: 7286784
+07-26 12:40:51.614     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:40:51.614     0     0 I trusty  : WARN: system/keymint/ta/src/lib.rs:1331 failing DeviceBegin request with error Error { location: Some(ErrorLocation { file: "system/keymint/ta/src/operation.rs", line: 725 }), kind: Hal(KeyUserNotAuthenticated, "now Timestamp { milliseconds: 607963567 } is
+07-26 12:40:51.614     0     0 I trusty  :  later than auth token time Timestamp { milliseconds: 607124284 } + 15 seconds") }
+07-26 12:40:51.614     0     0 I trusty  : 607963.566:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 12:40:51.618     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:40:51.691     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:40:51.691     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:40:51.691     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:40:51.691     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:40:51.742     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:40:51.742     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:40:51.743     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: TzResetLockout
+07-26 12:40:51.743     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 1867776, maximum footprint: 7286784
+07-26 12:40:52.773     0     0 I trusty  : 607964.722:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 12:42:19.782     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:42:19.791     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:42:19.791     0     0 I trusty  : logging.cc: 91: ***"faceauth": :40: TZ-TPU Wakelock acquired.
+07-26 12:42:19.791     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationCreate
+07-26 12:42:19.793     0     0 I trusty  : logging.cc: 91: ***: :349: Faceauth product version 6.2.0
+07-26 12:42:19.793     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:42:19.799     0     0 I trusty  : gxp_device_impl: 76: TZ-DSP Wakelock acquired.
+07-26 12:42:19.799     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:42:19.799     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:42:19.809     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:42:19.822     0     0 I trusty  : gxp_device_impl: 460: Loaded GXP library:
+07-26 12:42:19.822     0     0 I trusty  : gxp_device_impl: 462:  - Name: tuscany_dsp_lib
+07-26 12:42:19.822     0     0 I trusty  : gxp_device_impl: 463:  - Functions: ExtractThumbnailKernel,Yuv2RgbKernel
+07-26 12:42:19.822     0     0 I trusty  : logging.cc: 91: ***: :100: Creating dsp pal.
+07-26 12:42:19.896     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:42:19.896     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:42:19.902     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:42:19.941     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:42:19.973     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:42:20.008     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:42:20.032     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:42:20.042     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:42:20.076     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:42:20.109     0     0 I trusty  : 608052.062:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 12:42:20.110     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:42:20.141     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:42:20.179     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:42:20.208     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:42:20.242     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:42:20.276     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:42:20.307     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:42:20.344     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:42:20.379     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:42:20.406     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:42:20.409     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:42:20.409     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:42:20.409     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:42:20.412     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:42:20.413     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:42:20.414     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:42:20.415     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:42:20.416     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:42:20.417     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:42:20.419     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:42:20.419     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:42:20.420     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:42:20.421     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:42:20.421     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:42:20.422     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:42:20.436     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:42:20.436     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDecide
+07-26 12:42:20.437     0     0 I trusty  : logging.cc: 91: ***: :398: Updating userdata, ver6.2
+07-26 12:42:20.439     0     0 I trusty  : logging.cc: 91: ***: :163: Auth decision: authenticated
+07-26 12:42:20.482     0     0 I trusty  : 608052.435:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 12:42:20.514     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:42:20.515     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:42:20.515     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:42:20.522     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:42:20.567     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:42:20.567     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDelete
+07-26 12:42:20.567     0     0 I trusty  : gxp_device_impl: 89: TZ-DSP Wakelock released.
+07-26 12:42:20.567     0     0 I trusty  : logging.cc: 91: ***"faceauth": :50: TZ-TPU Wakelock released.
+07-26 12:42:20.575     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 3072000, maximum footprint: 7286784
+07-26 12:42:20.597     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:42:20.597     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:42:20.597     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:42:20.597     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:42:20.597     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:45:11.149     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:48:53.116     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:48:53.119     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:48:53.122     0     0 I trusty  : logging.cc: 91: ***"faceauth": :40: TZ-TPU Wakelock acquired.
+07-26 12:48:53.122     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationCreate
+07-26 12:48:53.126     0     0 I trusty  : logging.cc: 91: ***: :349: Faceauth product version 6.2.0
+07-26 12:48:53.126     0     0 I trusty  : gxp_device_impl: 76: TZ-DSP Wakelock acquired.
+07-26 12:48:53.154     0     0 I trusty  : gxp_device_impl: 460: Loaded GXP library:
+07-26 12:48:53.154     0     0 I trusty  : gxp_device_impl: 462:  - Name: tuscany_dsp_lib
+07-26 12:48:53.154     0     0 I trusty  : gxp_device_impl: 463:  - Functions: ExtractThumbnailKernel,Yuv2RgbKernel
+07-26 12:48:53.154     0     0 I trusty  : logging.cc: 91: ***: :100: Creating dsp pal.
+07-26 12:48:53.295     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:48:53.295     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:48:53.299     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:48:53.346     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:48:53.447     0     0 I trusty  : 608445.400:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 12:48:53.507     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:48:53.507     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:48:53.507     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:48:53.536     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:48:53.568     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:48:53.602     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:48:53.637     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:48:53.658     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:48:53.673     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 12:48:53.699     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:48:53.701     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:48:53.702     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:48:53.702     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:48:53.710     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:48:53.710     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:48:53.710     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:48:53.711     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:48:53.712     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:48:53.713     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:48:53.713     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:48:53.719     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:48:53.719     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:48:53.719     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:48:53.719     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:48:53.719     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 12:48:53.724     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:48:53.728     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDecide
+07-26 12:48:53.730     0     0 I trusty  : logging.cc: 91: ***: :398: Updating userdata, ver6.2
+07-26 12:48:53.736     0     0 I trusty  : logging.cc: 91: ***: :163: Auth decision: authenticated
+07-26 12:48:53.782     0     0 I trusty  : 608445.728:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 12:48:53.804     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:48:53.813     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:48:53.838     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:48:53.838     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:48:53.871     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:48:53.871     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:48:53.880     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDelete
+07-26 12:48:53.880     0     0 I trusty  : gxp_device_impl: 89: TZ-DSP Wakelock released.
+07-26 12:48:53.880     0     0 I trusty  : logging.cc: 91: ***"faceauth": :50: TZ-TPU Wakelock released.
+07-26 12:48:53.893     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 1867776, maximum footprint: 7286784
+07-26 12:48:53.908     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:48:53.908     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:48:53.908     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:48:53.908     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:48:59.053     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:53:32.796     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:53:32.801     0     0 I trusty  : ROTLAYER2: 120: WTPI_LoadRootOfTrust: error opening keybox on TP. Attempting TDP.
+07-26 12:53:32.801     0     0 I trusty  : ROTLAYER2: 125: WTPI_LoadRootOfTrust: error opening keybox: -2
+07-26 12:57:20.472     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 12:57:20.472     0     0 I trusty  : --ACFW Config marking secure--
+07-26 12:57:20.711     0     0 I trusty  : ROTLAYER2: 120: WTPI_LoadRootOfTrust: error opening keybox on TP. Attempting TDP.
+07-26 12:57:20.711     0     0 I trusty  : ROTLAYER2: 125: WTPI_LoadRootOfTrust: error opening keybox: -2
+07-26 13:00:02.980     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:00:02.980     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:00:02.980     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:00:02.980     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:00:02.980     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:00:02.980     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:00:15.875     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:00:15.876     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:04:37.756     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:04:37.759     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:04:37.761     0     0 I trusty  : logging.cc: 91: ***"faceauth": :40: TZ-TPU Wakelock acquired.
+07-26 13:04:37.761     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationCreate
+07-26 13:04:37.762     0     0 I trusty  : logging.cc: 91: ***: :349: Faceauth product version 6.2.0
+07-26 13:04:37.763     0     0 I trusty  : gxp_device_impl: 76: TZ-DSP Wakelock acquired.
+07-26 13:04:37.788     0     0 I trusty  : gxp_device_impl: 460: Loaded GXP library:
+07-26 13:04:37.788     0     0 I trusty  : gxp_device_impl: 462:  - Name: tuscany_dsp_lib
+07-26 13:04:37.788     0     0 I trusty  : gxp_device_impl: 463:  - Functions: ExtractThumbnailKernel,Yuv2RgbKernel
+07-26 13:04:37.788     0     0 I trusty  : logging.cc: 91: ***: :100: Creating dsp pal.
+07-26 13:04:37.892     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:04:37.892     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:04:37.895     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:04:37.950     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:04:38.098     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:04:38.098     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:04:38.108     0     0 I trusty  : 609390.061:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 13:04:38.111     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:04:38.134     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:04:38.157     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:04:38.168     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:04:38.195     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:04:38.199     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:04:38.200     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:04:38.201     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:04:38.203     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:04:38.204     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:04:38.204     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:04:38.206     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:04:38.206     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:04:38.207     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:04:38.208     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:04:38.209     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:04:38.217     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDecide
+07-26 13:04:38.217     0     0 I trusty  : logging.cc: 91: ***: :163: Auth decision: authenticated
+07-26 13:04:38.228     0     0 I trusty  : 609390.181:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 13:04:38.274     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:04:38.274     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:04:38.274     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:04:38.278     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:04:38.306     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:04:38.306     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDelete
+07-26 13:04:38.311     0     0 I trusty  : gxp_device_impl: 89: TZ-DSP Wakelock released.
+07-26 13:04:38.311     0     0 I trusty  : logging.cc: 91: ***"faceauth": :50: TZ-TPU Wakelock released.
+07-26 13:04:38.320     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 1867776, maximum footprint: 7286784
+07-26 13:04:38.320     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:04:38.320     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:04:38.826     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:04:38.827     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:13:50.350     0     0 I trusty  : ROTLAYER2: 120: WTPI_LoadRootOfTrust: error opening keybox on TP. Attempting TDP.
+07-26 13:13:50.350     0     0 I trusty  : ROTLAYER2: 125: WTPI_LoadRootOfTrust: error opening keybox: -2
+07-26 13:18:48.191     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:18:48.194     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:18:48.195     0     0 I trusty  : logging.cc: 91: ***"faceauth": :40: TZ-TPU Wakelock acquired.
+07-26 13:18:48.195     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationCreate
+07-26 13:18:48.199     0     0 I trusty  : logging.cc: 91: ***: :349: Faceauth product version 6.2.0
+07-26 13:18:48.199     0     0 I trusty  : gxp_device_impl: 76: TZ-DSP Wakelock acquired.
+07-26 13:18:48.226     0     0 I trusty  : gxp_device_impl: 460: Loaded GXP library:
+07-26 13:18:48.226     0     0 I trusty  : gxp_device_impl: 462:  - Name: tuscany_dsp_lib
+07-26 13:18:48.226     0     0 I trusty  : gxp_device_impl: 463:  - Functions: ExtractThumbnailKernel,Yuv2RgbKernel
+07-26 13:18:48.226     0     0 I trusty  : logging.cc: 91: ***: :100: Creating dsp pal.
+07-26 13:18:48.363     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:18:48.367     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:18:48.367     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:18:48.407     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:18:48.486     0     0 I trusty  : 610240.439:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 13:18:48.548     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:18:48.548     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:18:48.548     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:48.596     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:48.613     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:48.647     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:48.684     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:48.716     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:48.748     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:48.785     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:48.817     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:48.858     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:48.886     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:48.916     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:48.951     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:48.993     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.029     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.058     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.087     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.122     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.158     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.193     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.222     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.258     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.290     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.328     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.358     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.394     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.424     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.455     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.490     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.526     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.563     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.596     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.624     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.657     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.688     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.734     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.758     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.776     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:18:49.796     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:18:49.824     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:18:49.827     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:18:49.827     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:18:49.827     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:18:49.833     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:18:49.833     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:18:49.833     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:18:49.833     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:18:49.833     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:18:49.834     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:18:49.835     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:18:49.836     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:18:49.837     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:18:49.838     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:18:49.839     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:18:49.839     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:18:49.844     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:18:49.849     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDecide
+07-26 13:18:49.851     0     0 I trusty  : logging.cc: 91: ***: :398: Updating userdata, ver6.2
+07-26 13:18:49.854     0     0 I trusty  : logging.cc: 91: ***: :163: Auth decision: authenticated
+07-26 13:18:49.936     0     0 I trusty  : 610241.881:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 13:18:49.961     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:18:49.961     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:18:49.961     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:18:49.961     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:18:49.988     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:18:49.988     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:18:49.988     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDelete
+07-26 13:18:49.996     0     0 I trusty  : gxp_device_impl: 89: TZ-DSP Wakelock released.
+07-26 13:18:49.996     0     0 I trusty  : logging.cc: 91: ***"faceauth": :50: TZ-TPU Wakelock released.
+07-26 13:18:50.000     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 2469888, maximum footprint: 7286784
+07-26 13:18:50.012     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:18:50.012     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:18:50.012     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:18:50.012     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:33:11.731     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:33:11.735     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:33:11.736     0     0 I trusty  : logging.cc: 91: ***"faceauth": :40: TZ-TPU Wakelock acquired.
+07-26 13:33:11.736     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationCreate
+07-26 13:33:11.738     0     0 I trusty  : logging.cc: 91: ***: :349: Faceauth product version 6.2.0
+07-26 13:33:11.738     0     0 I trusty  : gxp_device_impl: 76: TZ-DSP Wakelock acquired.
+07-26 13:33:11.765     0     0 I trusty  : gxp_device_impl: 460: Loaded GXP library:
+07-26 13:33:11.765     0     0 I trusty  : gxp_device_impl: 462:  - Name: tuscany_dsp_lib
+07-26 13:33:11.765     0     0 I trusty  : gxp_device_impl: 463:  - Functions: ExtractThumbnailKernel,Yuv2RgbKernel
+07-26 13:33:11.765     0     0 I trusty  : logging.cc: 91: ***: :100: Creating dsp pal.
+07-26 13:33:11.851     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:33:11.854     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:33:11.854     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:33:11.905     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:33:12.029     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:33:12.031     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:33:12.042     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:33:12.074     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:33:12.100     0     0 I trusty  : 611104.053:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 13:33:12.109     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:33:12.139     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:33:12.163     0     0 I trusty  : --ACFW Config marking secure--
+07-26 13:33:12.174     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 13:33:12.200     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:33:12.204     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:33:12.204     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:33:12.206     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:33:12.209     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:33:12.209     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:33:12.209     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:33:12.210     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:33:12.211     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:33:12.211     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:33:12.212     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:33:12.214     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:33:12.214     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:33:12.215     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:33:12.216     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:33:12.216     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 13:33:12.225     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDecide
+07-26 13:33:12.226     0     0 I trusty  : logging.cc: 91: ***: :398: Updating userdata, ver6.2
+07-26 13:33:12.231     0     0 I trusty  : logging.cc: 91: ***: :163: Auth decision: authenticated
+07-26 13:33:12.257     0     0 I trusty  : 611104.209:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 13:33:12.298     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:33:12.298     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:33:12.298     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:33:12.303     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:33:12.333     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:33:12.333     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDelete
+07-26 13:33:12.341     0     0 I trusty  : gxp_device_impl: 89: TZ-DSP Wakelock released.
+07-26 13:33:12.341     0     0 I trusty  : logging.cc: 91: ***"faceauth": :50: TZ-TPU Wakelock released.
+07-26 13:33:12.353     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 1867776, maximum footprint: 7286784
+07-26 13:33:12.353     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:33:12.367     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:33:12.367     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:33:12.367     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 13:36:44.825     0     0 I trusty  : ROTLAYER2: 120: WTPI_LoadRootOfTrust: error opening keybox on TP. Attempting TDP.
+07-26 13:36:44.826     0     0 I trusty  : ROTLAYER2: 125: WTPI_LoadRootOfTrust: error opening keybox: -2
+07-26 13:54:56.386     0     0 I trusty  : WARN: system/keymint/common/src/tag.rs:699 Generating EC key with invalid purpose Encrypt
+07-26 13:54:56.386     0     0 I trusty  : WARN: system/keymint/common/src/tag.rs:699 Generating EC key with invalid purpose Decrypt
+07-26 14:06:24.791     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:44.463     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:09:44.468     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:09:44.468     0     0 I trusty  : logging.cc: 91: ***"faceauth": :40: TZ-TPU Wakelock acquired.
+07-26 14:09:44.468     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationCreate
+07-26 14:09:44.470     0     0 I trusty  : logging.cc: 91: ***: :349: Faceauth product version 6.2.0
+07-26 14:09:44.470     0     0 I trusty  : gxp_device_impl: 76: TZ-DSP Wakelock acquired.
+07-26 14:09:44.504     0     0 I trusty  : gxp_device_impl: 460: Loaded GXP library:
+07-26 14:09:44.504     0     0 I trusty  : gxp_device_impl: 462:  - Name: tuscany_dsp_lib
+07-26 14:09:44.504     0     0 I trusty  : gxp_device_impl: 463:  - Functions: ExtractThumbnailKernel,Yuv2RgbKernel
+07-26 14:09:44.504     0     0 I trusty  : logging.cc: 91: ***: :100: Creating dsp pal.
+07-26 14:09:44.676     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:09:44.678     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:09:44.682     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:09:44.730     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:09:44.806     0     0 I trusty  : 613296.759:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 14:09:44.877     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:09:44.877     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:09:44.880     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:44.941     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:44.948     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:44.982     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.013     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.046     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.078     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.116     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.146     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.146     0     0 I trusty  : 613297.098:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 14:09:45.182     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.214     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.250     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.281     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.314     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.348     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.385     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.416     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.448     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.486     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.514     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.553     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.588     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.615     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.623     0     0 I trusty  : 613297.576:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 14:09:45.648     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.682     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.718     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.752     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.784     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.819     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.851     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.886     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.920     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.956     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:45.986     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.020     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.053     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.087     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.126     0     0 I trusty  : 613298.072:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 14:09:46.126     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.157     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.192     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.224     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.259     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.293     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.323     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.361     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.390     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.423     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.457     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.492     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.526     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.561     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.596     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.626     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.663     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.692     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.729     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.767     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.793     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.827     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.868     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.898     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.937     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:46.964     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:47.010     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:47.010     0     0 I trusty  : WARN: system/keymint/ta/src/lib.rs:1331 failing DeviceBegin request with error Error { location: Some(ErrorLocation { file: "system/keymint/ta/src/operation.rs", line: 725 }), kind: Hal(KeyUserNotAuthenticated, "now Timestamp { milliseconds: 613298959 } is
+07-26 14:09:47.010     0     0 I trusty  :  later than auth token time Timestamp { milliseconds: 611104178 } + 15 seconds") }
+07-26 14:09:47.028     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDelete
+07-26 14:09:47.029     0     0 I trusty  : 613298.971:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 14:09:47.029     0     0 I trusty  : gxp_device_impl: 89: TZ-DSP Wakelock released.
+07-26 14:09:47.029     0     0 I trusty  : logging.cc: 91: ***"faceauth": :50: TZ-TPU Wakelock released.
+07-26 14:09:47.029     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 2469888, maximum footprint: 7286784
+07-26 14:09:47.054     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:47.054     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:47.060     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:47.070     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:47.070     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:47.070     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:47.103     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:47.103     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:47.121     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: TzResetLockout
+07-26 14:09:47.121     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 2469888, maximum footprint: 7286784
+07-26 14:09:48.152     0     0 I trusty  : 613300.105:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 14:09:53.701     0     0 I trusty  : ROTLAYER2: 120: WTPI_LoadRootOfTrust: error opening keybox on TP. Attempting TDP.
+07-26 14:09:53.701     0     0 I trusty  : ROTLAYER2: 125: WTPI_LoadRootOfTrust: error opening keybox: -2
+07-26 14:09:56.522     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:09:56.522     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:09:56.522     0     0 I trusty  : logging.cc: 91: ***"faceauth": :40: TZ-TPU Wakelock acquired.
+07-26 14:09:56.522     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationCreate
+07-26 14:09:56.541     0     0 I trusty  : logging.cc: 91: ***: :349: Faceauth product version 6.2.0
+07-26 14:09:56.541     0     0 I trusty  : gxp_device_impl: 76: TZ-DSP Wakelock acquired.
+07-26 14:09:56.550     0     0 I trusty  : gxp_device_impl: 460: Loaded GXP library:
+07-26 14:09:56.550     0     0 I trusty  : gxp_device_impl: 462:  - Name: tuscany_dsp_lib
+07-26 14:09:56.550     0     0 I trusty  : gxp_device_impl: 463:  - Functions: ExtractThumbnailKernel,Yuv2RgbKernel
+07-26 14:09:56.550     0     0 I trusty  : logging.cc: 91: ***: :100: Creating dsp pal.
+07-26 14:09:56.659     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:09:56.659     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:09:56.659     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:09:56.659     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:09:56.780     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:09:56.780     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:09:56.780     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:09:56.780     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:56.797     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:56.817     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:56.867     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:56.898     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:09:56.922     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:09:56.923     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:09:56.923     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:09:56.941     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:09:56.942     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:09:56.942     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:09:56.942     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:09:56.942     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:09:56.942     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:09:56.942     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:09:56.942     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:09:56.942     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:09:56.942     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:09:56.942     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:09:56.942     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:09:56.942     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:09:56.942     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:09:56.945     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDecide
+07-26 14:09:56.945     0     0 I trusty  : logging.cc: 91: ***: :163: Auth decision: authenticated
+07-26 14:09:56.997     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:56.997     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:57.006     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:57.006     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:57.073     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:57.073     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDelete
+07-26 14:09:57.083     0     0 I trusty  : gxp_device_impl: 89: TZ-DSP Wakelock released.
+07-26 14:09:57.083     0     0 I trusty  : logging.cc: 91: ***"faceauth": :50: TZ-TPU Wakelock released.
+07-26 14:09:57.100     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 1867776, maximum footprint: 7286784
+07-26 14:09:57.100     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:57.100     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:57.100     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:57.100     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:57.100     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:09:57.545     0     0 I trusty  : WARN: system/keymint/ta/src/lib.rs:1331 failing DeviceBegin request with error Error { location: Some(ErrorLocation { file: "system/keymint/ta/src/lib.rs", line: 475 }), kind: Hal(KeyRequiresUpgrade, "keyblob with old OS patchlevel 202606 needs upgrade to 
+07-26 14:09:57.545     0     0 I trusty  : current 202607") }
+07-26 14:10:01.324     0     0 I trusty  : WARN: system/keymint/ta/src/lib.rs:1331 failing DeviceBegin request with error Error { location: Some(ErrorLocation { file: "system/keymint/ta/src/lib.rs", line: 475 }), kind: Hal(KeyRequiresUpgrade, "keyblob with old OS patchlevel 202606 needs upgrade to 
+07-26 14:10:01.324     0     0 I trusty  : current 202607") }
+07-26 14:11:32.788     0     0 I trusty  : WARN: system/keymint/ta/src/lib.rs:1331 failing DeviceBegin request with error Error { location: Some(ErrorLocation { file: "system/keymint/ta/src/lib.rs", line: 475 }), kind: Hal(KeyRequiresUpgrade, "keyblob with old OS patchlevel 202606 needs upgrade to 
+07-26 14:11:32.788     0     0 I trusty  : current 202607") }
+07-26 14:11:38.157     0     0 I trusty  : WARN: system/keymint/common/src/tag.rs:699 Generating EC key with invalid purpose Encrypt
+07-26 14:11:38.157     0     0 I trusty  : WARN: system/keymint/common/src/tag.rs:699 Generating EC key with invalid purpose Decrypt
+07-26 14:11:40.074     0     0 I trusty  : WARN: system/keymint/ta/src/lib.rs:1331 failing DeviceBegin request with error Error { location: Some(ErrorLocation { file: "system/keymint/ta/src/lib.rs", line: 475 }), kind: Hal(KeyRequiresUpgrade, "keyblob with old OS patchlevel 202606 needs upgrade to 
+07-26 14:11:40.074     0     0 I trusty  : current 202607") }
+07-26 14:11:40.307     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:11:40.307     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:11:40.308     0     0 I trusty  : logging.cc: 91: ***"faceauth": :40: TZ-TPU Wakelock acquired.
+07-26 14:11:40.308     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationCreate
+07-26 14:11:40.310     0     0 I trusty  : logging.cc: 91: ***: :349: Faceauth product version 6.2.0
+07-26 14:11:40.315     0     0 I trusty  : gxp_device_impl: 76: TZ-DSP Wakelock acquired.
+07-26 14:11:40.340     0     0 I trusty  : gxp_device_impl: 460: Loaded GXP library:
+07-26 14:11:40.340     0     0 I trusty  : gxp_device_impl: 462:  - Name: tuscany_dsp_lib
+07-26 14:11:40.340     0     0 I trusty  : gxp_device_impl: 463:  - Functions: ExtractThumbnailKernel,Yuv2RgbKernel
+07-26 14:11:40.340     0     0 I trusty  : logging.cc: 91: ***: :100: Creating dsp pal.
+07-26 14:11:40.519     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:11:40.519     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:11:40.519     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:11:40.519     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:11:40.663     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:11:40.663     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:11:40.663     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:11:40.690     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:11:40.711     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:11:40.721     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:11:40.748     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:11:40.750     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:11:40.750     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:11:40.754     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:11:40.755     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:11:40.755     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:11:40.756     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:11:40.759     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:11:40.761     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:11:40.762     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:11:40.762     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:11:40.762     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:11:40.776     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDecide
+07-26 14:11:40.776     0     0 I trusty  : logging.cc: 91: ***: :163: Auth decision: authenticated
+07-26 14:11:40.792     0     0 I trusty  : 613412.744:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 14:11:40.827     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:11:40.837     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:11:40.837     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:11:40.837     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:11:40.860     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:11:40.860     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDelete
+07-26 14:11:40.868     0     0 I trusty  : gxp_device_impl: 89: TZ-DSP Wakelock released.
+07-26 14:11:40.868     0     0 I trusty  : logging.cc: 91: ***"faceauth": :50: TZ-TPU Wakelock released.
+07-26 14:11:40.875     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 1867776, maximum footprint: 7286784
+07-26 14:11:40.886     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:11:40.886     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:11:40.886     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:11:40.886     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:13:13.111     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:13:19.813     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:13:19.813     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:13:19.813     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:13:19.813     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:20:00.972     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:25:56.484     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:56.484     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:56.484     0     0 I trusty  : logging.cc: 91: ***"faceauth": :40: TZ-TPU Wakelock acquired.
+07-26 14:25:56.484     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationCreate
+07-26 14:25:56.484     0     0 I trusty  : logging.cc: 91: ***: :349: Faceauth product version 6.2.0
+07-26 14:25:56.484     0     0 I trusty  : gxp_device_impl: 76: TZ-DSP Wakelock acquired.
+07-26 14:25:56.507     0     0 I trusty  : gxp_device_impl: 460: Loaded GXP library:
+07-26 14:25:56.507     0     0 I trusty  : gxp_device_impl: 462:  - Name: tuscany_dsp_lib
+07-26 14:25:56.507     0     0 I trusty  : gxp_device_impl: 463:  - Functions: ExtractThumbnailKernel,Yuv2RgbKernel
+07-26 14:25:56.507     0     0 I trusty  : logging.cc: 91: ***: :100: Creating dsp pal.
+07-26 14:25:56.635     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:56.635     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:56.637     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:56.691     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:56.777     0     0 I trusty  : 614268.730:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 14:25:56.841     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:56.841     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:56.841     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:25:56.877     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:25:56.904     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:25:56.938     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:25:56.959     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:56.975     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:25:57.000     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:57.006     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:57.006     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:57.006     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:57.009     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:57.009     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:57.010     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:57.011     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:57.014     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:57.015     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:57.015     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:57.015     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:57.015     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:57.016     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:57.017     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:57.018     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:57.028     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDecide
+07-26 14:25:57.028     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:57.030     0     0 I trusty  : logging.cc: 91: ***: :398: Updating userdata, ver6.2
+07-26 14:25:57.032     0     0 I trusty  : logging.cc: 91: ***: :163: Auth decision: authenticated
+07-26 14:25:57.065     0     0 I trusty  : 614269.017:E:[SG_ERR] 0x00070002 0x8221a8b7 2445
+07-26 14:25:57.078     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:25:57.107     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:25:57.107     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:25:57.107     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:25:57.118     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:25:57.118     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:25:57.118     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationDelete
+07-26 14:25:57.124     0     0 I trusty  : gxp_device_impl: 89: TZ-DSP Wakelock released.
+07-26 14:25:57.124     0     0 I trusty  : logging.cc: 91: ***"faceauth": :50: TZ-TPU Wakelock released.
+07-26 14:25:57.150     0     0 I trusty  : logging.cc: 91: ***"faceauth": :188: Session finished, current heap footprint: 1867776, maximum footprint: 7286784
+07-26 14:25:57.150     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:25:57.150     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:25:57.156     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:25:57.156     0     0 I trusty  : --ACFW Config marking non-secure--
+07-26 14:25:58.712     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:58.724     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:58.724     0     0 I trusty  : logging.cc: 91: ***"faceauth": :40: TZ-TPU Wakelock acquired.
+07-26 14:25:58.724     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationCreate
+07-26 14:25:58.724     0     0 I trusty  : logging.cc: 91: ***: :349: Faceauth product version 6.2.0
+07-26 14:25:58.724     0     0 I trusty  : gxp_device_impl: 76: TZ-DSP Wakelock acquired.
+07-26 14:25:58.763     0     0 I trusty  : gxp_device_impl: 460: Loaded GXP library:
+07-26 14:25:58.763     0     0 I trusty  : gxp_device_impl: 462:  - Name: tuscany_dsp_lib
+07-26 14:25:58.763     0     0 I trusty  : gxp_device_impl: 463:  - Functions: ExtractThumbnailKernel,Yuv2RgbKernel
+07-26 14:25:58.763     0     0 I trusty  : logging.cc: 91: ***: :100: Creating dsp pal.
+07-26 14:25:58.837     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:58.837     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:58.837     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:58.900     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:58.955     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:58.955     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:58.955     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:25:58.980     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:25:59.018     0     0 I trusty  : --ACFW Config marking secure--
+07-26 14:25:59.018     0     0 I trusty  : logging.cc: 91: ***: :244: Command Received: AuthenticationEvaluate
+07-26 14:25:59.042     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:59.061     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:59.061     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:59.061     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:59.061     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:59.061     0     0 I trusty  : logging.cc: 95: ***: :98: ExtractFaceThumbnail source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:59.061     0     0 I trusty  : logging.cc: 95: ***: :138: FixedPointWarpRescale source buffer is not mapped to DSP, expect slower runtime performance.
+07-26 14:25:59.061     0     0 I trusty  : logging.cc: 95: ***:

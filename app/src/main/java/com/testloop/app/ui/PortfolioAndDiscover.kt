@@ -39,7 +39,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -52,6 +51,7 @@ import com.testloop.app.domain.AppBookmark
 import com.testloop.app.domain.OwnedApp
 import com.testloop.app.domain.PublicApp
 import com.testloop.app.domain.ReciprocalCommitment
+import com.testloop.app.domain.isCurrentTester
 import com.testloop.app.domain.discoverStateLabel
 import com.testloop.app.domain.dailyTaskUnlocked
 import com.testloop.app.domain.isDiscoverableForJoin
@@ -72,7 +72,7 @@ fun MyAppsScreen(padding: PaddingValues, ownedApps: List<OwnedApp>, campaigns: L
             GroupSurface {
                 ownedApps.forEachIndexed { index, app ->
                     val campaign = campaigns.firstOrNull { it.ownedAppId == app.id }
-                    val pairs = commitments.filter { it.currentUserOwnAppId == app.id && it.lifecycle != com.testloop.app.domain.CommitmentLifecycle.PENDING_SETUP }
+                    val pairs = commitments.filter { it.currentUserOwnAppId == app.id && it.lifecycle.isCurrentTester() }
                     OwnAppRow(app, campaign, pairs, onOwnApp)
                     if (index != ownedApps.lastIndex) RowDivider()
                 }
@@ -130,7 +130,9 @@ fun DiscoverRedesign(padding: PaddingValues, apps: List<PublicApp>, ownedAppIds:
     var query by remember { mutableStateOf("") }
     var filter by remember { mutableStateOf("All apps") }
     var showBookmarksOnly by remember { mutableStateOf(false) }
-    var hideMyApps by rememberSaveable { mutableStateOf(false) }
+    // This is a view filter, not account state. Do not restore it across app
+    // launches and make a newly reopened listing appear to have vanished.
+    var hideMyApps by remember { mutableStateOf(false) }
     var optimisticBookmarkOverrides by remember { mutableStateOf<Map<String, Boolean>>(emptyMap()) }
     val scope = rememberCoroutineScope()
     val joinedAppIds = commitments.filter { it.lifecycle != com.testloop.app.domain.CommitmentLifecycle.PENDING_SETUP }.mapTo(mutableSetOf()) { it.appBeingTestedByCurrentUserId }
@@ -213,7 +215,7 @@ private fun DiscoverEmptyState(hasAnyApps: Boolean, onAddApp: () -> Unit) {
 @Composable
 private fun DiscoverRow(app: PublicApp, isOwnerPreview: Boolean, bookmark: AppBookmark?, onOpen: (String) -> Unit, onBookmark: (String) -> Unit, onRemoveBookmark: (String) -> Unit) {
     Row(Modifier.fillMaxWidth().clickable { onOpen(app.id) }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-        AppMonogram(app.title); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(app.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold); Text("@${app.ownerUsername} · ${app.postedLabel}", style = MaterialTheme.typography.labelMedium, color = Ink500); Spacer(Modifier.height(5.dp)); Text(app.instructions, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall, color = Ink500); Spacer(Modifier.height(7.dp)); Text(if (isOwnerPreview) "Preview only · Your app" else app.discoverStateLabel(), style = MaterialTheme.typography.labelMedium, color = Brand600) }
+        AppMonogram(app.title); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(app.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold); Text("@${app.ownerUsername} · ${app.postedLabel}", style = MaterialTheme.typography.labelMedium, color = Ink500); Spacer(Modifier.height(5.dp)); Text(app.instructions, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall, color = Ink500); Spacer(Modifier.height(7.dp)); Text(if (isOwnerPreview && app.replacementOpen && app.slotsRemaining > 0) "Replacement slot open · Your listing" else if (isOwnerPreview) "Preview only · Your app" else app.discoverStateLabel(), style = MaterialTheme.typography.labelMedium, color = Brand600) }
         if (!isOwnerPreview) {
             if (bookmark != null) Text("Bookmarked ${bookmarkAgeLabel(bookmark.bookmarkedAt)}", style = MaterialTheme.typography.labelSmall, color = Brand600)
             IconButton(onClick = { if (bookmark == null) onBookmark(app.id) else onRemoveBookmark(app.id) }) { Icon(if (bookmark == null) Icons.Default.BookmarkBorder else Icons.Default.Bookmark, if (bookmark == null) "Bookmark ${app.title}" else "Remove ${app.title} bookmark", tint = Brand600) }

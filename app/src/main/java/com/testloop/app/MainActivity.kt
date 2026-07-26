@@ -36,6 +36,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        // Read AppOps before Compose's first frame so an already-authorized
+        // signed-in user is not routed through the usage gate on cold launch.
+        usageAccessGranted = usageAccessReporter.isGranted()
         lifecycleScope.launch {
             auth.awaitInitialization()
             auth.handleDeepLink(intent)
@@ -77,7 +80,6 @@ class MainActivity : ComponentActivity() {
         // server's enforcement window see the same round-trip result.
         if (!auth.account.value?.id.isNullOrBlank() && auth.account.value?.id != "pending") {
             lifecycleScope.launch {
-                repository.syncUsageAccess(hasUsageAccess)
                 repository.refresh()
             }
         }

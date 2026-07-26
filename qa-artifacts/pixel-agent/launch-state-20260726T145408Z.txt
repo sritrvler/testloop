@@ -1,0 +1,13 @@
+run_id=20260726T145408Z
+start_utc=2026-07-26T14:54:08Z
+Starting: Intent { cmp=com.testloop.app/.MainActivity }
+Warning: Activity not started, its current task has been brought to the front
+Status: ok
+LaunchState: HOT
+Activity: com.testloop.app/.MainActivity
+TotalTime: 141
+WaitTime: 142
+Complete
+  mCurrentFocus=Window{2fcf271 u0 com.testloop.app/com.testloop.app.MainActivity}
+  mFocusedApp=ActivityRecord{263904132 u0 com.testloop.app/.MainActivity t1600}
+    mShowingDream=false mDreamingLockscreen=false

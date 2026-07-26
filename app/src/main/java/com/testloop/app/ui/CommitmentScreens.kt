@@ -71,6 +71,7 @@ import com.testloop.app.domain.InstallSignal
 import com.testloop.app.domain.OwnedApp
 import com.testloop.app.domain.PublicApp
 import com.testloop.app.domain.ReciprocalCommitment
+import com.testloop.app.domain.isCurrentTester
 import com.testloop.app.ui.theme.Brand100
 import com.testloop.app.ui.theme.Brand600
 import com.testloop.app.ui.theme.Ink500
@@ -489,7 +490,7 @@ private fun CampaignProgressBlock(progress: CampaignProgress, today: LocalDate) 
 fun ObligationsScreen(commitments: List<ReciprocalCommitment>, ownedApps: List<OwnedApp>, campaigns: List<Campaign>, publicApps: List<PublicApp>, onBack: () -> Unit, onPair: (String) -> Unit) {
     val today = LocalDate.now()
     val visible = commitments.filter {
-        it.lifecycle != CommitmentLifecycle.PENDING_SETUP &&
+        it.lifecycle.isCurrentTester() &&
             (publicApps.any { app -> app.id == it.appBeingTestedByCurrentUserId } ||
                 ownedApps.any { app -> app.id == it.appBeingTestedByCurrentUserId }) &&
             (it.currentUserOwnAppId == null || ownedApps.any { app -> app.id == it.currentUserOwnAppId })
@@ -520,8 +521,9 @@ private fun ObligationRow(text: String, signal: DirectionSignal, progress: Campa
 fun OwnAppDetailScreen(appId: String, attentionOnly: Boolean, ownedApps: List<OwnedApp>, campaigns: List<Campaign>, commitments: List<ReciprocalCommitment>, publicApps: List<PublicApp>, onBack: () -> Unit, onPair: (String) -> Unit, onReminder: (String, String) -> Unit, onSwitch: (String) -> Unit, onDelist: suspend (String) -> Result<Unit>, onMarkPublished: suspend (String) -> Result<Unit>, onUpdateTesterCount: suspend (String, Int) -> Result<Unit>, onConfirmClosedTesting: (String) -> Unit, onRiskDecision: (String, com.testloop.app.domain.CampaignRiskDecision, String?) -> Unit, onFinalRestart: (String) -> Unit) {
     val app = ownedApps.firstOrNull { it.id == appId } ?: run { MissingScreen(onBack); return }
     val campaign = campaigns.firstOrNull { it.ownedAppId == appId }
-    val pairs = commitments.filter { it.currentUserOwnAppId == appId && it.lifecycle != CommitmentLifecycle.PENDING_SETUP }
+    val pairs = commitments.filter { it.currentUserOwnAppId == appId && it.lifecycle.isCurrentTester() }
         .distinctBy { it.otherUserId to it.currentUserOwnAppId }
+    val hasReleasedCommitment = commitments.any { it.currentUserOwnAppId == appId && it.lifecycle == CommitmentLifecycle.LEFT }
     var filter by remember { mutableIntStateOf(if (attentionOnly) 1 else 0) }
     var confirmDelist by remember { mutableStateOf(false) }
     var delisting by remember { mutableStateOf(false) }
@@ -564,6 +566,7 @@ fun OwnAppDetailScreen(appId: String, attentionOnly: Boolean, ownedApps: List<Ow
                         app = app,
                         campaign = it,
                         pairs = pairs,
+                        hasReleasedCommitment = hasReleasedCommitment,
                         onConfirmClosedTesting = onConfirmClosedTesting,
                         onChooseRisk = { showRiskChoice = true },
                         onFinalRestart = onFinalRestart
@@ -602,7 +605,7 @@ fun OwnAppDetailScreen(appId: String, attentionOnly: Boolean, ownedApps: List<Ow
         title = { Text("Choose what happens to this run") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text("The installed count is below the required threshold. Your current start time and history will remain unchanged.", color = Ink500)
+                Text("A commitment was released or the installed count is below the required threshold. Your current start time and history will remain unchanged.", color = Ink500)
                 Button(onClick = { showRiskChoice = false; onRiskDecision(campaign.id, com.testloop.app.domain.CampaignRiskDecision.CONTINUE, null) }, modifier = Modifier.fillMaxWidth()) {
                     Text("Continue current run")
                 }
@@ -613,6 +616,11 @@ fun OwnAppDetailScreen(appId: String, attentionOnly: Boolean, ownedApps: List<Ow
                 pairs.filter { it.lifecycle == CommitmentLifecycle.ACTIVE }.forEach { pair ->
                     OutlinedButton(onClick = { showRiskChoice = false; onRiskDecision(campaign.id, com.testloop.app.domain.CampaignRiskDecision.RESTART, pair.commitmentId) }, modifier = Modifier.fillMaxWidth()) {
                         Text("Replace @${pair.otherUsername}")
+                    }
+                }
+                if (hasReleasedCommitment && campaign.slotsRemaining > 0 && campaign.riskDecision != CampaignRiskDecision.REOPEN) {
+                    OutlinedButton(onClick = { showRiskChoice = false; onRiskDecision(campaign.id, CampaignRiskDecision.REOPEN, null) }, modifier = Modifier.fillMaxWidth()) {
+                        Text("Open a replacement slot in Discover")
                     }
                 }
                 Text("Releasing a selected commitment opens one replacement slot in Discover. The restart still needs a separate final confirmation after the required count returns.", style = MaterialTheme.typography.bodySmall, color = Ink500)
@@ -671,6 +679,7 @@ private fun CampaignOwnerActionSurface(
     app: OwnedApp,
     campaign: Campaign,
     pairs: List<ReciprocalCommitment>,
+    hasReleasedCommitment: Boolean,
     onConfirmClosedTesting: (String) -> Unit,
     onChooseRisk: () -> Unit,
     onFinalRestart: (String) -> Unit
@@ -691,6 +700,15 @@ private fun CampaignOwnerActionSurface(
                 Button(onClick = onChooseRisk, modifier = Modifier.fillMaxWidth()) { Text("Choose a campaign decision") }
             }
         }
+        CampaignTestingStatus.WAITING_FOR_TESTERS -> if (campaign.riskDecision == CampaignRiskDecision.CONTINUE && hasReleasedCommitment) {
+            GroupSurface {
+                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text("A tester slot is available", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                    Text("The released commitment is hidden from Discover until you choose what to do.", color = Ink500)
+                    Button(onClick = onChooseRisk, modifier = Modifier.fillMaxWidth()) { Text("Choose a campaign decision") }
+                }
+            }
+        }
         CampaignTestingStatus.RESTART_PENDING -> GroupSurface {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(if (campaign.replacementJoinedAt == null) "Replacement tester needed" else "Waiting for replacement install", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
@@ -705,7 +723,7 @@ private fun CampaignOwnerActionSurface(
                 Button(onClick = { onFinalRestart(campaign.id) }, modifier = Modifier.fillMaxWidth()) { Text("Confirm restart at Day 1") }
             }
         }
-        CampaignTestingStatus.IN_PROGRESS, CampaignTestingStatus.COMPLETE, CampaignTestingStatus.WAITING_FOR_TESTERS -> Unit
+        CampaignTestingStatus.IN_PROGRESS, CampaignTestingStatus.COMPLETE -> Unit
     }
 }
 
@@ -735,7 +753,9 @@ private fun TesterRow(pair: ReciprocalCommitment, ownApp: OwnedApp, otherApp: Pu
             EvidenceLabels(pair.youOweSignal)
             Spacer(Modifier.height(12.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                FilledTonalButton(onClick = { onPair(pair.commitmentId) }) { Text("Open their app") }
+                if (pair.currentUserOwnAppId != null && otherApp != null) {
+                    FilledTonalButton(onClick = { onPair(pair.commitmentId) }) { Text("Open their app") }
+                }
                 if (needsAttention(pair.theyOweSignal) && pair.youCanSendReminder) OutlinedButton(onClick = { onReminder(pair.commitmentId, pair.otherUsername) }) { Text("Send check-in") }
             }
             if (!pair.youCanSendReminder) Text("Check-in sent today", style = MaterialTheme.typography.labelMedium, color = Ink500, modifier = Modifier.padding(top = 12.dp))

@@ -103,6 +103,27 @@ class CampaignStateTest {
     }
 
     @Test
+    fun `reopen decision opens a replacement listing without restarting the timer`() {
+        val released = PublicApp(
+            id = "public-1", title = "Test app", packageName = "com.example.test", ownerId = "owner", ownerUsername = "owner",
+            installUrl = "https://play.google.com/store/apps/details?id=com.example.test", optInUrl = null,
+            requestedTesters = 2, joinedTesterCount = 1, instructions = "Try it", campaignId = "campaign-1",
+            activeTesterCount = 1, testingStartedAt = started, closedTestConfirmedAt = started,
+            riskDecision = CampaignRiskDecision.REOPEN, replacementOpen = true, reservedTesterCount = 1
+        )
+
+        assertTrue(released.isDiscoverableForJoin())
+        assertEquals(CampaignTestingStatus.RESTART_PENDING, released.testingStatus)
+        assertEquals(started, released.testingStartedAt)
+    }
+
+    @Test
+    fun `left is not a current tester`() {
+        assertFalse(CommitmentLifecycle.LEFT.isCurrentTester())
+        assertTrue(CommitmentLifecycle.ACTIVE.isCurrentTester())
+    }
+
+    @Test
     fun `zero reserved testers never reports all active today`() {
         val waiting = campaign.copy(reservedTesterCount = 0, activeTesterCount = 0, joinedTesterCount = 0, closedTestConfirmedAt = null, testingStartedAt = null)
 

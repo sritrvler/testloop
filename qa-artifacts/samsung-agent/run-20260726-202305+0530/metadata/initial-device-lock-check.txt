@@ -1,0 +1,7 @@
+host_timestamp=2026-07-26T20:23:05+05:30
+utc_timestamp=2026-07-26T14:53:05+00:00
+device_timestamp=2026-07-26T20:23:04+0530
+SM-M356B
+16
+  mCurrentFocus=Window{226e2da u0 NotificationShade}
+    mShowingDream=false mDreamingLockscreen=true

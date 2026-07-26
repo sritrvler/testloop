@@ -87,6 +87,35 @@ class DemoTestLoopRepository : TestLoopRepository {
     private val _discoverApps = MutableStateFlow(listOf(ownPreview(focus, 12, 8, "Preview how Focus Flow appears to testers."), ownPreview(pantry, 12, 12, "Preview how Pantry Pal appears to testers."), budgetBee, trailNotes, recipeRoute))
     override val discoverApps: StateFlow<List<PublicApp>> = _discoverApps.asStateFlow()
 
+    private fun syncOwnedListing(appId: String) {
+        val campaign = _campaigns.value.firstOrNull { it.ownedAppId == appId } ?: return
+        _discoverApps.value = _discoverApps.value.map { listing ->
+            if (listing.id != appId) listing else listing.copy(
+                requestedTesters = campaign.requestedTesters,
+                joinedTesterCount = campaign.joinedTesterCount,
+                activeTesterCount = campaign.activeTesterCount,
+                reservedTesterCount = campaign.reservedTesterCount,
+                testingStartedAt = campaign.testingStartedAt,
+                testingCompletedAt = campaign.testingCompletedAt,
+                closedTestConfirmedAt = campaign.closedTestConfirmedAt,
+                riskDecision = campaign.riskDecision,
+                replacementOpen = campaign.replacementOpen,
+                replacementJoinedAt = campaign.replacementJoinedAt,
+                restartConfirmedAt = campaign.restartConfirmedAt
+            )
+        }
+    }
+
+    private fun adjustPublicListing(appId: String, reservedDelta: Int = 0, joinedDelta: Int = 0) {
+        _discoverApps.value = _discoverApps.value.map { listing ->
+            if (listing.id != appId) listing else listing.copy(
+                joinedTesterCount = (listing.joinedTesterCount + joinedDelta).coerceAtLeast(0),
+                activeTesterCount = (listing.activeTesterCount + joinedDelta).coerceAtLeast(0),
+                reservedTesterCount = (listing.reservedTesterCount + reservedDelta).coerceAtLeast(0)
+            )
+        }
+    }
+
     private val installedOpened = DirectionSignal(InstallSignal.INSTALLED, ActivitySignal.OPENED_TODAY, 12)
     private val installedPending = DirectionSignal(InstallSignal.INSTALLED, ActivitySignal.NOT_DETECTED)
     private val notInstalled = DirectionSignal(InstallSignal.NOT_INSTALLED, ActivitySignal.UNAVAILABLE)
@@ -130,6 +159,7 @@ class DemoTestLoopRepository : TestLoopRepository {
         _campaigns.value = _campaigns.value.map {
             if (it.id == campaignId) it.copy(requestedTesters = requestedTesters) else it
         }
+        syncOwnedListing(campaign.ownedAppId)
         return Result.success(Unit)
     }
 
@@ -162,14 +192,33 @@ class DemoTestLoopRepository : TestLoopRepository {
     override suspend fun chooseCampaignRiskDecision(campaignId: String, decision: CampaignRiskDecision, affectedCommitmentId: String?): Result<Unit> {
         val campaign = _campaigns.value.firstOrNull { it.id == campaignId }
             ?: return Result.failure(IllegalArgumentException("Campaign not found"))
+        if (decision == CampaignRiskDecision.REOPEN) {
+            _commitments.value.firstOrNull {
+                it.currentUserOwnAppId == campaign.ownedAppId && it.lifecycle == CommitmentLifecycle.LEFT
+            } ?: return Result.failure(IllegalStateException("No released commitment is available for replacement"))
+            _campaigns.value = _campaigns.value.map {
+                if (it.id == campaignId) it.copy(
+                    riskDecision = CampaignRiskDecision.REOPEN,
+                    replacementOpen = true,
+                    replacementJoinedAt = null,
+                    restartConfirmedAt = null
+                ) else it
+            }
+            syncOwnedListing(campaign.ownedAppId)
+            return Result.success(Unit)
+        }
         if (decision == CampaignRiskDecision.RESTART) {
             val affected = affectedCommitmentId?.let { id -> _commitments.value.firstOrNull { it.commitmentId == id } }
                 ?: return Result.failure(IllegalArgumentException("Choose the tester to replace"))
+            if (affected.lifecycle != CommitmentLifecycle.ACTIVE) {
+                return Result.failure(IllegalArgumentException("Choose an active commitment to replace"))
+            }
             _commitments.value = _commitments.value.map { if (it.commitmentId == affected.commitmentId) it.copy(lifecycle = CommitmentLifecycle.LEFT) else it }
         }
         _campaigns.value = _campaigns.value.map {
             if (it.id == campaignId) it.copy(riskDecision = decision, replacementOpen = decision == CampaignRiskDecision.RESTART) else it
         }
+        syncOwnedListing(campaign.ownedAppId)
         if (decision == CampaignRiskDecision.RESTART) {
             _notifications.value += AppNotification("n-replacement-$campaignId", NotificationKind.RECIPROCAL, "Replacement tester needed", "The owner released your commitment for a replacement tester. Your previous commitment is no longer active.", "Just now", true, affectedCommitmentId)
         }
@@ -179,13 +228,14 @@ class DemoTestLoopRepository : TestLoopRepository {
     override suspend fun finalizeCampaignRestart(campaignId: String): Result<Unit> {
         val campaign = _campaigns.value.firstOrNull { it.id == campaignId }
             ?: return Result.failure(IllegalArgumentException("Campaign not found"))
-        if (campaign.riskDecision != CampaignRiskDecision.RESTART || campaign.activeTesterCount < campaign.requestedTesters) {
+        if (campaign.riskDecision !in setOf(CampaignRiskDecision.RESTART, CampaignRiskDecision.REOPEN) || campaign.activeTesterCount < campaign.requestedTesters) {
             return Result.failure(IllegalStateException("The replacement count is not restored yet"))
         }
         val now = Instant.now()
         _campaigns.value = _campaigns.value.map {
             if (it.id == campaignId) it.copy(replacementOpen = false, replacementJoinedAt = now, restartConfirmedAt = now, testingStartedAt = now, testingCompletedAt = null, progressResetAt = now) else it
         }
+        syncOwnedListing(campaign.ownedAppId)
         _notifications.value += AppNotification("n-restarted-$campaignId", NotificationKind.RECIPROCAL, "Testing restarted at Day 1", "The owner confirmed a restart. Your new Day 1 begins today; the new end date is ${today.plusDays(campaign.targetDays.toLong() - 1)}.", "Just now", true, ownedAppId = campaign.ownedAppId)
         return Result.success(Unit)
     }
@@ -205,6 +255,7 @@ class DemoTestLoopRepository : TestLoopRepository {
             }) return Result.failure(IllegalStateException("That app is already being offered in another active commitment"))
         val pair = ReciprocalCommitment("pair-$publicAppId", publicAppId, ownAppId, publicApp.ownerId, publicApp.ownerUsername, today, youOweSignal = DirectionSignal(InstallSignal.UNAVAILABLE, ActivitySignal.UNAVAILABLE), theyOweSignal = ownAppId?.let { DirectionSignal(InstallSignal.UNAVAILABLE, ActivitySignal.UNAVAILABLE) }, lifecycle = CommitmentLifecycle.PENDING_SETUP)
         _commitments.value += pair
+        adjustPublicListing(publicAppId, reservedDelta = 1)
         return Result.success(pair)
     }
 
@@ -222,11 +273,20 @@ class DemoTestLoopRepository : TestLoopRepository {
     override suspend fun refresh(): Result<Unit> = Result.success(Unit)
 
     override suspend fun reportInstallStatus(commitmentId: String): Result<Unit> {
+        val existing = _commitments.value.firstOrNull { it.commitmentId == commitmentId }
+            ?: return Result.failure(IllegalArgumentException("Commitment not found"))
+        if (existing.lifecycle == CommitmentLifecycle.LEFT) {
+            return Result.failure(IllegalStateException("A left commitment is terminal"))
+        }
+        val wasInstalled = existing.youOweSignal.install == InstallSignal.INSTALLED
         _commitments.value = _commitments.value.map { commitment ->
             if (commitment.commitmentId == commitmentId) commitment.copy(youOweSignal = commitment.youOweSignal.copy(install = InstallSignal.INSTALLED), lifecycle = CommitmentLifecycle.ACTIVE) else commitment
         }
         val installedAppId = _commitments.value.firstOrNull { it.commitmentId == commitmentId }?.appBeingTestedByCurrentUserId
-        if (installedAppId != null) _bookmarks.value = _bookmarks.value.filterNot { it.appId == installedAppId }
+        if (installedAppId != null && !wasInstalled) {
+            _bookmarks.value = _bookmarks.value.filterNot { it.appId == installedAppId }
+            adjustPublicListing(installedAppId, joinedDelta = 1)
+        }
         val ownAppId = _commitments.value.firstOrNull { it.commitmentId == commitmentId }?.currentUserOwnAppId
         if (ownAppId != null) {
             _campaigns.value = _campaigns.value.map { campaign ->
@@ -234,6 +294,7 @@ class DemoTestLoopRepository : TestLoopRepository {
                     campaign.copy(joinedTesterCount = campaign.joinedTesterCount + 1)
                 } else campaign
             }
+            _campaigns.value.firstOrNull { it.ownedAppId == ownAppId }?.let { syncOwnedListing(ownAppId) }
         }
         return Result.success(Unit)
     }
@@ -244,9 +305,24 @@ class DemoTestLoopRepository : TestLoopRepository {
         if (pair.lifecycle == CommitmentLifecycle.COMPLETED) {
             return Result.failure(IllegalStateException("A completed commitment cannot be left"))
         }
+        if (pair.lifecycle == CommitmentLifecycle.LEFT) return Result.success(Unit)
         _commitments.value = _commitments.value.map {
             if (it.commitmentId == commitmentId) it.copy(lifecycle = CommitmentLifecycle.LEFT) else it
         }
+        val appId = pair.currentUserOwnAppId
+        if (appId != null) {
+            _campaigns.value = _campaigns.value.map { campaign ->
+                if (campaign.ownedAppId != appId) campaign else campaign.copy(
+                    joinedTesterCount = if (pair.lifecycle == CommitmentLifecycle.ACTIVE) (campaign.joinedTesterCount - 1).coerceAtLeast(0) else campaign.joinedTesterCount,
+                    activeTesterCount = if (pair.lifecycle == CommitmentLifecycle.ACTIVE) (campaign.activeTesterCount - 1).coerceAtLeast(0) else campaign.activeTesterCount,
+                    reservedTesterCount = (campaign.reservedTesterCount - 1).coerceAtLeast(0),
+                    riskDecision = CampaignRiskDecision.CONTINUE,
+                    replacementOpen = false
+                )
+            }
+            syncOwnedListing(appId)
+        }
+        adjustPublicListing(pair.appBeingTestedByCurrentUserId, reservedDelta = -1, joinedDelta = if (pair.lifecycle == CommitmentLifecycle.ACTIVE) -1 else 0)
         return Result.success(Unit)
     }
 
