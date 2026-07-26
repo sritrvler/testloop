@@ -1,0 +1,3 @@
+  mCurrentFocus=Window{2fcf271 u0 com.testloop.app/com.testloop.app.MainActivity}
+  mFocusedApp=ActivityRecord{263904132 u0 com.testloop.app/.MainActivity t1600}
+    mShowingDream=false mDreamingLockscreen=false

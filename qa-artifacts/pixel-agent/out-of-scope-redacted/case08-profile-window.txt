@@ -1,0 +1,2 @@
+  mCurrentFocus=Window{6b1fbe7 u0 com.instagram.android/com.instagram.modal.ModalActivity}
+  mFocusedApp=ActivityRecord{217819200 u0 com.instagram.android/com.instagram.modal.ModalActivity t1595}

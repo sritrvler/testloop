@@ -1,0 +1,46 @@
+run_id=core-20260726-205625+0530
+host_timestamp=2026-07-26T20:56:25+05:30
+utc_timestamp=2026-07-26T15:26:25+00:00
+device_timestamp=2026-07-26T20:56:24+0530
+--- adb devices ---
+List of devices attached
+58261FDCR006X9         device usb:1-1 product:frankel model:Pixel_10 device:frankel transport_id:28
+RZCY51TRYMT            device usb:0-1.2 product:m35xins model:SM_M356B device:m35x transport_id:29
+emulator-5554          device product:sdk_gphone64_arm64 model:sdk_gphone64_arm64 device:emu64a transport_id:1
+
+--- identity ---
+ro.product.manufacturer=samsung
+ro.product.model=SM-M356B
+ro.product.device=m35x
+ro.product.name=m35xins
+ro.build.version.release=16
+ro.build.version.sdk=36
+ro.build.display.id=BP4A.251205.006.M356BXXU8DZE3
+ro.build.fingerprint=samsung/m35xins/m35x:16/BP4A.251205.006/M356BXXU8DZE3:user/release-keys
+Physical size: 1080x2340
+Physical density: 450
+Override density: 420
+--- stay awake/power ---
+global.stay_on_while_plugged_in=15
+screen_off_timeout=600000
+  mWakefulness=Awake
+  mWakefulnessChanging=false
+  mIsPowered=true
+  mPlugType=2
+  mStayOn=true
+  mStayOnWhilePluggedInSetting=15
+  mScreenOffTimeoutSetting=600000
+  mIsPowered=true
+mWakefulness=1
+--- lock/focus ---
+  mCurrentFocus=Window{8d69aa u0 com.testloop.app/com.testloop.app.MainActivity}
+    mShowingDream=false mDreamingLockscreen=false
+--- package ---
+    versionCode=13 minSdk=26 targetSdk=35
+    versionName=0.1.5
+    lastUpdateTime=2026-07-26 20:14:51
+    installerPackageName=null
+      firstInstallTime=2026-07-26 13:01:45
+--- appops quick ---
+POST_NOTIFICATION: ignore
+GET_USAGE_STATS: allow; time=+7h12m32s970ms ago

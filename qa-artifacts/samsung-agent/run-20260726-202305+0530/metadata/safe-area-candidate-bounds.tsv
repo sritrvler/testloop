@@ -1,0 +1,93 @@
+002-testloop-launched	Usage Access enabled	[362,1734][803,1796]	362	1734	803	1796	
+002-testloop-launched	Finish setup	[422,1903][659,1965]	422	1903	659	1965	
+003-after-finish-setup	Today	[96,220][260,299]	96	220	260	299	
+003-after-finish-setup	Notifications	[922,253][985,316]	922	253	985	316	
+003-after-finish-setup	Add my app	[467,1036][698,1098]	467	1036	698	1098	
+003-after-finish-setup	Find an app to test	[401,1191][764,1253]	401	1191	764	1253	
+003-after-finish-setup	My apps	[174,1523][339,1585]	174	1523	339	1585	
+003-after-finish-setup	Discover	[174,1660][344,1722]	174	1660	344	1722	
+003-after-finish-setup	Today	[75,2127][179,2176]	75	2127	179	2176	bottom>2060
+003-after-finish-setup	My apps	[330,2127][476,2176]	330	2127	476	2176	bottom>2060
+003-after-finish-setup	Discover	[602,2127][754,2176]	602	2127	754	2176	bottom>2060
+003-after-finish-setup	Profile	[895,2127][1011,2176]	895	2127	1011	2176	bottom>2060
+004-my-apps-empty	My apps	[96,241][325,320]	96	241	325	320	
+004-my-apps-empty	Add app	[666,242][869,368]	666	242	869	368	
+004-my-apps-empty	Notifications	[922,274][985,337]	922	274	985	337	
+004-my-apps-empty	My apps	[509,526][572,589]	509	526	572	589	
+004-my-apps-empty	Add your first app	[368,1050][713,1112]	368	1050	713	1112	
+004-my-apps-empty	Find an app to test	[359,1199][722,1261]	359	1199	722	1261	
+004-my-apps-empty	Today	[75,2127][179,2176]	75	2127	179	2176	bottom>2060
+004-my-apps-empty	My apps	[330,2127][476,2176]	330	2127	476	2176	bottom>2060
+004-my-apps-empty	Discover	[602,2127][754,2176]	602	2127	754	2176	bottom>2060
+004-my-apps-empty	Profile	[895,2127][1011,2176]	895	2127	1011	2176	bottom>2060
+005-discover-empty	Discover	[96,221][332,300]	96	221	332	300	
+005-discover-empty	Show bookmarked apps	[796,274][859,337]	796	274	859	337	
+005-discover-empty	Notifications	[922,274][985,337]	922	274	985	337	
+005-discover-empty	Hide my apps	[53,834][319,896]	53	834	319	896	
+005-discover-empty	Hide my apps	[890,847][1027,931]	890	847	1027	931	
+005-discover-empty	Discover	[509,1094][572,1157]	509	1094	572	1157	
+005-discover-empty	New test groups will appear here. You can start by adding your own app in My apps.	[116,1325][964,1541]	116	1325	964	1541	
+005-discover-empty	Add my app	[425,1618][656,1680]	425	1618	656	1680	
+005-discover-empty	Today	[75,2127][179,2176]	75	2127	179	2176	bottom>2060
+005-discover-empty	My apps	[330,2127][476,2176]	330	2127	476	2176	bottom>2060
+005-discover-empty	Discover	[602,2127][754,2176]	602	2127	754	2176	bottom>2060
+005-discover-empty	Profile	[895,2127][1011,2176]	895	2127	1011	2176	bottom>2060
+006-profile	Profile	[96,297][271,376]	96	297	271	376	
+006-profile	Notifications	[922,306][985,369]	922	306	985	369	
+006-profile	Notifications	[95,955][382,1027]	95	955	382	1027	
+006-profile	Google Play testing guide	[95,1579][662,1651]	95	1579	662	1651	
+006-profile	Open Google Play testing guide	[922,1608][985,1671]	922	1608	985	1671	
+006-profile	Send feedback	[922,1816][985,1879]	922	1816	985	1879	
+006-profile	Today	[75,2127][179,2176]	75	2127	179	2176	bottom>2060
+006-profile	My apps	[330,2127][476,2176]	330	2127	476	2176	bottom>2060
+006-profile	Discover	[602,2127][754,2176]	602	2127	754	2176	bottom>2060
+006-profile	Profile	[895,2127][1011,2176]	895	2127	1011	2176	bottom>2060
+007-add-app-initial	Back	[43,153][106,216]	43	153	106	216	
+007-add-app-initial	Add app	[148,120][372,199]	148	120	372	199	
+007-add-app-initial	Continue	[452,2062][628,2124]	452	2062	628	2124	bottom>2060
+008-add-app-empty-validation	Back	[43,153][106,216]	43	153	106	216	
+008-add-app-empty-validation	Add app	[148,120][372,199]	148	120	372	199	
+008-add-app-empty-validation	Continue	[452,2062][628,2124]	452	2062	628	2124	bottom>2060
+009-add-app-invalid-url-validation	Back	[43,153][106,216]	43	153	106	216	
+009-add-app-invalid-url-validation	Add app	[148,120][372,199]	148	120	372	199	
+009-add-app-invalid-url-validation	Continue	[452,2062][628,2124]	452	2062	628	2124	bottom>2060
+010-add-app-step2-valid-format	Back	[43,153][106,216]	43	153	106	216	
+010-add-app-step2-valid-format	Add app	[148,120][372,199]	148	120	372	199	
+010-add-app-step2-valid-format	Continue	[452,2062][628,2124]	452	2062	628	2124	bottom>2060
+011-add-app-after-valid-continue	Back	[43,153][106,216]	43	153	106	216	
+011-add-app-after-valid-continue	Add app	[148,120][372,199]	148	120	372	199	
+011-add-app-after-valid-continue	Continue	[452,2062][628,2124]	452	2062	628	2124	bottom>2060
+012-current-after-keyboard-dismiss	Back	[43,153][106,216]	43	153	106	216	
+012-current-after-keyboard-dismiss	Add app	[148,120][372,199]	148	120	372	199	
+012-current-after-keyboard-dismiss	Continue	[452,2062][628,2124]	452	2062	628	2124	bottom>2060
+013-add-app-valid-continue-retry	Back	[43,153][106,216]	43	153	106	216	
+013-add-app-valid-continue-retry	Add app	[148,120][372,199]	148	120	372	199	
+013-add-app-valid-continue-retry	Continue	[452,2062][628,2124]	452	2062	628	2124	bottom>2060
+014-add-app-step2-invalid-group	Back	[43,153][106,216]	43	153	106	216	
+014-add-app-step2-invalid-group	Add app	[148,120][372,199]	148	120	372	199	
+014-add-app-step2-invalid-group	Continue	[452,2062][628,2124]	452	2062	628	2124	bottom>2060
+015-back-out-from-add-app	My apps	[96,241][325,320]	96	241	325	320	
+015-back-out-from-add-app	Add app	[666,242][869,368]	666	242	869	368	
+015-back-out-from-add-app	Notifications	[922,274][985,337]	922	274	985	337	
+015-back-out-from-add-app	My apps	[509,526][572,589]	509	526	572	589	
+015-back-out-from-add-app	Add your first app	[368,1050][713,1112]	368	1050	713	1112	
+015-back-out-from-add-app	Find an app to test	[359,1199][722,1261]	359	1199	722	1261	
+015-back-out-from-add-app	Today	[75,2127][179,2176]	75	2127	179	2176	bottom>2060
+015-back-out-from-add-app	My apps	[330,2127][476,2176]	330	2127	476	2176	bottom>2060
+015-back-out-from-add-app	Discover	[602,2127][754,2176]	602	2127	754	2176	bottom>2060
+015-back-out-from-add-app	Profile	[895,2127][1011,2176]	895	2127	1011	2176	bottom>2060
+016-google-play-guide-screen	Back	[96,206][159,269]	96	206	159	269	
+016-google-play-guide-screen	Google Play testing guide	[201,173][889,252]	201	173	889	252	
+016-google-play-guide-screen	Read Google’s official requirements	[239,2162][925,2214]	239	2162	925	2214	bottom>2060,bottom>2180/nav
+017-official-guide-tap-result	Back	[96,206][159,269]	96	206	159	269	
+017-official-guide-tap-result	Google Play testing guide	[201,173][889,252]	201	173	889	252	
+017-official-guide-tap-result	Read Google’s official requirements	[239,2162][925,2214]	239	2162	925	2214	bottom>2060,bottom>2180/nav
+018-official-guide-visible-button-tap	Back	[96,206][159,269]	96	206	159	269	
+018-official-guide-visible-button-tap	Google Play testing guide	[201,173][889,252]	201	173	889	252	
+018-official-guide-visible-button-tap	Read Google’s official requirements	[239,2162][925,2214]	239	2162	925	2214	bottom>2060,bottom>2180/nav
+019-guide-button-scrolled-visible	Back	[96,112][159,175]	96	112	159	175	
+019-guide-button-scrolled-visible	Google Play testing guide	[201,79][889,158]	201	79	889	158	top<100
+019-guide-button-scrolled-visible	Read Google’s official requirements	[239,2068][925,2130]	239	2068	925	2130	bottom>2060
+020-guide-button-scrolled-tap-result	Back	[96,112][159,175]	96	112	159	175	
+020-guide-button-scrolled-tap-result	Google Play testing guide	[201,79][889,158]	201	79	889	158	top<100
+020-guide-button-scrolled-tap-result	Read Google’s official requirements	[239,2068][925,2130]	239	2068	925	2130	bottom>2060

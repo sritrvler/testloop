@@ -1,0 +1,23 @@
+host_timestamp=2026-07-26T20:39:58+05:30
+utc_timestamp=2026-07-26T15:09:58+00:00
+device_timestamp=2026-07-26T20:39:57+0530
+--- stay-awake settings ---
+global.stay_on_while_plugged_in=15
+screen_off_timeout=600000
+--- power relevant ---
+  mWakefulness=Awake
+  mWakefulnessChanging=false
+  mIsPowered=true
+  mPlugType=2
+  mStayOn=true
+  mStayOnWhilePluggedInSetting=15
+  mUserActivityTimeoutOverrideFromWindowManager=-1
+  mMinimumScreenOffTimeoutConfig=3000
+  mMaximumScreenOffTimeoutFromDeviceAdmin=9223372036854775807 (enforced=false)
+  mScreenOffTimeoutSetting=600000
+  mIsPowered=true
+mWakefulness=1
+mScreenOffTimeout=-1
+--- window lock state ---
+  mCurrentFocus=Window{8d69aa u0 com.testloop.app/com.testloop.app.MainActivity}
+    mShowingDream=false mDreamingLockscreen=false

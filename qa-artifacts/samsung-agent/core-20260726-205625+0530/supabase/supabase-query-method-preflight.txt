@@ -1,0 +1,84 @@
+--- 03-linked-counts.sql ---
+select 'profiles' as table_name, count(*)::text as count from public.profiles
+union all select 'owned_apps', count(*)::text from public.owned_apps
+union all select 'campaigns', count(*)::text from public.campaigns
+union all select 'public_app_listings', count(*)::text from public.public_app_listings
+union all select 'reciprocal_commitments', count(*)::text from public.reciprocal_commitments
+union all select 'commitment_install_states', count(*)::text from public.commitment_install_states
+union all select 'commitment_daily_open_states', count(*)::text from public.commitment_daily_open_states
+union all select 'reminders', count(*)::text from public.reminders
+union all select 'notifications', count(*)::text from public.notifications
+union all select 'app_bookmarks', count(*)::text from public.app_bookmarks
+order by table_name;
+--- supabase db help query possibility ---
+DESCRIPTION
+  Manage Postgres databases.
+
+USAGE
+  supabase db <subcommand> [flags]
+
+GLOBAL FLAGS
+  --help, -h                                                          Show help information
+  --version, -v                                                       Show version information
+  --completions <bash|zsh|fish|sh>                                    Print shell completion script (choices: bash, zsh, fish, sh)
+  --log-level <all|trace|debug|info|warn|warning|error|fatal|none>    Sets the minimum log level (choices: all, trace, debug, info, warn, warning, error, fatal, none)
+  --output-format choice                                              Output format: text (default), json, or stream-json (NDJSON) (choices: text, json, stream-json)
+  --output, -o choice                                                 Output format of status variables. (choices: env, pretty, json, toml, yaml, table, csv)
+  --profile string                                                    Use a specific profile for connecting to Supabase API.
+  --debug                                                             Output debug logs to stderr.
+  --workdir string                                                    Path to a Supabase project directory.
+  --experimental                                                      Enable experimental features.
+  --network-id string                                                 Use the specified Docker network instead of a generated one.
+  --yes                                                               Answer yes to all prompts.
+  --dns-resolver choice                                               Look up domain names using the specified resolver. (choices: native, https)
+  --create-ticket                                                     Create a support ticket for any CLI error.
+  --agent choice                                                      Override agent detection: yes, no, or auto (default auto). (choices: auto, yes, no)
+
+SUBCOMMANDS
+  diff        Diffs the local database for schema changes
+  dump        Dumps data or schemas from the remote database
+  push        Push new migrations to the remote database
+  pull        Pull schema from the remote database
+  reset       Resets the local database to current migrations
+  lint        Checks local database for typing error
+  start       Starts local Postgres database
+  query       Execute a SQL query against the database
+  advisors    Checks database for security and performance issues
+  schema      Manage database schema
+--- supabase db dump help short ---
+DESCRIPTION
+  Dumps data or schemas from the remote database.
+
+USAGE
+  supabase db dump [flags]
+
+FLAGS
+  --dry-run                Prints the pg_dump script that would be executed.
+  --data-only              Dumps only data records.
+  --use-copy               Use copy statements in place of inserts.
+  --exclude, -x string     List of schema.tables to exclude from data-only dump.
+  --role-only              Dumps only cluster roles.
+  --keep-comments          Keeps commented lines from pg_dump output.
+  --file, -f string        File path to save the dumped contents.
+  --db-url string          Dumps from the database specified by the connection string (must be percent-encoded).
+  --linked                 Dumps from the linked project.
+  --local                  Dumps from the local database.
+  --password, -p string    Password to your remote Postgres database.
+  --schema, -s string      Comma separated list of schema to include.
+
+GLOBAL FLAGS
+  --help, -h                                                          Show help information
+  --version, -v                                                       Show version information
+  --completions <bash|zsh|fish|sh>                                    Print shell completion script (choices: bash, zsh, fish, sh)
+  --log-level <all|trace|debug|info|warn|warning|error|fatal|none>    Sets the minimum log level (choices: all, trace, debug, info, warn, warning, error, fatal, none)
+  --output-format choice                                              Output format: text (default), json, or stream-json (NDJSON) (choices: text, json, stream-json)
+  --output, -o choice                                                 Output format of status variables. (choices: env, pretty, json, toml, yaml, table, csv)
+  --profile string                                                    Use a specific profile for connecting to Supabase API.
+  --debug                                                             Output debug logs to stderr.
+  --workdir string                                                    Path to a Supabase project directory.
+  --experimental                                                      Enable experimental features.
+  --network-id string                                                 Use the specified Docker network instead of a generated one.
+  --yes                                                               Answer yes to all prompts.
+  --dns-resolver choice                                               Look up domain names using the specified resolver. (choices: native, https)
+  --create-ticket                                                     Create a support ticket for any CLI error.
+  --agent choice                                                      Override agent detection: yes, no, or auto (default auto). (choices: auto, yes, no)

@@ -1,0 +1,3 @@
+host_timestamp=2026-07-26T20:26:32+05:30
+  mCurrentFocus=Window{226e2da u0 NotificationShade}
+    mShowingDream=false mDreamingLockscreen=true

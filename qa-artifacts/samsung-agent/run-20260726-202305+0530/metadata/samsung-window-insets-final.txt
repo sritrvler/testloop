@@ -1,0 +1,59 @@
+host_timestamp=2026-07-26T20:35:49+05:30
+--- wm size/density ---
+Physical size: 1080x2340
+Physical density: 450
+Override density: 420
+--- window bars/insets snippets ---
+      Window #11: WindowStateAnimator{497b75a StatusBar}
+      Window #15: WindowStateAnimator{89ef26 NavigationBar0}
+  DisplayFrames w=1080 h=2340 r=0
+    mStatusBar=Window{4f8d239 u0 StatusBar}
+    mNavigationBar=Window{bb8fd40 u0 NavigationBar0}
+    mNavigationBarCanMove=true
+    mHasBottomNavigationBar=true
+    mTopGestureHost=Window{4f8d239 u0 StatusBar}
+    mBottomGestureHost=Window{bb8fd40 u0 NavigationBar0}
+    mLastStatusBarAppearanceRegions=
+    mStatusBarBackgroundWindows=
+    mForceShowNavigationBarEnabled=false mAllowLockscreenWhenOn=false
+  WindowInsetsStateController
+    InsetsState
+        InsetsSource id=3ef30000 type=statusBars frame=[0,0][1080,100] visible=true flags= sideHint=TOP boundingRects=null
+        InsetsSource id=5c9a0001 type=navigationBars frame=[0,2214][1080,2340] visible=true flags= sideHint=BOTTOM boundingRects=null
+        InsetsSourceControl: {5c9a0001 mType=navigationBars initiallyVisible mSurfacePosition=Point(0, 2214) mInsetsHint=Insets{left=0, top=0, right=0, bottom=126}}
+        InsetsSourceControl: {3ef30000 mType=statusBars initiallyVisible mSurfacePosition=Point(0, 0) mInsetsHint=Insets{left=0, top=100, right=0, bottom=0}}
+        mWin=Window{bb8fd40 u0 NavigationBar0}
+        mWin=Window{bb8fd40 u0 NavigationBar0}
+        mWin=Window{bb8fd40 u0 NavigationBar0}
+        mWin=Window{bb8fd40 u0 NavigationBar0}
+        mSource=InsetsSource id=5c9a0001 type=navigationBars frame=[0,2214][1080,2340] visible=true flags= sideHint=BOTTOM boundingRects=null
+        mControl=InsetsSourceControl mId=5c9a0001 mType=navigationBars mLeash=Surface(name=Surface(name=bb8fd40 NavigationBar0#77)/@0xda4ab5a - animation-leash of insets_animation#46295)/@0xe2d7cd5 mInitiallyVisible=true mSurfacePosition=Point(0, 2214) mInsetsHint=Insets{left=0, top=0, right=0, bottom=126} mSkipAnimationOnce=false mImeStatsToken=null mControlledByPolicy=false
+        mWin=Window{bb8fd40 u0 NavigationBar0}
+        mAdapter=ControlAdapter mCapturedLeash=Surface(name=Surface(name=bb8fd40 NavigationBar0#77)/@0xda4ab5a - animation-leash of insets_animation#46295)/@0xe2d7cd5
+        mWin=Window{4f8d239 u0 StatusBar}
+        mWin=Window{4f8d239 u0 StatusBar}
+        mSource=InsetsSource id=3ef30000 type=statusBars frame=[0,0][1080,100] visible=true flags= sideHint=TOP boundingRects=null
+        mControl=InsetsSourceControl mId=3ef30000 mType=statusBars mLeash=Surface(name=Surface(name=4f8d239 StatusBar#81)/@0x5396681 - animation-leash of insets_animation#46267)/@0x5be0113 mInitiallyVisible=true mSurfacePosition=Point(0, 0) mInsetsHint=Insets{left=0, top=100, right=0, bottom=0} mSkipAnimationOnce=false mImeStatsToken=null mControlledByPolicy=false
+        mWin=Window{4f8d239 u0 StatusBar}
+        mAdapter=ControlAdapter mCapturedLeash=Surface(name=Surface(name=4f8d239 StatusBar#81)/@0x5396681 - animation-leash of insets_animation#46267)/@0x5be0113
+  Window #1 Window{bb8fd40 u0 NavigationBar0}:
+        InsetsFrameProvider: {id=#5c9a0001, index=0, type=navigationBars, source=FRAME, flags=[], insetsSize=Insets{left=0, top=0, right=0, bottom=126}, insetsSizeOverrides=[TypedInsetsSize: {windowType=INPUT_METHOD, insetsSize=Insets{left=0, top=0, right=0, bottom=126}}]}
+            InsetsFrameProvider: {id=#5c9a0001, index=0, type=navigationBars, source=FRAME, flags=[], insetsSize=Insets{left=0, top=0, right=0, bottom=126}, insetsSizeOverrides=[TypedInsetsSize: {windowType=INPUT_METHOD, insetsSize=Insets{left=0, top=0, right=0, bottom=126}}]}
+            InsetsFrameProvider: {id=#5c9a0001, index=0, type=navigationBars, source=FRAME, flags=[], insetsSizeOverrides=[TypedInsetsSize: {windowType=INPUT_METHOD, insetsSize=null}]}
+            InsetsFrameProvider: {id=#5c9a0001, index=0, type=navigationBars, source=FRAME, flags=[], insetsSize=Insets{left=0, top=0, right=0, bottom=126}, insetsSizeOverrides=[TypedInsetsSize: {windowType=INPUT_METHOD, insetsSize=Insets{left=0, top=0, right=0, bottom=126}}]}
+            InsetsFrameProvider: {id=#5c9a0001, index=0, type=navigationBars, source=FRAME, flags=[], insetsSizeOverrides=[TypedInsetsSize: {windowType=INPUT_METHOD, insetsSize=null}]}
+      mLeash=Surface(name=Surface(name=bb8fd40 NavigationBar0#77)/@0xda4ab5a - animation-leash of insets_animation#46295)/@0xe2d7cd5 mAnimationType=insets_animation
+        ControlAdapter mCapturedLeash=Surface(name=Surface(name=bb8fd40 NavigationBar0#77)/@0xda4ab5a - animation-leash of insets_animation#46295)/@0xe2d7cd5
+    WindowStateAnimator{89ef26 NavigationBar0}:
+  Window #5 Window{4f8d239 u0 StatusBar}:
+        InsetsFrameProvider: {id=#3ef30000, index=0, type=statusBars, source=FRAME, flags=[], insetsSize=Insets{left=0, top=100, right=0, bottom=0}}
+            InsetsFrameProvider: {id=#3ef30000, index=0, type=statusBars, source=FRAME, flags=[], insetsSize=Insets{left=0, top=100, right=0, bottom=0}}
+            InsetsFrameProvider: {id=#3ef30000, index=0, type=statusBars, source=FRAME, flags=[], insetsSize=Insets{left=0, top=79, right=0, bottom=0}}
+            InsetsFrameProvider: {id=#3ef30000, index=0, type=statusBars, source=FRAME, flags=[], insetsSize=Insets{left=0, top=100, right=0, bottom=0}}
+            InsetsFrameProvider: {id=#3ef30000, index=0, type=statusBars, source=FRAME, flags=[], insetsSize=Insets{left=0, top=79, right=0, bottom=0}}
+      mLeash=Surface(name=Surface(name=4f8d239 StatusBar#81)/@0x5396681 - animation-leash of insets_animation#46267)/@0x5be0113 mAnimationType=insets_animation
+        ControlAdapter mCapturedLeash=Surface(name=Surface(name=4f8d239 StatusBar#81)/@0x5396681 - animation-leash of insets_animation#46267)/@0x5be0113
+    WindowStateAnimator{497b75a StatusBar}:
+     snapshot=TaskSnapshot{ mId=1785077901160 mCaptureTime=634644176465423 mTopActivityComponent=com.android.settings/.SubSettings mSnapshot=android.hardware.HardwareBuffer@356c20f (1080x2340) mColorSpace=sRGB IEC61966-2.1 (id=0, model=RGB) mOrientation=1 mRotation=0 mTaskSize=Point(1080, 2340) mContentInsets=[0,100][0,126] mLetterboxInsets=[0,0][0,0] mIsLowResolution=false mIsRealSnapshot=true mWindowingMode=1 mAppearance=0 mIsTranslucent=false mHasImeSurface=false mInternalReferences=2 mWriteToParcelCount=0 mUiMode=21 mDensityDpi=420
+     snapshot=TaskSnapshot{ mId=1785041297370 mCaptureTime=598040391241702 mTopActivityComponent=com.dreamplug.androidapp/.CredFlutterActivity mSnapshot=android.hardware.HardwareBuffer@e5c9989 (1080x2340) mColorSpace=sRGB IEC61966-2.1 (id=0, model=RGB) mOrientation=1 mRotation=0 mTaskSize=Point(1080, 2340) mContentInsets=[0,100][0,126] mLetterboxInsets=[0,0][0,0] mIsLowResolution=false mIsRealSnapshot=true mWindowingMode=1 mAppearance=8 mIsTranslucent=false mHasImeSurface=false mInternalReferences=2 mWriteToParcelCount=0 mUiMode=21 mDensityDpi=420
+     snapshot=TaskSnapshot{ mId=1785077097141 mCaptureTime=633840156081229 mTopActivityComponent=com.sec.android.app.launcher/.Launcher mSnapshot=android.hardware.HardwareBuffer@dd9157c (1080x2340) mColorSpace=sRGB IEC61966-2.1 (id=0, model=RGB) mOrientation=1 mRotation=0 mTaskSize=Point(1080, 2340) mContentInsets=[0,100][0,126] mLetterboxInsets=[0,0][0,0] mIsLowResolution=false mIsRealSnapshot=true mWindowingMode=1 mAppearance=0 mIsTranslucent=true mHasImeSurface=false mInternalReferences=2 mWriteToParcelCount=0 mUiMode=21 mDensityDpi=420

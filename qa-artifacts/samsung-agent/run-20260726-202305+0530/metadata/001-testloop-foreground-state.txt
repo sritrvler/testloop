@@ -1,0 +1,3 @@
+host_timestamp=2026-07-26T20:28:32+05:30
+  mCurrentFocus=Window{cbac65c u0 com.sec.android.app.launcher/com.sec.android.app.launcher.activities.LauncherActivity}
+    mShowingDream=false mDreamingLockscreen=false

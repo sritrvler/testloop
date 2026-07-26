@@ -1,0 +1,14 @@
+host_timestamp=2026-07-26T21:00:01+05:30
+package,expected_bucket,installed,pm_path,resolve_launcher
+com.dreamplug.androidapp,installed-target,yes,package:/data/app/~~P51MfogU7iF2H44MgjcHHA==/com.dreamplug.androidapp-eLFSNLeojX2n804lmP1oLg==/base.apk
+package:/data/app/~~P51MfogU7iF2H44MgjcHHA==/com.dreamplug.androidapp-eLFSNLeojX2n804lmP1oLg==/split_config.arm64_v8a.apk
+package:/data/app/~~P51MfogU7iF2H44MgjcHHA==/com.dreamplug.androidapp-eLFSNLeojX2n804lmP1oLg==/split_config.xxhdpi.apk
+package:/data/app/~~P51MfogU7iF2H44MgjcHHA==/com.dreamplug.androidapp-eLFSNLeojX2n804lmP1oLg==/split_taprupaycore.apk
+package:/data/app/~~P51MfogU7iF2H44MgjcHHA==/com.dreamplug.androidapp-eLFSNLeojX2n804lmP1oLg==/split_taprupaycore.config.xxhdpi.apk
+package:/data/app/~~P51MfogU7iF2H44MgjcHHA==/com.dreamplug.androidapp-eLFSNLeojX2n804lmP1oLg==/split_tapvisacore.apk
+package:/data/app/~~P51MfogU7iF2H44MgjcHHA==/com.dreamplug.androidapp-eLFSNLeojX2n804lmP1oLg==/split_tapvisacore.config.xxhdpi.apk,priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=false com.dreamplug.androidapp/.CredFlutterActivity 
+--- fuzzy packages ---
+package:in.amazon.mShop.android.shopping
+package:com.google.android.apps.nbu.paisa.user
+package:com.whatsapp
+package:com.dreamplug.androidapp

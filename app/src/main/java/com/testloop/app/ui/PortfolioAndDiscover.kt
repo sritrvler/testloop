@@ -65,8 +65,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MyAppsScreen(padding: PaddingValues, ownedApps: List<OwnedApp>, campaigns: List<Campaign>, commitments: List<ReciprocalCommitment>, onOwnApp: (String, Boolean) -> Unit, onAdd: () -> Unit, onDiscover: () -> Unit, onNotifications: () -> Unit, unread: Int) {
-    LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(horizontal = Gutter, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { TestLoopTopBar("My apps", "${ownedApps.size} active apps", action = "Add app", onAction = onAdd, unreadCount = unread, onNotifications = onNotifications) }
+    Column(Modifier.fillMaxSize().padding(padding)) {
+        TestLoopTopBar("My apps", "${ownedApps.size} active apps", action = "Add app", onAction = onAdd, unreadCount = unread, onNotifications = onNotifications)
+        LazyColumn(Modifier.fillMaxWidth().weight(1f), contentPadding = PaddingValues(start = Gutter, top = 8.dp, end = Gutter, bottom = 8.dp + ScreenBottomReserve), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         if (ownedApps.isEmpty()) item { PortfolioEmpty(onAdd, onDiscover) }
         else item {
             GroupSurface {
@@ -79,6 +80,7 @@ fun MyAppsScreen(padding: PaddingValues, ownedApps: List<OwnedApp>, campaigns: L
             }
         }
         if (ownedApps.isNotEmpty()) item { Text("Each app has its own campaign and reciprocal pairs.", style = MaterialTheme.typography.labelMedium, color = Ink500) }
+        }
     }
 }
 
@@ -132,7 +134,7 @@ fun DiscoverRedesign(padding: PaddingValues, apps: List<PublicApp>, ownedAppIds:
     var showBookmarksOnly by remember { mutableStateOf(false) }
     // This is a view filter, not account state. Do not restore it across app
     // launches and make a newly reopened listing appear to have vanished.
-    var hideMyApps by remember { mutableStateOf(false) }
+    var hideMyApps by remember { mutableStateOf(true) }
     var optimisticBookmarkOverrides by remember { mutableStateOf<Map<String, Boolean>>(emptyMap()) }
     val scope = rememberCoroutineScope()
     val joinedAppIds = commitments.filter { it.lifecycle != com.testloop.app.domain.CommitmentLifecycle.PENDING_SETUP }.mapTo(mutableSetOf()) { it.appBeingTestedByCurrentUserId }
@@ -152,12 +154,13 @@ fun DiscoverRedesign(padding: PaddingValues, apps: List<PublicApp>, ownedAppIds:
         .let { list -> if (hideMyApps) list.filterNot { it.id in ownedAppIds } else list }
     val ownerPreviews = filtered.filter { it.id in ownedAppIds }
     val joinableApps = filtered.filterNot { it.id in ownedAppIds }
-    LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(horizontal = Gutter, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { TestLoopTopBar("Discover", "Explore apps, join their test groups, and get your app tested in return", unreadCount = unread, onNotifications = onNotifications, actionContent = {
+    Column(Modifier.fillMaxSize().padding(padding)) {
+        TestLoopTopBar("Discover", "Explore apps, join their test groups, and get your app tested in return", unreadCount = unread, onNotifications = onNotifications, actionContent = {
             IconButton(onClick = { showBookmarksOnly = !showBookmarksOnly }) {
                 Icon(if (showBookmarksOnly) Icons.Default.Bookmark else Icons.Default.BookmarkBorder, if (showBookmarksOnly) "Show all apps" else "Show bookmarked apps", tint = Brand600)
             }
-        }) }
+        })
+        LazyColumn(Modifier.fillMaxWidth().weight(1f), contentPadding = PaddingValues(start = Gutter, top = 8.dp, end = Gutter, bottom = 8.dp + ScreenBottomReserve), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item { OutlinedTextField(query, { query = it }, modifier = Modifier.fillMaxWidth(), label = { Text("Search apps or usernames") }, leadingIcon = { Icon(Icons.Default.Search, null) }, singleLine = true) }
         item { Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("All apps", "Open", "New", "Fewest slots", "Full").forEach { label -> FilterChip(selected = filter == label && !showBookmarksOnly, onClick = { filter = label; showBookmarksOnly = false }, label = { Text(label) }) } } }
         item {
@@ -194,6 +197,7 @@ fun DiscoverRedesign(padding: PaddingValues, apps: List<PublicApp>, ownedAppIds:
                 }
             }
         }
+        }
     }
 }
 
@@ -215,14 +219,21 @@ private fun DiscoverEmptyState(hasAnyApps: Boolean, onAddApp: () -> Unit) {
 @Composable
 private fun DiscoverRow(app: PublicApp, isOwnerPreview: Boolean, bookmark: AppBookmark?, onOpen: (String) -> Unit, onBookmark: (String) -> Unit, onRemoveBookmark: (String) -> Unit) {
     Row(Modifier.fillMaxWidth().clickable { onOpen(app.id) }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-        AppMonogram(app.title); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(app.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold); Text("@${app.ownerUsername} · ${app.postedLabel}", style = MaterialTheme.typography.labelMedium, color = Ink500); Spacer(Modifier.height(5.dp)); Text(app.instructions, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall, color = Ink500); Spacer(Modifier.height(7.dp)); Text(if (isOwnerPreview && app.replacementOpen && app.slotsRemaining > 0) "Replacement slot open · Your listing" else if (isOwnerPreview) "Preview only · Your app" else app.discoverStateLabel(), style = MaterialTheme.typography.labelMedium, color = Brand600) }
+        AppMonogram(app.title); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f).padding(end = 6.dp)) {
+            Text(app.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold, maxLines = 2, overflow = TextOverflow.Ellipsis)
+            Text("@${app.ownerUsername} · ${app.postedLabel}", style = MaterialTheme.typography.labelMedium, color = Ink500, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Spacer(Modifier.height(5.dp))
+            Text(app.instructions, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall, color = Ink500)
+            Spacer(Modifier.height(5.dp))
+            Text(if (isOwnerPreview && app.replacementOpen && app.slotsRemaining > 0) "Replacement slot open · Your listing" else if (isOwnerPreview) "Preview only · Your app" else app.discoverStateLabel(), style = MaterialTheme.typography.labelMedium, color = Brand600, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            if (!isOwnerPreview && bookmark != null) Text("Saved ${bookmarkAgeLabel(bookmark.bookmarkedAt)}", style = MaterialTheme.typography.labelSmall, color = Brand600, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        }
         if (!isOwnerPreview) {
-            if (bookmark != null) Text("Bookmarked ${bookmarkAgeLabel(bookmark.bookmarkedAt)}", style = MaterialTheme.typography.labelSmall, color = Brand600)
             IconButton(onClick = { if (bookmark == null) onBookmark(app.id) else onRemoveBookmark(app.id) }) { Icon(if (bookmark == null) Icons.Default.BookmarkBorder else Icons.Default.Bookmark, if (bookmark == null) "Bookmark ${app.title}" else "Remove ${app.title} bookmark", tint = Brand600) }
         } else {
-            Text("Preview", style = MaterialTheme.typography.labelMedium, color = Brand600)
+            Text("Preview", style = MaterialTheme.typography.labelMedium, color = Brand600, maxLines = 1)
         }
-        Icon(Icons.Default.ArrowForward, if (isOwnerPreview) "Preview ${app.title}" else "Open ${app.title}", tint = Brand600)
+        Icon(Icons.Default.ArrowForward, if (isOwnerPreview) "Preview ${app.title}" else "Open ${app.title}", tint = Brand600, modifier = Modifier.padding(start = 4.dp))
     }
 }
 

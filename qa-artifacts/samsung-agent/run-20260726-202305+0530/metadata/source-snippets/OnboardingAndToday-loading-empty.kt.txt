@@ -1,0 +1,81 @@
+        it.lifecycle == CommitmentLifecycle.ACTIVE &&
+            (publicApps.any { app -> app.id == it.appBeingTestedByCurrentUserId } ||
+                ownedApps.any { app -> app.id == it.appBeingTestedByCurrentUserId }) &&
+            (it.currentUserOwnAppId == null || ownedApps.any { app -> app.id == it.currentUserOwnAppId })
+    }
+    val tasks = active
+        .distinctBy { it.appBeingTestedByCurrentUserId to it.otherUserId }
+        .sortedWith(compareBy<ReciprocalCommitment> { taskPriority(it) }.thenBy { it.joinedOn })
+    val taskProgressByPair = tasks.associateWith { targetProgress(it, publicApps, ownedApps, campaigns) }
+    val unlockedTasks = tasks.filter { taskProgressByPair[it]?.dailyTaskUnlocked() == true }
+    val pendingTasks = unlockedTasks.filter(::needsYourAction)
+    val tasksRemaining = unlockedTasks.count(::needsYourAction)
+    val incoming = active.filter { pair ->
+        pair.currentUserOwnAppId != null && ownedApps.any { it.id == pair.currentUserOwnAppId }
+    }.groupBy { it.otherUserId to it.currentUserOwnAppId }.values.map { group ->
+        group.firstOrNull { needsAttention(it.theyOweSignal) } ?: group.first()
+    }
+    val incomingNeedsAction = incoming.count { pair ->
+        targetProgress(pair, publicApps, ownedApps, campaigns).dailyTaskUnlocked() && needsAttention(pair.theyOweSignal)
+    }
+    val hasNoActivity = active.isEmpty()
+    val firstRun = hasNoActivity && ownedApps.isEmpty()
+    LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(horizontal = Gutter, vertical = 0.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        item { TestLoopTopBar("Today", "${timeGreeting()}, ${username.ifBlank { "there" }} · ${today.format(DateTimeFormatter.ofPattern("EEEE, d MMMM"))}", unreadCount = unread, onNotifications = onNotifications) }
+        if (campaigns.any { it.progress.ownerActionRequired() }) item {
+            OwnerCampaignActionBanner(campaigns.filter { it.progress.ownerActionRequired() }, onOwnApp)
+        }
+        if (!dataLoaded) {
+            item { LoadingTodayState() }
+        } else if (firstRun) {
+            item { FirstRunToday(onAddApp = onAddApp, onDiscover = onDiscover) }
+        } else if (hasNoActivity) {
+            item { ReadyToPairToday(onDiscover = onDiscover, onAddApp = onAddApp) }
+        } else {
+            item { TodaySummaryCard(tasksRemaining, unlockedTasks.size) }
+            item { SectionHeader("Your tasks today", if (tasksRemaining == 0) "Nothing else for you to do" else "$tasksRemaining app${if (tasksRemaining == 1) "" else "s"} still need you", action = "All obligations", onAction = onObligations) }
+            item { if (pendingTasks.isEmpty()) EmptyTodayState() else GroupSurface { pendingTasks.forEachIndexed { index, pair -> DailyTaskRow(pair, targetAppTitle(pair, publicApps, ownedApps), targetProgress(pair, publicApps, ownedApps, campaigns), today, onPair, onPrimaryAction); if (index != pendingTasks.lastIndex) RowDivider() } } }
+            item { SectionHeader("Waiting on other testers", if (incoming.isEmpty()) "No reciprocal apps yet" else if (incomingNeedsAction == 0) "All your testers are done today" else "$incomingNeedsAction person${if (incomingNeedsAction == 1) "" else "s"} ${if (incomingNeedsAction == 1) "needs" else "need"} attention") }
+            item { if (incoming.isEmpty()) EmptyIncomingHint(onDiscover) else GroupSurface { incoming.forEachIndexed { index, pair -> PartnerStatusRow(pair, ownedApps, targetProgress(pair, publicApps, ownedApps, campaigns), today, onOwnApp, onPair); if (index != incoming.lastIndex) RowDivider() } } }
+            if (incoming.isNotEmpty() && incomingNeedsAction == 0) item { AllTestersCaughtUp() }
+            item { InlineNotice("TestLoop shows the installed count and the owner’s campaign decision. It does not verify Google Play approval or reset the timer automatically.") }
+        }
+    }
+}
+
+@Composable
+private fun LoadingTodayState() {
+    Column(Modifier.fillMaxWidth().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        CircularProgressIndicator(color = Brand600)
+        Spacer(Modifier.height(12.dp))
+        Text("Loading your testing plan…", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Text("We’re checking your apps and today’s commitments.", color = Ink500)
+    }
+}
+
+@Composable
+private fun AllTestersCaughtUp() {
+    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(Brand100).padding(16.dp)) {
+        Text("All your testers have completed today’s commitments", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Spacer(Modifier.height(4.dp))
+        Text("Everyone testing your apps is on track for today. No reminders are needed.", color = Ink500)
+    }
+}
+
+@Composable
+private fun OwnerCampaignActionBanner(campaigns: List<Campaign>, onOwnApp: (String, Boolean) -> Unit) {
+    val first = campaigns.first()
+    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(Brand100).padding(16.dp)) {
+        Text(ownerCampaignActionTitle(campaigns), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Spacer(Modifier.height(4.dp))
+        Text(
+            if (campaigns.size == 1) first.progress.statusLabel()
+            else "${campaigns.size} campaigns need a confirmation or recovery decision",
+            color = Ink500,
+            style = MaterialTheme.typography.bodySmall
+        )
+        Spacer(Modifier.height(10.dp))
+        Button(onClick = { onOwnApp(first.ownedAppId, true) }, modifier = Modifier.fillMaxWidth()) { Text("Review campaign") }
+    }
+}
+

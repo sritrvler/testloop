@@ -1,0 +1,2 @@
+    topResumedActivity=ActivityRecord{9871990 u0 com.testloop.app/.MainActivity t1602}
+  ResumedActivity: ActivityRecord{9871990 u0 com.testloop.app/.MainActivity t1602}

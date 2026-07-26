@@ -1,0 +1,461 @@
+timestamp_utc=2026-07-26T15:21:36Z
+-- TestLoop foundation
+--
+-- This migration intentionally stores only daily, coarse activity summaries.
+-- It does not store raw Usage Access events, device inventories, Google email
+-- addresses, or any claim that an app passed Google Play testing.
+
+create extension if not exists "pgcrypto";
+
+create type public.app_lifecycle as enum ('draft', 'published', 'paused', 'archived');
+create type public.campaign_lifecycle as enum ('active', 'paused', 'closed');
+create type public.commitment_lifecycle as enum ('pending_setup', 'active', 'completed', 'left');
+create type public.install_signal as enum ('installed', 'not_installed', 'unavailable');
+create type public.activity_signal as enum ('opened_today', 'not_detected', 'unavailable');
+create type public.notification_kind as enum ('install', 'reciprocal', 'reminder', 'account');
+
+-- Public identity is deliberately limited to a chosen username. Email belongs
+-- to auth.users and is never copied into a public application table.
+create table public.profiles (
+  id uuid primary key references auth.users (id) on delete cascade,
+  username text,
+  tracking_setup_complete boolean not null default false,
+  created_at timestamptz not null default timezone('utc', now()),
+  updated_at timestamptz not null default timezone('utc', now()),
+  constraint profiles_username_format check (
+    username is null or username ~ '^[A-Za-z0-9_]{3,24}$'
+  )
+);
+
+create unique index profiles_username_lower_key
+  on public.profiles (lower(username))
+  where username is not null;
+
+-- An owned app is the durable portfolio record. A package name is globally
+-- unique because Android package IDs identify one Play app unambiguously.
+create table public.owned_apps (
+  id uuid primary key default gen_random_uuid(),
+  owner_id uuid not null references public.profiles (id) on delete cascade,
+  title text not null,
+  package_name text not null,
+  install_url text not null,
+  opt_in_url text not null,
+  icon_seed text not null default '',
+  details text not null default '',
+  category text not null default 'Productivity',
+  lifecycle public.app_lifecycle not null default 'draft',
+  created_at timestamptz not null default timezone('utc', now()),
+  updated_at timestamptz not null default timezone('utc', now()),
+  constraint owned_apps_title_length check (char_length(trim(title)) between 1 and 80),
+  constraint owned_apps_package_format check (package_name ~ '^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+$'),
+  constraint owned_apps_install_url check (
+    install_url ~ '^https://play\.google\.com/store/apps/details\?id=[A-Za-z0-9_.]+([^#@:]*)$'
+  ),
+  constraint owned_apps_opt_in_url check (
+    opt_in_url ~ '^https://play\.google\.com/apps/testing/[A-Za-z0-9_.]+([^#@:]*)$'
+  )
+);
+
+create unique index owned_apps_package_name_key on public.owned_apps (lower(package_name));
+create index owned_apps_owner_id_idx on public.owned_apps (owner_id, lifecycle, created_at desc);
+
+-- V1 supports one active campaign per owned app. History can be added later
+-- with a separate campaign revision model if product needs it.
+create table public.campaigns (
+  id uuid primary key default gen_random_uuid(),
+  owned_app_id uuid not null unique references public.owned_apps (id) on delete cascade,
+  requested_testers integer not null,
+  instructions text not null default '',
+  lifecycle public.campaign_lifecycle not null default 'active',
+  started_on date not null default (timezone('utc', now())::date),
+  closed_at timestamptz,
+  created_at timestamptz not null default timezone('utc', now()),
+  updated_at timestamptz not null default timezone('utc', now()),
+  constraint campaigns_requested_testers check (requested_testers between 1 and 100),
+  constraint campaigns_instructions_length check (char_length(instructions) between 0 and 4000),
+  constraint campaigns_closed_at_consistency check (
+    (lifecycle = 'closed') = (closed_at is not null)
+  )
+);
+
+create index campaigns_public_idx on public.campaigns (lifecycle, started_on desc);
+create index campaigns_owned_app_id_idx on public.campaigns (owned_app_id);
+
+-- A commitment names both sides of a reciprocal exchange:
+-- campaign.owned_app_id is the app the tester owes the publisher, and
+-- current_user_owned_app_id is the exact app the publisher owes the tester.
+-- The selected app may be null only for an intentionally one-way commitment.
+create table public.reciprocal_commitments (
+  id uuid primary key default gen_random_uuid(),
+  campaign_id uuid not null references public.campaigns (id) on delete cascade,
+  tester_id uuid not null references public.profiles (id) on delete cascade,
+  current_user_owned_app_id uuid references public.owned_apps (id) on delete set null,
+  target_days smallint not null default 14,
+  lifecycle public.commitment_lifecycle not null default 'pending_setup',
+  joined_at timestamptz not null default timezone('utc', now()),
+  completed_at timestamptz,
+  left_at timestamptz,
+  created_at timestamptz not null default timezone('utc', now()),
+  updated_at timestamptz not null default timezone('utc', now()),
+  constraint reciprocal_commitments_target_days check (target_days between 1 and 30),
+  constraint reciprocal_commitments_tester_once unique (campaign_id, tester_id),
+  constraint reciprocal_commitments_terminal_timestamps check (
+    (lifecycle = 'completed') = (completed_at is not null)
+    and (lifecycle = 'left') = (left_at is not null)
+  )
+);
+
+create index reciprocal_commitments_tester_idx
+  on public.reciprocal_commitments (tester_id, lifecycle, joined_at desc);
+create index reciprocal_commitments_campaign_idx
+  on public.reciprocal_commitments (campaign_id, lifecycle, joined_at desc);
+create index reciprocal_commitments_selected_app_idx
+  on public.reciprocal_commitments (current_user_owned_app_id, lifecycle);
+
+-- Only one aggregate is retained for a target app, reporter, and UTC date.
+-- foreground_minutes is an estimate and must never be interpreted as proof of
+-- useful testing or Google Play enrollment.
+create table public.daily_activity_summaries (
+  id uuid primary key default gen_random_uuid(),
+  commitment_id uuid not null references public.reciprocal_commitments (id) on delete cascade,
+  reported_by uuid not null references public.profiles (id) on delete cascade,
+  target_owned_app_id uuid not null references public.owned_apps (id) on delete cascade,
+  activity_date date not null,
+  install_status public.install_signal not null default 'unavailable',
+  activity_status public.activity_signal not null default 'unavailable',
+  foreground_minutes integer not null default 0,
+  collected_at timestamptz not null default timezone('utc', now()),
+  created_at timestamptz not null default timezone('utc', now()),
+  updated_at timestamptz not null default timezone('utc', now()),
+  constraint daily_activity_minutes check (foreground_minutes between 0 and 1440),
+  constraint daily_activity_unique_report unique (
+    commitment_id, reported_by, target_owned_app_id, activity_date
+  ),
+  constraint daily_activity_status_consistency check (
+    (activity_status = 'opened_today' and foreground_minutes > 0)
+    or activity_status <> 'opened_today'
+  )
+);
+
+create index daily_activity_commitment_date_idx
+  on public.daily_activity_summaries (commitment_id, activity_date desc);
+create index daily_activity_reporter_date_idx
+  on public.daily_activity_summaries (reported_by, activity_date desc);
+create index daily_activity_target_date_idx
+  on public.daily_activity_summaries (target_owned_app_id, activity_date desc);
+
+-- A reminder is directional. The sender must own target_owned_app_id and the
+-- recipient must be the tester responsible for that app, or vice versa for the
+-- selected reciprocal app. One reminder per direction per UTC day is allowed.
+create table public.reminders (
+  id uuid primary key default gen_random_uuid(),
+  commitment_id uuid not null references public.reciprocal_commitments (id) on delete cascade,
+  sender_id uuid not null references public.profiles (id) on delete cascade,
+  recipient_id uuid not null references public.profiles (id) on delete cascade,
+  target_owned_app_id uuid not null references public.owned_apps (id) on delete cascade,
+  reminder_date date not null default (timezone('utc', now())::date),
+  message text,
+  created_at timestamptz not null default timezone('utc', now()),
+  constraint reminders_sender_recipient_different check (sender_id <> recipient_id),
+  constraint reminders_message_length check (message is null or char_length(message) <= 280),
+  constraint reminders_unique_per_direction_day unique (
+    commitment_id, sender_id, recipient_id, target_owned_app_id, reminder_date
+  )
+);
+
+create index reminders_recipient_idx on public.reminders (recipient_id, created_at desc);
+create index reminders_commitment_idx on public.reminders (commitment_id, created_at desc);
+
+create table public.notifications (
+  id uuid primary key default gen_random_uuid(),
+  recipient_id uuid not null references public.profiles (id) on delete cascade,
+  kind public.notification_kind not null,
+  title text not null,
+  message text not null,
+  commitment_id uuid references public.reciprocal_commitments (id) on delete cascade,
+  owned_app_id uuid references public.owned_apps (id) on delete set null,
+  read_at timestamptz,
+  created_at timestamptz not null default timezone('utc', now()),
+  constraint notifications_title_length check (char_length(title) between 1 and 160),
+  constraint notifications_message_length check (char_length(message) between 1 and 1000)
+);
+
+create index notifications_recipient_unread_idx
+  on public.notifications (recipient_id, read_at, created_at desc);
+create index notifications_commitment_idx on public.notifications (commitment_id, created_at desc);
+
+-- Shared timestamp trigger. The function is not callable by client roles.
+create or replace function public.set_updated_at()
+returns trigger
+language plpgsql
+security invoker
+set search_path = public
+as $$
+begin
+  new.updated_at = timezone('utc', now());
+  return new;
+end;
+$$;
+
+create trigger profiles_set_updated_at
+before update on public.profiles
+for each row execute function public.set_updated_at();
+create trigger owned_apps_set_updated_at
+before update on public.owned_apps
+for each row execute function public.set_updated_at();
+create trigger campaigns_set_updated_at
+before update on public.campaigns
+for each row execute function public.set_updated_at();
+create trigger commitments_set_updated_at
+before update on public.reciprocal_commitments
+for each row execute function public.set_updated_at();
+create trigger activity_set_updated_at
+before update on public.daily_activity_summaries
+for each row execute function public.set_updated_at();
+
+-- Create the profile shell at Google sign-in time. Username is completed in
+-- the onboarding screen and remains the only public identity field here.
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer
+-- Bounded MVP install signal. This table deliberately stores no usage duration,
+-- activity events, device identifiers, or installed-app inventory.
+create table public.commitment_install_states (
+  commitment_id uuid not null references public.reciprocal_commitments (id) on delete cascade,
+  reporter_id uuid not null references public.profiles (id) on delete cascade,
+  target_owned_app_id uuid not null references public.owned_apps (id) on delete cascade,
+  status public.install_signal not null default 'unavailable',
+  observed_at timestamptz not null default timezone('utc', now()),
+  updated_at timestamptz not null default timezone('utc', now()),
+  primary key (commitment_id, reporter_id, target_owned_app_id)
+);
+
+create index commitment_install_states_target_idx
+  on public.commitment_install_states (target_owned_app_id, status, updated_at desc);
+
+create trigger commitment_install_states_set_updated_at
+before update on public.commitment_install_states
+for each row execute function public.set_updated_at();
+
+alter table public.commitment_install_states enable row level security;
+
+create policy commitment_install_states_participant_read
+on public.commitment_install_states for select to authenticated
+using (public.is_commitment_participant(commitment_id));
+
+create policy commitment_install_states_reporter_insert
+on public.commitment_install_states for insert to authenticated
+with check (
+  reporter_id = auth.uid()
+  and public.is_commitment_participant(commitment_id)
+);
+
+create policy commitment_install_states_reporter_update
+on public.commitment_install_states for update to authenticated
+using (reporter_id = auth.uid())
+with check (reporter_id = auth.uid());
+
+revoke all on table public.commitment_install_states from anon, authenticated;
+grant select, insert, update on table public.commitment_install_states to authenticated;
+
+comment on table public.commitment_install_states is
+  'Latest install observation for an authorized commitment direction only. Not usage history or Google Play verification.';
+-- Restore the activity signal path. Usage Access and daily open state are core
+-- TestLoop product behavior, so this compensates for the cleanup migration.
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_type
+    where typnamespace = 'public'::regnamespace
+      and typname = 'activity_signal'
+  ) then
+    create type public.activity_signal as enum ('opened_today', 'not_detected', 'unavailable');
+  end if;
+end;
+$$;
+
+alter table public.profiles
+  add column if not exists tracking_setup_complete boolean not null default false,
+  add column if not exists usage_access_last_verified_at timestamptz,
+  add column if not exists usage_access_revoked_at timestamptz;
+
+create table if not exists public.commitment_daily_open_states (
+  commitment_id uuid not null references public.reciprocal_commitments (id) on delete cascade,
+  reporter_id uuid not null references public.profiles (id) on delete cascade,
+  target_owned_app_id uuid not null references public.owned_apps (id) on delete cascade,
+  activity_date date not null,
+  opened boolean not null default false,
+  observed_at timestamptz not null default timezone('utc', now()),
+  primary key (commitment_id, reporter_id, target_owned_app_id, activity_date)
+);
+
+alter table public.commitment_daily_open_states enable row level security;
+
+drop policy if exists daily_open_participant_read on public.commitment_daily_open_states;
+create policy daily_open_participant_read
+on public.commitment_daily_open_states for select to authenticated
+using (public.is_commitment_participant(commitment_id));
+
+drop policy if exists daily_open_self_insert on public.commitment_daily_open_states;
+create policy daily_open_self_insert
+on public.commitment_daily_open_states for insert to authenticated
+with check (reporter_id = auth.uid() and public.is_commitment_participant(commitment_id));
+
+drop policy if exists daily_open_self_update on public.commitment_daily_open_states;
+create policy daily_open_self_update
+on public.commitment_daily_open_states for update to authenticated
+using (reporter_id = auth.uid())
+with check (reporter_id = auth.uid());
+
+revoke all on public.commitment_daily_open_states from anon, authenticated;
+grant select, insert, update on public.commitment_daily_open_states to authenticated;
+
+create or replace function public.record_usage_access_status(has_access boolean)
+returns table (
+  usage_access_revoked_at timestamptz,
+  usage_access_deadline timestamptz,
+  listing_deactivated boolean
+)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  current_revoked_at timestamptz;
+begin
+  if auth.uid() is null then
+    raise exception 'Authentication required';
+  end if;
+
+  if has_access then
+    update public.profiles
+    set usage_access_last_verified_at = timezone('utc', now()),
+        usage_access_revoked_at = null
+    where id = auth.uid();
+  else
+    update public.profiles
+    set usage_access_revoked_at = coalesce(usage_access_revoked_at, timezone('utc', now()))
+    where id = auth.uid();
+  end if;
+
+  select p.usage_access_revoked_at into current_revoked_at
+  from public.profiles p where p.id = auth.uid();
+
+  if current_revoked_at is not null
+     and current_revoked_at <= timezone('utc', now()) - interval '6 hours' then
+    update public.campaigns c
+    set lifecycle = 'paused'
+    where c.lifecycle = 'active'
+      and exists (
+        select 1 from public.owned_apps oa
+        where oa.id = c.owned_app_id and oa.owner_id = auth.uid()
+      );
+  end if;
+
+  return query
+  select current_revoked_at,
+         case when current_revoked_at is null then null else current_revoked_at + interval '6 hours' end,
+         exists (
+           select 1 from public.campaigns c
+           join public.owned_apps oa on oa.id = c.owned_app_id
+           where oa.owner_id = auth.uid() and c.lifecycle = 'paused'
+         );
+end;
+$$;
+
+revoke all on function public.record_usage_access_status(boolean) from public, anon;
+grant execute on function public.record_usage_access_status(boolean) to authenticated;
+-- Closed-test listings carry three distinct links:
+--   1) Google Group membership (required for new listings in the client)
+--   2) Play closed-test opt-in (optional because some tracks expose it later)
+--   3) Play install (required)
+-- Existing listings may have no group link yet; new listings are validated by
+-- the client and all supplied links are validated here at the database edge.
+
+alter table public.owned_apps
+  add column if not exists group_url text;
+
+alter table public.owned_apps
+  alter column opt_in_url drop not null;
+
+alter table public.owned_apps
+  drop constraint if exists owned_apps_install_url,
+  drop constraint if exists owned_apps_opt_in_url,
+  drop constraint if exists owned_apps_group_url;
+
+alter table public.owned_apps
+  add constraint owned_apps_install_url check (
+    install_url = 'https://play.google.com/store/apps/details?id=' || package_name
+  ),
+  add constraint owned_apps_opt_in_url check (
+    opt_in_url is null
+    or opt_in_url = 'https://play.google.com/apps/testing/' || package_name
+  ),
+  add constraint owned_apps_group_url check (
+    group_url is null
+    or group_url ~ '^https://groups\\.google\\.com/g/[A-Za-z0-9][A-Za-z0-9_-]*$'
+  );
+
+create or replace view public.public_app_listings
+with (security_invoker = true)
+as
+select
+  oa.id,
+  oa.title,
+  oa.package_name,
+  oa.owner_id,
+  p.username as owner_username,
+  oa.install_url,
+  oa.opt_in_url,
+  c.id as campaign_id,
+  c.requested_testers,
+  public.campaign_active_tester_count(c.id) as joined_tester_count,
+  greatest(c.requested_testers - public.public_reserved_count(c.id), 0) as slots_remaining,
+  c.instructions,
+  oa.details,
+  oa.category,
+  c.started_on,
+  oa.created_at,
+  oa.updated_at,
+  c.target_days,
+  c.testing_started_at,
+  c.testing_completed_at,
+  c.progress_reset_at,
+  oa.play_store_published_at,
+  oa.group_url
+from public.owned_apps oa
+join public.profiles p on p.id = oa.owner_id
+join public.campaigns c on c.owned_app_id = oa.id
+where oa.lifecycle = 'published' and c.lifecycle = 'active' and p.username is not null;
+-- Preserve legacy listings created before group_url existed, but require a
+-- valid Google Group whenever a new app becomes published.
+
+create or replace function public.validate_owned_app_testing_links()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if tg_op = 'INSERT' then
+    if new.lifecycle = 'published' and new.group_url is null then
+      raise exception 'A published app must include a Google Group testing link';
+    end if;
+  elsif new.lifecycle = 'published'
+        and new.group_url is null
+        and (old.lifecycle <> 'published' or old.group_url is not null) then
+    raise exception 'A published app must include a Google Group testing link';
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists owned_apps_validate_testing_links on public.owned_apps;
+create trigger owned_apps_validate_testing_links
+before insert or update of group_url, install_url, opt_in_url, package_name, lifecycle
+on public.owned_apps
+for each row execute function public.validate_owned_app_testing_links();
+
+revoke execute on function public.validate_owned_app_testing_links() from public, anon, authenticated;

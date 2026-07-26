@@ -1,0 +1,21 @@
+   355	            onClearError = chatRepo::clearError
+   356	        )
+   357	        is AppScreen.OwnDetail -> OwnAppDetailScreen(current.appId, current.attentionOnly, ownedApps, campaigns, commitments, discoverApps, onBack = ::back, onPair = { navigate(AppScreen.PairDetail(it)) }, onReminder = { id, person -> scope.launch { repo.sendReminder(id).onSuccess { snack("Reminder sent to @$person. They'll see it today") }.onFailure { snack(userFriendlyError(it, "We couldn't send the reminder. Check your connection and try again.")) } } }, onSwitch = { replace(AppScreen.OwnDetail(it)) }, onDelist = { id -> repo.delistOwnedApp(id).onSuccess { replace(AppScreen.Main(MainDestination.APPS)); snack("Your app has been removed from Discover") }.onFailure { snack(userFriendlyError(it, "We couldn't remove this app from Discover. Check your connection and try again.")) } }, onMarkPublished = { id -> repo.markOwnedAppPublished(id).onSuccess { snack("Your app status was saved. TestLoop cannot verify Google Play approval.") }.onFailure { snack(userFriendlyError(it, "We couldn't update your Google Play status. Check your connection and try again.")) } }, onUpdateTesterCount = { id, count -> repo.updateCampaignTesterCount(id, count).onSuccess { snack("Tester target updated to $count. Discover and progress are now up to date.") }.onFailure { snack(userFriendlyError(it, "We couldn't update the tester target. Check your connection and try again.")) } }, onConfirmClosedTesting = { id -> scope.launch { repo.confirmClosedTesting(id).onSuccess { snack("Closed testing confirmation saved. Daily tasks are now available.") }.onFailure { snack(userFriendlyError(it, "We couldn't save the closed-testing confirmation. Check your connection and try again.")) } } }, onRiskDecision = { id, decision, commitmentId -> scope.launch { repo.chooseCampaignRiskDecision(id, decision, commitmentId).onSuccess { snack(if (decision == CampaignRiskDecision.RESTART || decision == CampaignRiskDecision.REOPEN) "Replacement slot opened in Discover. The timer is unchanged until you confirm the restart." else "Campaign decision saved. The current timer is unchanged.") }.onFailure { snack(userFriendlyError(it, "We couldn't save the campaign decision. Check your connection and try again.")) } } }, onFinalRestart = { id -> scope.launch { repo.finalizeCampaignRestart(id).onSuccess { snack("Restart confirmed. Testers now have a new Day 1 and end date.") }.onFailure { snack(userFriendlyError(it, "We couldn't restart the campaign yet. Check that the replacement tester is installed.")) } } })
+   358	        AppScreen.Obligations -> ObligationsScreen(commitments, ownedApps, campaigns, discoverApps, onBack = ::back, onPair = { navigate(AppScreen.PairDetail(it)) })
+   359	        AppScreen.Notifications -> NotificationsRedesign(notifications, onBack = ::back, onOpenPair = { navigate(AppScreen.PairDetail(it)) })
+   360	        AppScreen.AddApp -> AddAppFlow(onBack = ::back, onPublished = { app, campaign ->
+   361	            repo.addOwnedApp(app, campaign).onSuccess {
+   362	                replace(AppScreen.Main(MainDestination.APPS))
+   363	                snack("Your app has been successfully published! Testers can now discover ${app.title} 🎉")
+   364	            }
+   365	        })
+   366	        AppScreen.GooglePlayTestingGuide -> GooglePlayTestingGuide(padding = PaddingValues(0.dp), onBack = ::back, onOpenOfficialGuide = {
+   367	            when (externalAppLauncher.openUrl(GOOGLE_PLAY_TESTING_REQUIREMENTS_URL)) {
+   368	                LaunchResult.Blocked -> snack("This Google help link was blocked. Try opening it in your browser.")
+   369	                LaunchResult.Unavailable -> snack("We couldn't open Google's help page right now.")
+   370	                else -> Unit
+   371	            }
+   372	        })
+   373	    }
+   374	}
+   375	

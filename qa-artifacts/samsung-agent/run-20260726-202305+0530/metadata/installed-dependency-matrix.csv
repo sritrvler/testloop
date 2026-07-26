@@ -1,0 +1,63 @@
+host_timestamp=2026-07-26T20:25:45+05:30
+package,installed,pm_path,launch_resolve
+com.testloop.app,yes,package:/data/app/~~qo8q3ADTyIQM_S-QfED6Tg==/com.testloop.app-SFhxowR9nv7a2jXJJeBEUA==/base.apk,priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=false com.testloop.app/.MainActivity 
+com.dreamplug.androidapp,yes,package:/data/app/~~P51MfogU7iF2H44MgjcHHA==/com.dreamplug.androidapp-eLFSNLeojX2n804lmP1oLg==/base.apk
+package:/data/app/~~P51MfogU7iF2H44MgjcHHA==/com.dreamplug.androidapp-eLFSNLeojX2n804lmP1oLg==/split_config.arm64_v8a.apk
+package:/data/app/~~P51MfogU7iF2H44MgjcHHA==/com.dreamplug.androidapp-eLFSNLeojX2n804lmP1oLg==/split_config.xxhdpi.apk
+package:/data/app/~~P51MfogU7iF2H44MgjcHHA==/com.dreamplug.androidapp-eLFSNLeojX2n804lmP1oLg==/split_taprupaycore.apk
+package:/data/app/~~P51MfogU7iF2H44MgjcHHA==/com.dreamplug.androidapp-eLFSNLeojX2n804lmP1oLg==/split_taprupaycore.config.xxhdpi.apk
+package:/data/app/~~P51MfogU7iF2H44MgjcHHA==/com.dreamplug.androidapp-eLFSNLeojX2n804lmP1oLg==/split_tapvisacore.apk
+package:/data/app/~~P51MfogU7iF2H44MgjcHHA==/com.dreamplug.androidapp-eLFSNLeojX2n804lmP1oLg==/split_tapvisacore.config.xxhdpi.apk,priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=false com.dreamplug.androidapp/.CredFlutterActivity 
+com.google.android.apps.nbu.paisa.user,yes,package:/data/app/~~KdctIDM9-h-LT5tFaie9-w==/com.google.android.apps.nbu.paisa.user-K_mkRAeL8hstVCWOFk8sBw==/base.apk
+package:/data/app/~~KdctIDM9-h-LT5tFaie9-w==/com.google.android.apps.nbu.paisa.user-K_mkRAeL8hstVCWOFk8sBw==/split_config.arm64_v8a.apk
+package:/data/app/~~KdctIDM9-h-LT5tFaie9-w==/com.google.android.apps.nbu.paisa.user-K_mkRAeL8hstVCWOFk8sBw==/split_config.xxhdpi.apk,priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=false com.google.android.apps.nbu.paisa.user/com.google.nbu.paisa.flutter.gpay.app.LauncherActivity 
+com.whatsapp,yes,package:/data/app/~~IjSuT-ycHJvoF2jJPsMu4g==/com.whatsapp-O_W2etQ_SdGftP6AvGt0Uw==/base.apk
+package:/data/app/~~IjSuT-ycHJvoF2jJPsMu4g==/com.whatsapp-O_W2etQ_SdGftP6AvGt0Uw==/split_config.arm64_v8a.apk
+package:/data/app/~~IjSuT-ycHJvoF2jJPsMu4g==/com.whatsapp-O_W2etQ_SdGftP6AvGt0Uw==/split_config.xxhdpi.apk
+package:/data/app/~~IjSuT-ycHJvoF2jJPsMu4g==/com.whatsapp-O_W2etQ_SdGftP6AvGt0Uw==/split_i18n_bn.apk
+package:/data/app/~~IjSuT-ycHJvoF2jJPsMu4g==/com.whatsapp-O_W2etQ_SdGftP6AvGt0Uw==/split_i18n_en.apk
+package:/data/app/~~IjSuT-ycHJvoF2jJPsMu4g==/com.whatsapp-O_W2etQ_SdGftP6AvGt0Uw==/split_i18n_gu.apk
+package:/data/app/~~IjSuT-ycHJvoF2jJPsMu4g==/com.whatsapp-O_W2etQ_SdGftP6AvGt0Uw==/split_i18n_hi.apk
+package:/data/app/~~IjSuT-ycHJvoF2jJPsMu4g==/com.whatsapp-O_W2etQ_SdGftP6AvGt0Uw==/split_i18n_kn.apk
+package:/data/app/~~IjSuT-ycHJvoF2jJPsMu4g==/com.whatsapp-O_W2etQ_SdGftP6AvGt0Uw==/split_i18n_ml.apk
+package:/data/app/~~IjSuT-ycHJvoF2jJPsMu4g==/com.whatsapp-O_W2etQ_SdGftP6AvGt0Uw==/split_i18n_mr.apk
+package:/data/app/~~IjSuT-ycHJvoF2jJPsMu4g==/com.whatsapp-O_W2etQ_SdGftP6AvGt0Uw==/split_i18n_pa.apk
+package:/data/app/~~IjSuT-ycHJvoF2jJPsMu4g==/com.whatsapp-O_W2etQ_SdGftP6AvGt0Uw==/split_i18n_ta.apk
+package:/data/app/~~IjSuT-ycHJvoF2jJPsMu4g==/com.whatsapp-O_W2etQ_SdGftP6AvGt0Uw==/split_i18n_te.apk
+package:/data/app/~~IjSuT-ycHJvoF2jJPsMu4g==/com.whatsapp-O_W2etQ_SdGftP6AvGt0Uw==/split_i18n_ur.apk,priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=false com.whatsapp/.Main 
+in.amazon.mShop.android.shopping,yes,package:/data/app/~~EkN9OQ0lONfr2cSkA5ImQg==/in.amazon.mShop.android.shopping-SEtSlr-Zvcd6aEVO1jWHOQ==/base.apk
+package:/data/app/~~EkN9OQ0lONfr2cSkA5ImQg==/in.amazon.mShop.android.shopping-SEtSlr-Zvcd6aEVO1jWHOQ==/split_config.arm64_v8a.apk
+package:/data/app/~~EkN9OQ0lONfr2cSkA5ImQg==/in.amazon.mShop.android.shopping-SEtSlr-Zvcd6aEVO1jWHOQ==/split_config.xxhdpi.apk,priority=0 preferredOrder=0 match=0x0 specificIndex=-1 isDefault=false android/com.android.internal.app.ResolverActivity 
+com.agoda.mobile.consumer,no,n/a,No activity found 
+com.application.zomato,no,n/a,No activity found 
+com.google.android.apps.maps,yes,package:/data/app/~~VoT51WQS0c-1_MUYH3wB1Q==/com.google.android.apps.maps-NRZPtQALpZbqTRme4zX2Pw==/base.apk
+package:/data/app/~~VoT51WQS0c-1_MUYH3wB1Q==/com.google.android.apps.maps-NRZPtQALpZbqTRme4zX2Pw==/split_config.arm64_v8a.apk
+package:/data/app/~~VoT51WQS0c-1_MUYH3wB1Q==/com.google.android.apps.maps-NRZPtQALpZbqTRme4zX2Pw==/split_config.bn.apk
+package:/data/app/~~VoT51WQS0c-1_MUYH3wB1Q==/com.google.android.apps.maps-NRZPtQALpZbqTRme4zX2Pw==/split_config.en.apk
+package:/data/app/~~VoT51WQS0c-1_MUYH3wB1Q==/com.google.android.apps.maps-NRZPtQALpZbqTRme4zX2Pw==/split_config.gu.apk
+package:/data/app/~~VoT51WQS0c-1_MUYH3wB1Q==/com.google.android.apps.maps-NRZPtQALpZbqTRme4zX2Pw==/split_config.hi.apk
+package:/data/app/~~VoT51WQS0c-1_MUYH3wB1Q==/com.google.android.apps.maps-NRZPtQALpZbqTRme4zX2Pw==/split_config.kn.apk
+package:/data/app/~~VoT51WQS0c-1_MUYH3wB1Q==/com.google.android.apps.maps-NRZPtQALpZbqTRme4zX2Pw==/split_config.ml.apk
+package:/data/app/~~VoT51WQS0c-1_MUYH3wB1Q==/com.google.android.apps.maps-NRZPtQALpZbqTRme4zX2Pw==/split_config.mr.apk
+package:/data/app/~~VoT51WQS0c-1_MUYH3wB1Q==/com.google.android.apps.maps-NRZPtQALpZbqTRme4zX2Pw==/split_config.pa.apk
+package:/data/app/~~VoT51WQS0c-1_MUYH3wB1Q==/com.google.android.apps.maps-NRZPtQALpZbqTRme4zX2Pw==/split_config.ta.apk
+package:/data/app/~~VoT51WQS0c-1_MUYH3wB1Q==/com.google.android.apps.maps-NRZPtQALpZbqTRme4zX2Pw==/split_config.te.apk
+package:/data/app/~~VoT51WQS0c-1_MUYH3wB1Q==/com.google.android.apps.maps-NRZPtQALpZbqTRme4zX2Pw==/split_config.xxhdpi.apk,priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=true com.google.android.apps.maps/com.google.android.maps.MapsActivity 
+com.android.chrome,yes,package:/data/app/~~zf0yVX_Q_5QPjaaFCpRptg==/com.android.chrome-hZTXXyLsyxHsWjP4uikJYw==/base.apk
+package:/data/app/~~zf0yVX_Q_5QPjaaFCpRptg==/com.android.chrome-hZTXXyLsyxHsWjP4uikJYw==/split_chrome.apk
+package:/data/app/~~zf0yVX_Q_5QPjaaFCpRptg==/com.android.chrome-hZTXXyLsyxHsWjP4uikJYw==/split_config.en.apk
+package:/data/app/~~zf0yVX_Q_5QPjaaFCpRptg==/com.android.chrome-hZTXXyLsyxHsWjP4uikJYw==/split_dev_ui.apk
+package:/data/app/~~zf0yVX_Q_5QPjaaFCpRptg==/com.android.chrome-hZTXXyLsyxHsWjP4uikJYw==/split_on_demand.apk
+package:/data/app/~~zf0yVX_Q_5QPjaaFCpRptg==/com.android.chrome-hZTXXyLsyxHsWjP4uikJYw==/split_stack_unwinder.apk,priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=true com.android.chrome/com.google.android.apps.chrome.Main 
+com.sec.android.app.sbrowser,no,n/a,No activity found 
+--- fuzzy installed candidates ---
+package:com.android.credentialmanager
+package:in.amazon.mShop.android.shopping
+package:com.phonepe.app
+package:com.google.android.apps.nbu.paisa.user
+package:net.one97.paytm
+package:com.android.chrome
+package:com.whatsapp
+package:com.sec.android.app.chromecustomizations
+package:in.swiggy.android
+package:com.dreamplug.androidapp

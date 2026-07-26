@@ -1,0 +1,558 @@
+host_timestamp=2026-07-26T20:26:24+05:30
+--- package first install/update ---
+    pkg=Package{3d33cb3 com.testloop.app}
+    versionCode=13 minSdk=26 targetSdk=35
+    versionName=0.1.5
+    lastUpdateTime=2026-07-26 20:14:51
+    installerPackageName=null
+      firstInstallTime=2026-07-26 13:01:45
+--- process pid/current importance ---
+11249
+    hasPendingCompaction=false    isFreezeExempt=false isPendingFreeze=false isFrozen=false
+    earliestFreezableTimeMs=-50m19s313ms
+     Configuration={1.15 405mcc869mnc [en_IN] ldltr sw411dp w411dp h891dp 420dpi nrml long compactNeeded port night finger -keyb/v/h -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2340) mAppBounds=Rect(0, 0 - 1080, 2340) mMaxBounds=Rect(0, 0 - 1080, 2340) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0 mStageConfig=undefined mPopOver=undefined mOverlappingWithCutout=false} s.4542 fontWeightAdjustment=0 ff=0 bf=-1 bts=0 cst=1.0 nightDim=0 themeSeq=0}
+     OverrideConfiguration={0.0 ?mcc0mnc ?localeList ?layoutDir ?swdp ?wdp ?hdp ?density ?lsize ?long ?round ?ldr ?wideColorGamut ?orien ?uimode ?night ?touch ?keyb/?/? ?nav/? winConfig={ mBounds=Rect(0, 0 - 0, 0) mAppBounds=null mMaxBounds=Rect(0, 0 - 0, 0) mDisplayRotation=undefined mWindowingMode=undefined mActivityType=undefined mAlwaysOnTop=undefined mRotation=undefined mStageConfig=undefined mPopOver=undefined mOverlappingWithCutout=false} ?fontWeightAdjustment ff=0 bf=-1 bts=-1 cst=0.0 nightDim=-1 themeSeq=0}
+     mLastReportedConfiguration={1.15 405mcc869mnc [en_IN] ldltr sw411dp w411dp h891dp 420dpi nrml long compactNeeded port night finger -keyb/v/h -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2340) mAppBounds=Rect(0, 0 - 1080, 2340) mMaxBounds=Rect(0, 0 - 1080, 2340) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0 mStageConfig=undefined mPopOver=undefined mOverlappingWithCutout=false} s.4542 fontWeightAdjustment=0 ff=0 bf=-1 bts=0 cst=1.0 nightDim=0 themeSeq=0}
+  *APP* UID 10414 ProcessRecord{fb5398e 11249:com.testloop.app/u0a414}
+    user #0 uid=10414 gids={3003, 50414, 20414, 9997}
+    mRequiredAbi=arm64-v8a instructionSet=arm64
+    dir=/data/app/~~qo8q3ADTyIQM_S-QfED6Tg==/com.testloop.app-SFhxowR9nv7a2jXJJeBEUA==/base.apk publicDir=/data/app/~~qo8q3ADTyIQM_S-QfED6Tg==/com.testloop.app-SFhxowR9nv7a2jXJJeBEUA==/base.apk data=/data/user/0/com.testloop.app
+    packageList={com.testloop.app}
+    compat={420dpi}
+    thread=com.android.server.am.ApplicationThreadDeferred@358c69a
+    pid=11249
+    lastActivityTime=-5m33s516ms    startUpTime=-5m34s206ms    startElapsedTime=-5m34s206ms
+    startSeq=14426
+    mountMode=DEFAULT
+    lastCpuTime=0
+    lastRssTime=-5m34s214ms rssProcState=20 rssStatType=0 nextRssTime=-5m13s520ms
+    lastRss=0.00 lastCachedRss=0.00
+    trimMemoryLevel=0
+    procStateMemTracker: best=4 () / pending state=1 highest=1 1.0x
+    lastRequestedGc=-5m34s123ms lastLowMemory=-5m34s123ms reportLowMemory=false
+    currentHostingComponentTypes=0x0 historicalHostingComponentTypes=0x20
+    adjSeq=618466 lruSeq=437210
+    oom adj: max=1001 curRaw=0 setRaw=0 cur=0 set=0
+    mCurSchedGroup=0 setSchedGroup=0 systemNoUi=false
+    curProcState=12 mRepProcState=12 setProcState=12 lastStateTime=-5m33s520ms
+    curCapability=-------TI setCapability=-------TI
+    curCpuTimeReasons=0x1 setCpuTimeReasons=0x1 curImplicitCpuTimeReasons=0x1 setImplicitCpuTimeReasons=0x1
+
+--
+    isMLException=
+false
+    scheduleServiceTimeoutPending=false
+    Published Providers:
+      - androidx.startup.InitializationProvider
+        -> ContentProviderRecord{e6babcb u0 com.testloop.app/androidx.startup.InitializationProvider}
+    Connected Providers:
+      - f34591b/com.android.providers.settings/.SettingsProvider->11249:com.testloop.app/u0a414 s1/1 u0/0 +5m33s431ms
+    mIsReceivingBroadcast=false
+    mBroadcastReceiverSchedGroup=-2147483648
+    lastCompactTime=0 lastCompactProfile=null
+    hasPendingCompaction=false    isFreezeExempt=false isPendingFreeze=false isFrozen=false
+    earliestFreezableTimeMs=--
+    Activities:
+      - ActivityRecord{185786047 u0 com.testloop.app/.MainActivity t2257}
+    Recent Tasks:
+      - Task{da1398c #2257 type=standard A=10414:com.testloop.app}
+     Configuration={1.15 405mcc869mnc [en_IN] ldltr sw411dp w411dp h891dp 420dpi nrml long compactNeeded port night finger -keyb/v/h -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2340) mAppBounds=Rect(0, 0 - 1080, 2340) mMaxBounds=Rect(0, 0 - 1080, 2340) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0 mStageConfig=undefined mPopOver=off mOverlappingWithCutout=false} s.4706 fontWeightAdjustment=0 ff=0 bf=-1 bts=0 cst=1.0 nightDim=0 themeSeq=0}
+     OverrideConfiguration={1.15 405mcc869mnc [en_IN] ldltr sw411dp w411dp h891dp 420dpi nrml long compactNeeded port night finger -keyb/v/h -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2340) mAppBounds=Rect(0, 0 - 1080, 2340) mMaxBounds=Rect(0, 0 - 1080, 2340) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=standard mAlwaysOnTop=undefined mRotation=ROTATION_0 mStageConfig=undefined mPopOver=off mOverlappingWithCutout=false} s.2 fontWeightAdjustment=0 ff=0 bf=-1 bts=0 cst=1.0 nightDim=0 themeSeq=0}
+     mLastReportedConfiguration={1.15 405mcc869mnc [en_IN] ldltr sw411dp w411dp h891dp 420dpi nrml long compactNeeded port night finger -keyb/v/h -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2340) mAppBounds=Rect(0, 0 - 1080, 2340) mMaxBounds=Rect(0, 0 - 1080, 2340) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0 mStageConfig=undefined mPopOver=off mOverlappingWithCutout=false} s.4706 fontWeightAdjustment=0 ff=0 bf=-1 bts=0 cst=1.0 nightDim=0 themeSeq=0}
+  *APP* UID 10254 ProcessRecord{bf4ced 10577:com.google.android.gms.unstable/u0a254}
+    user #0 uid=10254 gids={2001, 1005, 3002, 3003, 3001, 3007, 1007, 1096, 3006, 50254, 20254, 9997}
+    mRequiredAbi=arm64-v8a instructionSet=arm64
+    class=co.g.App
+    manageSpaceActivityName=co.g.Space
+    dir=/data/app/~~1mpcZZK2T00vSmmNl81y4Q==/com.google.android.gms-Mnu1lKRFuZenFQ_KitSZFg==/base.apk publicDir=/data/app/~~1mpcZZK2T00vSmmNl81y4Q==/com.google.android.gms-Mnu1lKRFuZenFQ_KitSZFg==/base.apk data=/data/user/0/com.google.android.gms
+    packageList={com.google.android.gms}
+    compat={420dpi}
+    thread=com.android.server.am.ApplicationThreadDeferred@c322fa8
+    pid=10577
+    lastActivityTime=-9m6s977ms    startUpTime=-9m18s408ms    startElapsedTime=-9m18s408ms
+    startSeq=14423
+    mountMode=DEFAULT
+    lastCpuTime=0
+    lastRssTime=-5m30s722ms rssProcState=19 rssStatType=0 nextRssTime=+4m29s275ms
+    lastRss=150MB lastCachedRss=150MB
+    trimMemoryLevel=0
+--
+    Proc #11: psvc   F/ /PER  LCMNFUATI  t: 0 3616:com.google.android.providers.media.module/u0a296 (service)
+        com.google.android.providers.media.module/com.android.providers.media.fuse.ExternalStorageServiceImpl<=Proc{1286:system/1000}
+        oom: max=1001 curRaw=-700 setRaw=-700 cur=-700 set=-700
+        state: cur=PER  set=PER  lastRss=63MB lastCachedRss=0.00
+        cached=false empty=false hasAboveClient=false
+    Proc # 0: fg     b/A/TPSL -------TI  t: 0 11249:com.testloop.app/u0a414 (top-sleeping)
+        oom: max=1001 curRaw=0 setRaw=0 cur=0 set=0
+        state: cur=TPSL set=TPSL lastRss=0.00 lastCachedRss=0.00
+        cached=false empty=false hasAboveClient=false
+    Proc #48: vis    R/ /BFGS ---NFU-TI  t: 0 2987:com.sec.location.nsflp2/5013 (service)
+        com.sec.location.nsflp2/.nsmonitor.NSMonitorService<=Proc{1286:system/1000}
+        oom: max=1001 curRaw=100 setRaw=100 cur=100 set=100
+        state: cur=BFGS set=BFGS lastRss=38MB lastCachedRss=0.00
+        cached=false empty=false hasAboveClient=false
+    Proc #45: vis    R/ /BFGS LCMNFUATI  t: 0 2977:com.google.android.ext.services/u0a299 (service)
+        com.google.android.ext.services/android.ext.services.notification.Assistant<=Proc{1286:system/1000}
+        oom: max=1001 curRaw=100 setRaw=100 cur=100 set=100
+        state: cur=BFGS set=BFGS lastRss=55MB lastCachedRss=0.00
+        cached=false empty=false hasAboveClient=false
+    Proc #44: vis    R/ /BFGS ---NFU-TI  t: 0 14722:com.samsung.android.smartsuggestions/u0a121 (service)
+        com.samsung.android.smartsuggestions/.extservice.services.CustomTextClassifierService<=Proc{1286:system/1000}
+        oom: max=1001 curRaw=100 setRaw=100 cur=100 set=100
+        state: cur=BFGS set=BFGS lastRss=59MB lastCachedRss=0.00
+        cached=false empty=false hasAboveClient=false
+    Proc #27: vis    R/ /BFGS LCMNFUATI  t: 0 3605:com.google.android.as/u0a247 (service)
+        com.google.android.as/com.google.android.apps.miphone.aiai.captions.SystemCaptionsManagerService<=Proc{1286:system/1000}
+--
+    UID u0a396: UidRecord{cca1c7d u0a396 CEM  bg:+40s945ms idle change:cached|procstate|procadj procs:0 seq(1921336,1921336)} caps=---------
+      curProcState=19 curCapability=---------
+      proc=ProcessRecord{dff4ed 11758:in.amazon.mShop.android.shopping/u0a396}
+    UID u0a414: UidRecord{c6a6772 u0a414 TPSL bg:+5m33s561ms idle change:idle|procstate procs:0 seq(1919627,1919444)} caps=-------TI
+      curProcState=12 curCapability=-------TI
+      proc=ProcessRecord{fb5398e 11249:com.testloop.app/u0a414}
+    UID u0i249: UidRecord{8fef7c3 u0i249 BFGS change:procadj procs:0 seq(1921592,1862727)} caps=---NFU-TI
+      curProcState=5 curCapability=---NFU-TI
+      proc=ProcessRecord{ac1d0fb 21526:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:1/u0a314i249}
+    UID u0i262: UidRecord{7df1840 u0i262 CEM  bg:+36s251ms idle change:cached|procstate|procadj procs:0 seq(1921368,1921368)} caps=---------
+      curProcState=19 curCapability=---------
+      proc=ProcessRecord{c9de723 12476:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0/u0a255i262}
+
+  UID validation:
+    UID 1000: UidRecord{4e10379 1000 PER  procs:0 seq(0,0)} caps=LCMNFUATI
+      curProcState=0 curCapability=LCMNFUATI
+    UID 1001: UidRecord{b7388be 1001 PER  procs:0 seq(0,0)} caps=LCMNFUATI
+      curProcState=0 curCapability=LCMNFUATI
+    UID 1027: UidRecord{4cf4d1f 1027 PER  procs:0 seq(0,0)} caps=LCMNFUATI
+      curProcState=0 curCapability=LCMNFUATI
+    UID 1068: UidRecord{abd786c 1068 PER  procs:0 seq(0,0)} caps=LCMNFUATI
+      curProcState=0 curCapability=LCMNFUATI
+    UID 1073: UidRecord{ce55e35 1073 PER  procs:0 seq(0,0)} caps=LCMNFUATI
+      curProcState=0 curCapability=LCMNFUATI
+    UID 5004: UidRecord{25b72ca 5004 CEM  idle procs:0 seq(0,0)} caps=---------
+      curProcState=19 curCapability=---------
+--
+    UID u0i262: UidRecord{c3a07d0 u0i262 CEM  idle procs:0 seq(0,0)} caps=---------
+      curProcState=19 curCapability=---------
+
+  Raw LRU list (dumpsys activity lru):
+    Activities:
+    #62: fg     TPSL -------TI 11249:com.testloop.app/u0a414 act:activities|recents
+    #61: vis    BFGS ---NFU-TI 2686:com.sec.android.app.launcher/u0a146 act:activities|recents
+    #60: cch    CRE  --------- 23468:com.whatsapp/u0a350 act:recents
+    #59: cch+ 5 CEM  --------- 2012:com.google.android.apps.docs/u0a353
+    #58: prcp   IMPB -------TI 4579:com.samsung.android.honeyboard/u0a217 act:treated
+    #57: vis    IMPF -------TI 16399:com.dreamplug.androidapp/u0a322 act:activities|recents
+    #56: cch    CACC -------TI 27903:com.google.android.googlequicksearchbox:googleapp/u0a255 act:client
+    Other:
+    #55: cch+ 5 CEM  --------- 8005:com.google.android.cellbroadcastreceiver/u0a286
+    #54: cch+ 5 CEM  --------- 5047:com.google.android.gms/u0a254
+    #53: cch+ 5 CEM  --------- 11743:com.sec.android.app.clockpackage/u0a311
+    #52: vis    BFGS LCMNFUATI 10941:com.google.android.gms.persistent/u0a254
+    #51: psvc   PER  LCMNFUATI 3616:com.google.android.providers.media.module/u0a296
+    #50: picked  CEM  --------- 17022:android.process.acore/u0a57
+    #49: cch+ 5 CEM  --------- 12476:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0/u0a255i262
+    #48: cch+ 5 CEM  --------- 11580:com.android.vending/u0a253
+    #47: cch+ 5 CEM  --------- 11980:com.android.vending:background/u0a253
+    #46: cch+ 5 CEM  --------- 11758:in.amazon.mShop.android.shopping/u0a396
+    #45: cch+ 5 CEM  --------- 11760:com.jio.myjio/u0a315
+    #44: cch+ 5 CEM  --------- 11756:com.csam.icici.bank.imobile/u0a319
+    #43: cch+ 5 CEM  --------- 12030:com.samsung.drmboost/u0a332
+--
+    PERS #59: pers   R/ /BFGS LCMNFUATI  t: 0 1920:com.android.systemui/u0a47 (pers-top-ui)
+    Proc #51: psvc   F/ /PER  LCMNFUATI  t: 0 2478:com.sec.imsservice:ImsUpdateService/1000 (service)
+        com.sec.imsservice/com.sec.internal.ims.updater.ImsUpdateService<=Proc{2306:com.sec.imsservice/1000}
+    Proc #11: psvc   F/ /PER  LCMNFUATI  t: 0 3616:com.google.android.providers.media.module/u0a296 (service)
+        com.google.android.providers.media.module/com.android.providers.media.fuse.ExternalStorageServiceImpl<=Proc{1286:system/1000}
+    Proc # 0: fg     b/A/TPSL -------TI  t: 0 11249:com.testloop.app/u0a414 (top-sleeping)
+    Proc #48: vis    R/ /BFGS ---NFU-TI  t: 0 2987:com.sec.location.nsflp2/5013 (service)
+        com.sec.location.nsflp2/.nsmonitor.NSMonitorService<=Proc{1286:system/1000}
+    Proc #45: vis    R/ /BFGS LCMNFUATI  t: 0 2977:com.google.android.ext.services/u0a299 (service)
+        com.google.android.ext.services/android.ext.services.notification.Assistant<=Proc{1286:system/1000}
+    Proc #44: vis    R/ /BFGS ---NFU-TI  t: 0 14722:com.samsung.android.smartsuggestions/u0a121 (service)
+        com.samsung.android.smartsuggestions/.extservice.services.CustomTextClassifierService<=Proc{1286:system/1000}
+    Proc #27: vis    R/ /BFGS LCMNFUATI  t: 0 3605:com.google.android.as/u0a247 (service)
+        com.google.android.as/com.google.android.apps.miphone.aiai.captions.SystemCaptionsManagerService<=Proc{1286:system/1000}
+    Proc #23: vis    R/ /BFGS LCMNFUATI  t: 0 7956:com.google.android.googlequicksearchbox:interactor/u0a255 (service)
+        com.google.android.googlequicksearchbox/com.google.android.voiceinteraction.GsaVoiceInteractionService<=Proc{1286:system/1000}
+    Proc #10: vis    R/ /BFGS LCMNFUATI  t: 0 10941:com.google.android.gms.persistent/u0a254 (service)
+        com.google.android.gms/.auth.trustagent.GoogleTrustAgent<=Proc{1286:system/1000}
+    Proc # 1: vis    R/ /BFGS ---NFU-TI  t: 0 2686:com.sec.android.app.launcher/u0a146 (service)
+        com.sec.android.app.launcher/.globalgesture.TouchInteractionService<=Proc{1920:com.android.systemui/u0a47}
+    Proc #50: vis    R/ /IMPF LCMN-UATI  t: 0 1919:com.samsung.android.wallpaper.live/u0a349 (service)
+        com.samsung.android.wallpaper.live/.layered.LayeredWallpaperService<=Proc{1286:system/1000}
+    Proc #49: vis    R/ /IMPF -------TI  t: 0 6544:com.sec.android.daemonapp:weather_content_provider/u0a223 (provider)
+        com.sec.android.daemonapp/.provider.SystemLevelContentProvider<=Proc{1919:com.samsung.android.wallpaper.live/u0a349}
+    Proc #43: vis    R/ /IMPF -------TI  t: 0 4822:com.sec.android.daemonapp/u0a223 (service)
+        com.sec.android.daemonapp/androidx.room.MultiInstanceInvalidationService<=Proc{6544:com.sec.android.daemonapp:weather_content_provider/u0a223}
+--
+    PID #10378: ProcessRecord{1479c64 10378:com.facebook.katana/u0a309}
+    PID #10506: ProcessRecord{44b1267 10506:com.google.android.webview:webview_service/u0a265}
+    PID #10577: ProcessRecord{bf4ced 10577:com.google.android.gms.unstable/u0a254}
+    PID #10729: ProcessRecord{3b2dd9c 10729:com.sec.android.provider.badge/u0a53}
+    PID #10941: ProcessRecord{4d0cdaf 10941:com.google.android.gms.persistent/u0a254}
+    PID #11249: ProcessRecord{fb5398e 11249:com.testloop.app/u0a414}
+    PID #11580: ProcessRecord{1f844b5 11580:com.android.vending/u0a253}
+    PID #11743: ProcessRecord{a21e341 11743:com.sec.android.app.clockpackage/u0a311}
+    PID #11756: ProcessRecord{1efd0ca 11756:com.csam.icici.bank.imobile/u0a319}
+    PID #11758: ProcessRecord{dff4ed 11758:in.amazon.mShop.android.shopping/u0a396}
+    PID #11760: ProcessRecord{3efd4a5 11760:com.jio.myjio/u0a315}
+    PID #11980: ProcessRecord{3542dcc 11980:com.android.vending:background/u0a253}
+    PID #12030: ProcessRecord{7ccab3d 12030:com.samsung.drmboost/u0a332}
+    PID #12476: ProcessRecord{c9de723 12476:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0/u0a255i262}
+    PID #14722: ProcessRecord{1046732 14722:com.samsung.android.smartsuggestions/u0a121}
+    PID #16094: ProcessRecord{de0c092 16094:com.truecaller/u0a314}
+    PID #16399: ProcessRecord{39f4bf7 16399:com.dreamplug.androidapp/u0a322}
+    PID #17022: ProcessRecord{162bd68 17022:android.process.acore/u0a57}
+    PID #21526: ProcessRecord{ac1d0fb 21526:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:1/u0a314i249}
+    PID #22188: ProcessRecord{b55b974 22188:com.facebook.services/u0a75}
+    PID #23468: ProcessRecord{863a9ec 23468:com.whatsapp/u0a350}
+    PID #27903: ProcessRecord{65b38d0 27903:com.google.android.googlequicksearchbox:googleapp/u0a255}
+    PID #31987: ProcessRecord{f4734c3 31987:com.google.android.apps.messaging/u0a252}
+
+  Active process infos:
+    Pinfo PID #2977:
+--- activity top/tasks involving testloop ---
+ACTIVITY MANAGER ACTIVITIES (dumpsys activity activities)
+Display #0 (activities from top to bottom):
+  * Task{da1398c #2257 type=standard A=10414:com.testloop.app U=0 visible=true visibleRequested=false mode=fullscreen translucent=false sz=1}
+    mLastPausedActivity: ActivityRecord{185786047 u0 com.testloop.app/.MainActivity t2257}
+    mLastNonFullscreenBounds=Rect(81, 572 - 999, 1742)
+    isSleeping=true
+    * Hist  #0: ActivityRecord{185786047 u0 com.testloop.app/.MainActivity t2257}
+      packageName=com.testloop.app processName=com.testloop.app
+      launchedFromUid=2000 launchedFromPackage=com.android.shell launchedFromFeature=null userId=0
+      app=ProcessRecord{fb5398e 11249:com.testloop.app/u0a414}
+      Intent { flg=0x10000000 xflg=0x5 cmp=com.testloop.app/.MainActivity }
+      rootOfTask=true task=Task{da1398c #2257 type=standard A=10414:com.testloop.app}
+      taskAffinity=10414:com.testloop.app
+      mActivityComponent=com.testloop.app/.MainActivity
+      baseDir=/data/app/~~qo8q3ADTyIQM_S-QfED6Tg==/com.testloop.app-SFhxowR9nv7a2jXJJeBEUA==/base.apk
+      dataDir=/data/user/0/com.testloop.app
+      stateNotNeeded=false componentSpecified=true mActivityType=standard
+      compat={420dpi} theme=0x7f0a0009
+      mLastReportedConfigurations:
+        mGlobalConfig={1.15 405mcc869mnc [en_IN] ldltr sw411dp w411dp h891dp 420dpi nrml long compactNeeded port night finger -keyb/v/h -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2340) mAppBounds=Rect(0, 0 - 1080, 2340) mMaxBounds=Rect(0, 0 - 1080, 2340) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0 mStageConfig=undefined mPopOver=off mOverlappingWithCutout=false} s.4706 fontWeightAdjustment=0 ff=0 bf=-1 bts=0 cst=1.0 nightDim=0 themeSeq=0}
+        mOverrideConfig={1.15 405mcc869mnc [en_IN] ldltr sw411dp w411dp h891dp 420dpi nrml long compactNeeded port night finger -keyb/v/h -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2340) mAppBounds=Rect(0, 0 - 1080, 2340) mMaxBounds=Rect(0, 0 - 1080, 2340) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=standard mAlwaysOnTop=undefined mRotation=ROTATION_0 mStageConfig=undefined mPopOver=off mOverlappingWithCutout=false} s.2 fontWeightAdjustment=0 ff=0 bf=-1 bts=0 cst=1.0 nightDim=0 themeSeq=0}
+      mLastReportedActivityWindowInfo=ActivityWindowInfo{isEmbedded=false, taskBounds=Rect(0, 0 - 1080, 2340), taskFragmentBounds=Rect(0, 0 - 1080, 2340)}
+      CurrentConfiguration={1.15 405mcc869mnc [en_IN] ldltr sw411dp w411dp h891dp 420dpi nrml long compactNeeded port night finger -keyb/v/h -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2340) mAppBounds=Rect(0, 0 - 1080, 2340) mMaxBounds=Rect(0, 0 - 1080, 2340) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=standard mAlwaysOnTop=undefined mRotation=ROTATION_0 mStageConfig=undefined mPopOver=off mOverlappingWithCutout=false} s.2 fontWeightAdjustment=0 ff=0 bf=-1 bts=0 cst=1.0 nightDim=0 themeSeq=0}
+      RequestedOverrideConfiguration={0.0 ?mcc0mnc ?localeList ?layoutDir ?swdp ?wdp ?hdp ?density ?lsize ?long ?round ?ldr ?wideColorGamut ?orien ?uimode ?night ?touch ?keyb/?/? ?nav/? winConfig={ mBounds=Rect(0, 0 - 0, 0) mAppBounds=null mMaxBounds=Rect(0, 0 - 0, 0) mDisplayRotation=undefined mWindowingMode=undefined mActivityType=standard mAlwaysOnTop=undefined mRotation=undefined mStageConfig=undefined mPopOver=undefined mOverlappingWithCutout=false} ?fontWeightAdjustment ff=0 bf=-1 bts=-1 cst=0.0 nightDim=-1 themeSeq=0}
+      ResolvedOverrideConfiguration={0.0 ?mcc0mnc ?localeList ?layoutDir ?swdp ?wdp ?hdp ?density ?lsize ?long ?round ?ldr ?wideColorGamut ?orien ?uimode ?night ?touch ?keyb/?/? ?nav/? winConfig={ mBounds=Rect(0, 0 - 0, 0) mAppBounds=null mMaxBounds=Rect(0, 0 - 0, 0) mDisplayRotation=undefined mWindowingMode=undefined mActivityType=undefined mAlwaysOnTop=undefined mRotation=undefined mStageConfig=undefined mPopOver=off mOverlappingWithCutout=false} s.2 ?fontWeightAdjustment ff=0 bf=-1 bts=-1 cst=0.0 nightDim=-1 themeSeq=0}
+      taskDescription: label="null" icon=null iconResource=/0 iconFilename=null primaryColor=fff5f5f5
+        backgroundColor=fffafafa statusBarColor=0 navigationBarColor=0
+       backgroundColorFloating=ffffffff
+      launchFailed=false launchCount=0 lastLaunchTime=-5m33s631ms
+      mHaveState=true mIcicle=Bundle[mParcelledData.dataSize=1396]
+      state=STOPPED delayedResume=false finishing=false
+      keysPaused=false inHistory=true idle=true
+      occludesParent=true mNoDisplay=false immersive=false launchMode=2
+      mActivityType=standard
+      windows=[Window{19c125e u0 com.testloop.app/com.testloop.app.MainActivity}]
+      windowType=2
+      mOccludesParent=true
+      mStyleFillsParent=true
+      overrideOrientation=SCREEN_ORIENTATION_UNSPECIFIED
+      requestedOrientation=SCREEN_ORIENTATION_UNSPECIFIED
+      mVisibleRequested=false mVisible=false mClientVisible=false reportedDrawn=false reportedVisible=false
+      mAppStopped=true
+      resizeMode=RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION
+      mLastReportedMultiWindowMode=false mLastReportedPictureInPictureMode=false
+      supportsSizeChanges=SIZE_CHANGES_UNSUPPORTED_METADATA
+      configChanges=0x3
+      neverSandboxDisplayApis=false
+      alwaysSandboxDisplayApis=false
+      isTransparentPolicyRunning=false
+      areBoundsLetterboxed=false
+      isLetterboxRunning=false
+
+  * Task{dc08a16 #1 type=home U=0 visible=false visibleRequested=false mode=fullscreen translucent=false sz=1}
+    * Task{b66b02 #1743 type=home I=com.sec.android.app.launcher/.activities.LauncherActivity U=0 rootTaskId=1 visible=false visibleRequested=false mode=fullscreen translucent=true sz=1}
+      mLastPausedActivity: ActivityRecord{115802357 u0 com.sec.android.app.launcher/.activities.LauncherActivity t1743}
+      mLastNonFullscreenBounds=Rect(81, 572 - 999, 1742)
+      isSleeping=true
+      * Hist  #0: ActivityRecord{115802357 u0 com.sec.android.app.launcher/.activities.LauncherActivity t1743}
+        packageName=com.sec.android.app.launcher processName=com.sec.android.app.launcher
+        launchedFromUid=0 launchedFromPackage=null launchedFromFeature=null userId=0
+        app=ProcessRecord{b7c5cc 2686:com.sec.android.app.launcher/u0a146}
+        Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000100 cmp=com.sec.android.app.launcher/.activities.LauncherActivity (has extras) }
+        rootOfTask=true task=Task{b66b02 #1743 type=home I=com.sec.android.app.launcher/.activities.LauncherActivity}
+        taskAffinity=null
+        mActivityComponent=com.sec.android.app.launcher/.Launcher
+--
+      alwaysSandboxDisplayApis=false
+      activityMetaData=Bundle[{android.app.shortcuts=2132344899}]
+      isTransparentPolicyRunning=false
+
+  Resumed activities in task display areas (from top to bottom):
+    Resumed: ActivityRecord{185786047 u0 com.testloop.app/.MainActivity t2257}
+
+  ResumedActivity: ActivityRecord{185786047 u0 com.testloop.app/.MainActivity t2257}
+
+ActivityTaskSupervisor state:
+  topDisplayFocusedRootTask=Task{da1398c #2257 type=standard A=10414:com.testloop.app}
+  Display: mDisplayId=0 (organized)
+    init=1080x2340 450dpi mMinSizeOfResizeableTaskDp=220 mMinSizeOfDesktopTaskDp=304 base=1080x2340 420dpi cur=1080x2340 app=1080x2340 rng=1080x1080-2340x2340
+    deferred=false mLayoutNeeded=false
+    initCutout=DisplayCutout{insets=Rect(0, 89 - 0, 0) waterfall=Insets{left=0, top=0, right=0, bottom=0} boundingRect={Bounds=[Rect(0, 0 - 0, 0), Rect(507, 23 - 573, 89), Rect(0, 0 - 0, 0), Rect(0, 0 - 0, 0)]} cutoutPathParserInfo={CutoutPathParserInfo{displayWidth=1080 displayHeight=2340 physicalDisplayWidth=1080 physicalDisplayHeight=2340 density={2.8125} cutoutSpec={M 0,0 M 0,8.177777777777778 a 11.73333333333333,11.73333333333333 0 1,0 0,23.46666666666667 a 11.73333333333333,11.73333333333333 0 1,0 0,-23.46666666666667 Z @dp} rotation={0} scale={1.0} physicalPixelDisplaySizeRatio={1.0}}} sideOverrides={}}
+    baseCutout=DisplayCutout{insets=Rect(0, 89 - 0, 0) waterfall=Insets{left=0, top=0, right=0, bottom=0} boundingRect={Bounds=[Rect(0, 0 - 0, 0), Rect(507, 23 - 573, 89), Rect(0, 0 - 0, 0), Rect(0, 0 - 0, 0)]} cutoutPathParserInfo={CutoutPathParserInfo{displayWidth=1080 displayHeight=2340 physicalDisplayWidth=1080 physicalDisplayHeight=2340 density={2.8125} cutoutSpec={M 0,0 M 0,8.177777777777778 a 11.73333333333333,11.73333333333333 0 1,0 0,23.46666666666667 a 11.73333333333333,11.73333333333333 0 1,0 0,-23.46666666666667 Z @dp} rotation={0} scale={1.0} physicalPixelDisplaySizeRatio={1.0}}} sideOverrides={}}
+
+    initRoundedCorners=RoundedCorners{[RoundedCorner{position=TopLeft, radius=101, center=Point(101, 101)}, RoundedCorner{position=TopRight, radius=101, center=Point(979, 101)}, RoundedCorner{position=BottomRight, radius=101, center=Point(979, 2239)}, RoundedCorner{position=BottomLeft, radius=101, center=Point(101, 2239)}]}
+    baseRoundedCorners=RoundedCorners{[RoundedCorner{position=TopLeft, radius=95, center=Point(95, 95)}, RoundedCorner{position=TopRight, radius=95, center=Point(985, 95)}, RoundedCorner{position=BottomRight, radius=95, center=Point(985, 2245)}, RoundedCorner{position=BottomLeft, radius=95, center=Point(95, 2245)}]}
+
+  mLastOrientationSource=WindowedMagnification:0:31@38712082
+  deepestLastOrientationSource=Window{226e2da u0 NotificationShade}
+  overrideConfig={1.15 405mcc869mnc [en_IN] ldltr sw411dp w411dp h891dp 420dpi nrml long compactNeeded port night finger -keyb/v/h -nav/h winConfig={ mBounds=Rect(0, 0 - 1080, 2340) mAppBounds=Rect(0, 0 - 1080, 2340) mMaxBounds=Rect(0, 0 - 1080, 2340) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0 mStageConfig=undefined mPopOver=undefined mOverlappingWithCutout=false} s.4496 fontWeightAdjustment=0 ff=0 bf=-1 bts=0 cst=1.0 nightDim=0 themeSeq=0}
+  mHasSetIgnoreOrientationRequest=false ignoreOrientationRequest=false
+  mLayoutSeq=52328
+  mImeLayeringTarget=null
+  mImeInputTarget=null
+  mImeControlTarget=RemoteInsetsControlTarget{4f89ae6 displayId=0 requestedVisibleTypes=503 animatingTypes=0}
+  mRemoteInsetsControlTarget=RemoteInsetsControlTarget{4f89ae6 displayId=0 requestedVisibleTypes=503 animatingTypes=0}
+  mCurrentFocus=Window{226e2da u0 NotificationShade}
+  mFocusedApp=ActivityRecord{185786047 u0 com.testloop.app/.MainActivity t2257}
+  mFixedRotationLaunchingApp=null
+
+  mHoldScreenWindow=null
+  mObscuringWindow=Window{a1ba4f0 u0 com.samsung.android.wallpaper.live.layered.LayeredWallpaperService}
+  mLastWakeLockHoldingWindow=null
+  mLastWakeLockObscuringWindow=null
+
+  displayId=0
+  mWallpaperTarget=Window{226e2da u0 NotificationShade}
+  mLastWallpaperZoomOut=0.0
+  mFindResults
+    mTopHideWhenLockedWallpaper=Window{5d29ba6 u0 com.android.systemui.wallpapers.ImageWallpaper}
+      mTopHideWhenLockedWallpaper.Token=WallpaperWindowToken{b58c7c5 showWhenLocked=false}_<system>
+    mTopShowWhenLockedWallpaper=Window{a1ba4f0 u0 com.samsung.android.wallpaper.live.layered.LayeredWallpaperService}
+      mTopShowWhenLockedWallpaper.Token=WallpaperWindowToken{24fef4a showWhenLocked=true}_<lock>
+  token WallpaperWindowToken{b58c7c5 showWhenLocked=false}_<system>:
+    isClientVisible=false
+    isVisibleRequested=false
+    mWallpaperX=0.5
+    mWallpaperY=0.5
+    mWallpaperXStep=NA
+    mWallpaperYStep=NA
+    mWallpaperDisplayOffsetX=NA
+    mWallpaperDisplayOffsetY=NA
+  token WallpaperWindowToken{24fef4a showWhenLocked=true}_<lock>:
+    isClientVisible=true
+    isVisibleRequested=true
+    mWallpaperX=0.5
+    mWallpaperY=0.5
+    mWallpaperXStep=NA
+--
+            * Leaf:0:0
+
+  Task display areas in top down Z order:
+    TaskDisplayArea DefaultTaskDisplayArea_d0
+      overrideConfig={0.0 ?mcc0mnc ?localeList ?layoutDir ?swdp ?wdp ?hdp ?density ?lsize ?long ?round ?ldr ?wideColorGamut ?orien ?uimode ?night ?touch ?keyb/?/? ?nav/? winConfig={ mBounds=Rect(0, 0 - 0, 0) mAppBounds=null mMaxBounds=Rect(0, 0 - 0, 0) mDisplayRotation=undefined mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=undefined mStageConfig=undefined mPopOver=undefined mOverlappingWithCutout=false} ?fontWeightAdjustment ff=0 bf=-1 bts=-1 cst=0.0 nightDim=-1 themeSeq=0}
+      mPreferredTopFocusableRootTask=Task{da1398c #2257 type=standard A=10414:com.testloop.app}
+      mLastFocusedRootTask=Task{da1398c #2257 type=standard A=10414:com.testloop.app}
+      Application tokens in top down Z order:
+      * Task{da1398c #2257 type=standard A=10414:com.testloop.app U=0 visible=true visibleRequested=false mode=fullscreen translucent=false sz=1}
+        bounds=[0,0][1080,2340]
+        * ActivityRecord{185786047 u0 com.testloop.app/.MainActivity t2257}
+      * Task{dc08a16 #1 type=home U=0 visible=false visibleRequested=false mode=fullscreen translucent=false sz=1}
+        bounds=[0,0][1080,2340]
+        * Task{b66b02 #1743 type=home I=com.sec.android.app.launcher/.activities.LauncherActivity U=0 rootTaskId=1 visible=false visibleRequested=false mode=fullscreen translucent=true sz=1}
+          bounds=[0,0][1080,2340]
+          * ActivityRecord{115802357 u0 com.sec.android.app.launcher/.activities.LauncherActivity t1743}
+      * Task{640ef2c #2206 type=standard A=10309:com.facebook.katana U=0 visible=false visibleRequested=false mode=fullscreen translucent=true sz=1}
+        bounds=[0,0][1080,2340]
+        * ActivityRecord{3490798 u0 com.facebook.katana/.activity.FbMainTabActivity t2206}
+      * Task{34612b3 #1744 type=recents A=10146:com.sec.android.app.launcher.task.recents U=0 visible=false visibleRequested=false mode=fullscreen translucent=true sz=1}
+        bounds=[0,0][1080,2340]
+        * ActivityRecord{6999063 u0 com.sec.android.app.launcher/com.android.quickstep.RecentsActivity t1744}
+      * Task{5abe163 #3 name=SplitRoot type=undefined U=0 visible=false visibleRequested=false mode=fullscreen translucent=true sz=2}
+        bounds=[0,0][1080,2340]
+        * Task{e6d5160 #5 type=undefined U=0 rootTaskId=3 visible=false visibleRequested=false mode=multi-window stage=side/bottom translucent=true sz=0}
+          bounds=[0,1168][1080,2340]
+        * Task{3971619 #4 type=undefined U=0 rootTaskId=3 visible=false visibleRequested=false mode=multi-window stage=main/top translucent=true sz=0}
+          bounds=[0,0][1080,1147]
+      * Task{b8f0ac6 #2185 type=standard A=10311:com.sec.android.app.clockpackage minWidth=788 minHeight=-1 U=0 visible=false visibleRequested=false mode=fullscreen translucent=true sz=1}
+        bounds=[0,0][1080,2340]
+        * ActivityRecord{132163745 u0 com.sec.android.app.clockpackage/.ClockPackage t2185}
+      * Task{b92b82b #2190 type=standard A=10322:com.dreamplug.androidapp nonResizable U=0 visible=false visibleRequested=false mode=fullscreen translucent=true sz=1}
+        bounds=[0,0][1080,2340]
+        * ActivityRecord{188453364 u0 com.dreamplug.androidapp/.CredFlutterActivity t2190}
+      * Task{9088d8c #2197 type=standard A=10119:com.sec.android.gallery3d U=0 visible=false visibleRequested=false mode=fullscreen translucent=true sz=1}
+        bounds=[0,0][1080,2340]
+        * ActivityRecord{150143679 u0 com.sec.android.gallery3d/com.samsung.android.gallery.app.activity.GalleryActivity t2197}
+      * Task{200f3cf #2188 type=standard A=10252:com.google.android.apps.messaging U=0 visible=false visibleRequested=false mode=fullscreen translucent=true sz=1}
+        bounds=[0,0][1080,2340]
+        * ActivityRecord{155049006 u0 com.google.android.apps.messaging/.ui.ConversationListActivity t2188}
+
+--
+        mode=USER_ROTATION_FREE user=ROTATION_0 sensor=ROTATION_270
+      07-22 11:55:30.581 ROTATION_270 to ROTATION_0
+        source=ActivityRecord{75485996 u0 com.whatsapp/.Conversation t1924} SCREEN_ORIENTATION_UNSPECIFIED
+        mode=USER_ROTATION_FREE user=ROTATION_0 sensor=ROTATION_0
+      07-24 16:37:35.139 ROTATION_0 to ROTATION_270
+        source=ActivityRecord{178806041 u0 com.testloop.app/.MainActivity t2097} SCREEN_ORIENTATION_UNSPECIFIED
+        mode=USER_ROTATION_FREE user=ROTATION_0 sensor=ROTATION_270
+      07-24 16:37:37.141 ROTATION_270 to ROTATION_0
+        source=ActivityRecord{178806041 u0 com.testloop.app/.MainActivity t2097} SCREEN_ORIENTATION_UNSPECIFIED
+        mode=USER_ROTATION_FREE user=ROTATION_0 sensor=ROTATION_0
+      07-26 15:13:17.423 ROTATION_0 to ROTATION_90
+        source=ActivityRecord{155049006 u0 com.google.android.apps.messaging/.ui.ConversationListActivity t2188} SCREEN_ORIENTATION_UNSPECIFIED
+        mode=USER_ROTATION_FREE user=ROTATION_0 sensor=ROTATION_90
+      07-26 15:13:19.556 ROTATION_90 to ROTATION_0
+        source=ActivityRecord{155049006 u0 com.google.android.apps.messaging/.ui.ConversationListActivity t2188} SCREEN_ORIENTATION_UNSPECIFIED
+        mode=USER_ROTATION_FREE user=ROTATION_0 sensor=ROTATION_0
+
+        RotationLockHistory
+          07-25 21:39:52.020: mode=USER_ROTATION_FREE, rotation=ROTATION_0, caller=UiAutomationConnection#restoreRotationStateLocked
+          07-25 21:40:20.602: mode=USER_ROTATION_FREE, rotation=ROTATION_0, caller=UiAutomationConnection#restoreRotationStateLocked
+          07-25 21:41:12.590: mode=USER_ROTATION_LOCKED, rotation=ROTATION_0, caller=MonkeyRotationEven#injectEvent
+          07-25 21:41:12.592: mode=USER_ROTATION_FREE, rotation=ROTATION_0, caller=MonkeyRotationEven#injectEvent
+          07-25 21:41:29.953: mode=USER_ROTATION_FREE, rotation=ROTATION_0, caller=UiAutomationConnection#restoreRotationStateLocked
+          07-25 21:41:36.416: mode=USER_ROTATION_FREE, rotation=ROTATION_0, caller=UiAutomationConnection#restoreRotationStateLocked
+          07-25 21:51:26.902: mode=USER_ROTATION_LOCKED, rotation=ROTATION_0, caller=MonkeyRotationEven#injectEvent
+          07-25 21:51:26.903: mode=USER_ROTATION_FREE, rotation=ROTATION_0, caller=MonkeyRotationEven#injectEvent
+          07-25 22:02:10.460: mode=USER_ROTATION_LOCKED, rotation=ROTATION_0, caller=RotationLockTile#handleClick
+          07-26 12:31:04.893: mode=USER_ROTATION_LOCKED, rotation=ROTATION_0, caller=MonkeyRotationEven#injectEvent
+          07-26 12:31:04.906: mode=USER_ROTATION_FREE, rotation=ROTATION_0, caller=MonkeyRotationEven#injectEvent
+          07-26 15:13:58.002: mode=USER_ROTATION_LOCKED, rotation=ROTATION_0, caller=RotationLockTile#handleClick
+          07-26 20:15:50.732: mode=USER_ROTATION_LOCKED, rotation=ROTATION_0, caller=UiAutomationConnection#restoreRotationStateLocked
+          07-26 20:19:58.593: mode=USER_ROTATION_LOCKED, rotation=ROTATION_0, caller=UiAutomationConnection#restoreRotationStateLocked
+          07-26 20:20:37.459: mode=USER_ROTATION_LOCKED, rotation=ROTATION_0, caller=UiAutomationConnection#restoreRotationStateLocked
+          07-26 20:20:59.308: mode=USER_ROTATION_LOCKED, rotation=ROTATION_0, caller=UiAutomationConnection#restoreRotationStateLocked
+
+  InputConsumers:
+    name=recents_animation_input_consumer pid=2686 user=UserHandle{0}
+
+  WindowInsetsStateController
+--
+        (fullscreen) Task{b8f0ac6 #2185 type=standard A=10311:com.sec.android.app.clockpackage minWidth=788 minHeight=-1}
+        (fullscreen) Task{200f3cf #2188 type=standard A=10252:com.google.android.apps.messaging}
+        (fullscreen) Task{b92b82b #2190 type=standard A=10322:com.dreamplug.androidapp nonResizable}
+        (fullscreen) Task{9088d8c #2197 type=standard A=10119:com.sec.android.gallery3d}
+        (fullscreen) Task{640ef2c #2206 type=standard A=10309:com.facebook.katana}
+        (fullscreen) Task{da1398c #2257 type=standard A=10414:com.testloop.app}
+
+  VisibleActivityProcess:[]
+  NumNonAppVisibleWindowUidMap:[ 10349:1 10047:3]
+
+  PACKAGE SETTINGS MANAGER
+    DisplayCutoutController
+      mCutoutInset=Rect(0, 89 - 0, 0)
+      mNonDecorInsetsWithoutCutout=Rect(0, 0 - 0, 0)
+      mUserChange= (u0)
+        [com.netflix.mediaclient] OverlapWithTheCameraCutout
+  PACKAGE SETTINGS MANAGER - USER CHANGES
+    DisplayCutoutController (u0)
+      [com.netflix.mediaclient] OverlapWithTheCameraCutout
+
+--- alarm/reminder state for testloop ---
+      [tag=*alarm*:com.amazon.identity.action.SYNC_DIRTY_DATA T=1 F=0 AC=false H=PI:74d68c7 OW=2026-07-26 19:13:25.562 WL=11246 elapsed=630133566 rtc=2026-07-26 19:13:10.567]
+      [tag=*alarm*:com.amazon.identity.action.SYNC_DIRTY_DATA T=1 F=0 AC=false H=PI:74d68c7 OW=2026-07-26 19:13:26.565 WL=11248 elapsed=630134566 rtc=2026-07-26 19:13:11.567]
+      [tag=*alarm*:com.amazon.identity.action.SYNC_DIRTY_DATA T=1 F=0 AC=false H=PI:ff6afbf OW=2026-07-26 20:10:51.841 WL=11235 elapsed=633579860 rtc=2026-07-26 20:10:36.861]
+      [tag=*alarm*:com.amazon.identity.action.SYNC_DIRTY_DATA T=1 F=0 AC=false H=PI:ff6afbf OW=2026-07-26 20:10:52.849 WL=11248 elapsed=633580854 rtc=2026-07-26 20:10:37.856]
+    u0a412:
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:f3cb18e OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=551919455 rtc=2026-07-25 21:29:34.579]
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:11861cf OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=552300815 rtc=2026-07-25 21:35:55.939]
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:11861cf OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=552309012 rtc=2026-07-25 21:36:04.136]
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:d5f97d OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=552407436 rtc=2026-07-25 21:37:42.560]
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:d5f97d OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=552416200 rtc=2026-07-25 21:37:51.324]
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:adf4164 OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=552490658 rtc=2026-07-25 21:39:05.782]
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:adf4164 OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=552498611 rtc=2026-07-25 21:39:13.735]
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:fdc7c51 OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=552618126 rtc=2026-07-25 21:41:13.250]
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:60eae30 OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=552706181 rtc=2026-07-25 21:42:41.305]
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:bb82dc5 OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=553232369 rtc=2026-07-25 21:51:27.493]
+  
+  Delivery history: 
+    1000:
+      [tag=*alarm*:TIME_TICK origWhen=632222999 H=L:e0c988a elapsed=632223005 rtc=2026-07-26 19:48:00.006]
+      [tag=*alarm*:TIME_TICK origWhen=632282999 H=L:e0c988a elapsed=632346348 rtc=2026-07-26 19:50:03.349]
+      [tag=*alarm*:FIRST_ALARM_TRIGGER_ACTION origWhen=1785075487939 H=PI:46337b elapsed=632346349 rtc=2026-07-26 19:50:03.350]
+      [tag=*walarm*:DeviceIdleController.light origWhen=632285982 H=L:f84db0c elapsed=632346355 rtc=2026-07-26 19:50:03.356]
+      [tag=*alarm*:TIME_TICK origWhen=632402999 H=L:e0c988a elapsed=633569746 rtc=2026-07-26 20:10:26.747]
+      [tag=*alarm*:*job.cleanup* origWhen=632361526 H=L:126762d elapsed=633569747 rtc=2026-07-26 20:10:26.748]
+      [tag=*alarm*:*job.delay* origWhen=632392451 H=L:35e4a2d elapsed=633569747 rtc=2026-07-26 20:10:26.748]
+      [tag=*alarm*:*job.quota_check* origWhen=632483141 H=L:a5848da elapsed=633569747 rtc=2026-07-26 20:10:26.748]
+      [tag=*alarm*:DeviceIdleController.light origWhen=632646356 H=L:f84db0c elapsed=633569747 rtc=2026-07-26 20:10:26.748]
+      [tag=*alarm*:com.sec.android.alarm.refresh.battery_stats origWhen=632395571 H=PI:6ebf786 elapsed=633569747 rtc=2026-07-26 20:10:26.748]
+      [tag=*walarm*:*job.deadline* origWhen=633573656 H=L:a89d854 elapsed=633573656 rtc=2026-07-26 20:10:30.657]
+      [tag=*walarm*:*job.deadline* origWhen=633573813 H=L:a89d854 elapsed=633573813 rtc=2026-07-26 20:10:30.814]
+      [tag=*walarm*:*job.deadline* origWhen=633576687 H=L:a89d854 elapsed=633576687 rtc=2026-07-26 20:10:33.688]
+      [tag=*alarm*:TIME_TICK origWhen=633602999 H=L:e0c988a elapsed=633603005 rtc=2026-07-26 20:11:00.006]
+      [tag=*alarm*:StatsCompanionService.pull origWhen=633608289 H=L:ec2fe5a elapsed=633649236 rtc=2026-07-26 20:11:46.237]
+      [tag=*alarm*:FIRST_ALARM_TRIGGER_ACTION origWhen=1785076870178 H=PI:46337b elapsed=633649239 rtc=2026-07-26 20:11:46.240]
+      [tag=*alarm*:*CountQuotaTracker.cleanup* origWhen=633615029 H=L:d9056f elapsed=633649242 rtc=2026-07-26 20:11:46.243]
+--- notification permission channel policy ---
+      AppSettings: com.samsung.SMT.lang_en_us_l03 (10201)
+      AppSettings: com.samsung.android.mdecservice (1000) importance=DEFAULT userSet=false permission [pre-grant=true isPreload=true isSigned=true] fixedImportance=true bubblePreference=1
+        NotificationChannel{mId='notification_channel_category_general', mName=General notifications, mDescription=, mImportance=3, mBypassDnd=false, mLockscreenVisibility=-1000, mSound=null, mLights=false, mLightColor=0, mVibrationPattern=null, mVibrationEffect=null, mUserLockedFields=0, mUserVisibleTaskShown=false, mVibrationEnabled=false, mShowBadge=false, mDeleted=false, mDeletedTimeMs=-1, mGroup='null', mAudioAttributes=AudioAttributes: usage=USAGE_NOTIFICATION content=CONTENT_TYPE_SONIFICATION flags=0x800(FLAG_MUTE_HAPTIC)  tags= bundle=null, mBlockableSystem=false, mAllowBubbles=-1, mImportanceLockedByOEM=false, mImportanceLockedDefaultApp=true, mOriginalImp=3, mParent=null, mConversationId=null, mDemoted=false, mImportantConvo=false, mLastNotificationUpdateTimeMs=0, mSoundMissingReason=0}
+      AppSettings: com.sec.android.app.vepreload (10156) importance=DEFAULT userSet=false
+        NotificationChannelGroup{mId='notification_group_videomaker', mName=Categories, mDescription=, mBlocked=false, mChannels=[], mUserLockedFields=0}
+      AppSettings: com.testloop.app (10414) importance=NONE userSet=false
+Restored without uid:
+
+  Notification listeners:
+    Allowed notification listeners:
+      com.google.android.projection.gearhead/com.google.android.gearhead.notifications.SharedNotificationListenerManager$ListenerService:com.truecaller/com.truecaller.notifications.NotificationHandlerService:com.sec.android.app.launcher/com.android.launcher3.notification.NotificationListener:com.samsung.android.smartmirroring/com.samsung.android.smartmirroring.controller.NotificationService:com.sec.android.app.launcher/com.android.launcher3.framework.device.notification.NotificationListener (user: 0 isPrimary: true)
+    Approved uids for user 0: [10146, 10243, 10314, 10221]
+    Has user set:
+      userId=0 value={com.google.android.projection.gearhead/com.google.android.gearhead.notifications.SharedNotificationListenerManager$ListenerService, com.truecaller/com.truecaller.notifications.NotificationHandlerService, com.samsung.android.smartsuggestions/com.samsung.android.app.deepsky.data.dataobserver.notification.CommonNotificationListenerService, com.sec.android.app.launcher/com.android.launcher3.notification.NotificationListener, com.samsung.android.smartmirroring/com.samsung.android.smartmirroring.controller.NotificationService, com.sec.android.app.launcher/com.android.launcher3.framework.device.notification.NotificationListener}
+    All notification listeners (5) enabled for current profiles:
+      ComponentInfo{com.samsung.android.smartmirroring/com.samsung.android.smartmirroring.controller.NotificationService}
+      ComponentInfo{com.sec.android.app.launcher/com.android.launcher3.framework.device.notification.NotificationListener}
+      ComponentInfo{com.truecaller/com.truecaller.notifications.NotificationHandlerService}
+      ComponentInfo{com.sec.android.app.launcher/com.android.launcher3.notification.NotificationListener}
+      ComponentInfo{com.google.android.projection.gearhead/com.google.android.gearhead.notifications.SharedNotificationListenerManager$ListenerService}
+    Live notification listeners (13):
+      ComponentInfo{android/com.android.server.biometrics.BiometricNotificationLogger} (user -1): android.service.notification.NotificationListenerService$NotificationListenerWrapper@648befd SYSTEM
+      ComponentInfo{android/com.android.server.am.AppFGSTracker$NotificationListener} (user -1): android.service.notification.NotificationListenerService$NotificationListenerWrapper@bd897f2 SYSTEM
+      ComponentInfo{com.android.server.telecom.callsequencing.voip/com.android.server.telecom.callsequencing.voip.VoipCallMonitor} (user 0): android.service.notification.NotificationListenerService$NotificationListenerWrapper@b09e43 SYSTEM
+      ComponentInfo{com.android.systemui/com.android.systemui.statusbar.NotificationListener} (user -1): android.service.notification.INotificationListener$Stub$Proxy@63dfcc0 SYSTEM
+      ComponentInfo{android/com.android.server.media.MediaSessionService$NotificationListener} (user -1): android.service.notification.NotificationListenerService$NotificationListenerWrapper@fa7719d SYSTEM
+      ComponentInfo{android/com.android.server.SensitiveContentProtectionManagerService$NotificationListener} (user -1): android.service.notification.NotificationListenerService$NotificationListenerWrapper@b576612 SYSTEM
+      ComponentInfo{android/android.app.ContextImpl} (user 0): android.service.notification.NotificationListenerService$NotificationListenerWrapper@7aa4273 SYSTEM
+      ComponentInfo{android/com.android.server.people.data.DataManager} (user 0): android.service.notification.NotificationListenerService$NotificationListenerWrapper@93c21e3 SYSTEM
+      ComponentInfo{android/android.app.ContextImpl} (user 0): android.service.notification.NotificationListenerService$NotificationListenerWrapper@97fc7e0 SYSTEM
+      ComponentInfo{com.sec.android.app.launcher/com.android.launcher3.notification.NotificationListener} (user 0): android.service.notification.INotificationListener$Stub$Proxy@b36db9e
+      ComponentInfo{com.google.android.ext.services/android.ext.services.notification.Assistant} (user 0): android.service.notification.INotificationListener$Stub$Proxy@2d3d2bf GUEST
+      ComponentInfo{com.truecaller/com.truecaller.notifications.NotificationHandlerService} (user 0): android.service.notification.INotificationListener$Stub$Proxy@281dc40
+      ComponentInfo{com.truecaller/com.truecaller.notifications.NotificationHandlerService} (user 0): android.service.notification.INotificationListener$Stub$Proxy@be67779
+    Snoozed notification listeners (1):
+      User: 0
+--
+    2026-07-26T09:02:31.284169 - set_zen_mode: off,setNotificationPolicy
+    2026-07-26T09:02:31.284510 - set_zen_mode: off,updated setting
+    2026-07-26T12:28:44.458776 - config: setNotificationPolicy (ORIGIN_SYSTEM) no changes
+    2026-07-26T12:28:44.465073 - set_zen_mode: off,setNotificationPolicy
+    2026-07-26T12:28:44.470622 - set_zen_mode: off,updated setting
+    2026-07-26T12:30:53.174254 - config: com.testloop.app|removeAutomaticZenRules (ORIGIN_SYSTEM) no changes
+    2026-07-26T12:30:53.181622 - set_zen_mode: off,com.testloop.app|removeAutomaticZenRules
+    2026-07-26T12:30:53.182664 - set_zen_mode: off,updated setting
+    2026-07-26T13:00:39.989987 - config: com.testloop.app|removeAutomaticZenRules (ORIGIN_SYSTEM) no changes
+    2026-07-26T13:00:39.999628 - set_zen_mode: off,com.testloop.app|removeAutomaticZenRules
+    2026-07-26T13:00:39.999963 - set_zen_mode: off,updated setting
+    2026-07-26T13:03:19.925696 - config: zmc.onServiceAdded:ComponentInfo{com.google.android.gms/com.google.android.location.settings.DrivingConditionProvider} (ORIGIN_SYSTEM) no changes
+    2026-07-26T13:03:19.927981 - set_zen_mode: off,zmc.onServiceAdded:ComponentInfo{com.google.android.gms/com.google.android.location.settings.DrivingConditionProvider}
+    2026-07-26T13:03:19.928117 - set_zen_mode: off,updated setting
+    2026-07-26T14:59:41.971970 - config: setNotificationPolicy (ORIGIN_SYSTEM) no changes
+    2026-07-26T14:59:41.974735 - set_zen_mode: off,setNotificationPolicy
+    2026-07-26T14:59:41.975422 - set_zen_mode: off,updated setting
+    2026-07-26T15:05:27.335648 - config: setNotificationPolicy (ORIGIN_SYSTEM) no changes
+    2026-07-26T15:05:27.340298 - set_zen_mode: off,setNotificationPolicy
+    2026-07-26T15:05:27.340773 - set_zen_mode: off,updated setting
+    2026-07-26T16:41:28.013602 - config: setNotificationPolicy (ORIGIN_SYSTEM) no changes
+    2026-07-26T16:41:28.015168 - set_zen_mode: off,setNotificationPolicy
+    2026-07-26T16:41:28.015608 - set_zen_mode: off,updated setting
+    2026-07-26T19:30:16.263644 - config: setNotificationPolicy (ORIGIN_SYSTEM) no changes
+    2026-07-26T19:30:16.266327 - set_zen_mode: off,setNotificationPolicy
+    2026-07-26T19:30:16.266603 - set_zen_mode: off,updated setting
+    2026-07-26T19:30:17.386425 - config: setNotificationPolicy (ORIGIN_SYSTEM) no changes
+    2026-07-26T19:30:17.387115 - set_zen_mode: off,setNotificationPolicy
+    2026-07-26T19:30:17.387265 - set_zen_mode: off,updated setting
+    Other Events:
+
+  Condition providers:
+    Allowed condition providers:
+      com.android.camera2:com.google.android.apps.wellbeing:com.google.android.gms (user: 0 isPrimary: true)
+      com.google.android.ext.services:com.truecaller:com.samsung.android.smartmirroring:com.samsung.android.game.gamehome:com.sec.android.app.launcher:com.google.android.projection.gearhead:com.samsung.android.smartsuggestions:com.google.android.apps.restore (user: 0 isPrimary: false)
+    Approved uids for user 0: [10146, 10243, 10248, 10121, 10314, 10299, 10221, 10254]
+    Has user set:
+      userId=0 value={com.google.android.ext.services, com.truecaller, com.samsung.android.smartmirroring, com.google.android.apps.wellbeing, , com.google.android.gms, com.sec.android.app.launcher, com.google.android.projection.gearhead, com.sec.android.app.launcher/com.android.launcher3.notification.NotificationListener, com.samsung.android.smartsuggestions}
+    All condition providers (1) enabled for current profiles:
+      ComponentInfo{com.google.android.gms/com.google.android.location.settings.DrivingConditionProvider}

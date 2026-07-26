@@ -1,0 +1,80 @@
+host_timestamp=2026-07-26T20:26:01+05:30
+--------- beginning of main
+07-26 20:20:50.251 11249 11249 I Zygote  : Process 11249 created for com.testloop.app
+07-26 20:20:50.252 11249 11249 I om.testloop.app: Late-enabling -Xcheck:jni
+07-26 20:20:50.284 11249 11249 I om.testloop.app: Using non-generational CollectorTypeCMC GC.
+07-26 20:20:50.293 11249 11249 D nativeloader: Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+07-26 20:20:50.297 11249 11249 D ActivityThread: setConscryptValidator
+07-26 20:20:50.297 11249 11249 D ActivityThread: setConscryptValidator - put
+07-26 20:20:50.828 11249 11249 D nativeloader: Configuring clns-9 for other apk /data/app/~~qo8q3ADTyIQM_S-QfED6Tg==/com.testloop.app-SFhxowR9nv7a2jXJJeBEUA==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~qo8q3ADTyIQM_S-QfED6Tg==/com.testloop.app-SFhxowR9nv7a2jXJJeBEUA==/lib/arm64:/data/app/~~qo8q3ADTyIQM_S-QfED6Tg==/com.testloop.app-SFhxowR9nv7a2jXJJeBEUA==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.testloop.app
+07-26 20:20:50.831 11249 11249 D CompatChangeReporter: Compat change id reported: 202956589; UID 10414; state: ENABLED
+07-26 20:20:50.839 11249 11249 V GraphicsEnvironment: Currently set values for:
+07-26 20:20:50.839 11249 11249 V GraphicsEnvironment:   angle_gl_driver_selection_pkgs=[]
+07-26 20:20:50.839 11249 11249 V GraphicsEnvironment:   angle_gl_driver_selection_values=[]
+07-26 20:20:50.839 11249 11249 V GraphicsEnvironment: com.testloop.app is not listed in per-application setting
+07-26 20:20:50.840 11249 11249 V GraphicsEnvironment: ANGLE allowlist from config: com.dreamgames.royalmatch com.dts.freefiremax com.dxx.firenow com.gramgames.mergedragons com.ludo.king com.mojang.minecraftpe com.my.defense com.nintendo.zaka com.os.airforce com.playrix.fishdomdd.gplay io.teslatech.callbreak jp.konami.prospia net.peakgames.toonblast
+07-26 20:20:50.840 11249 11249 V GraphicsEnvironment: No special selections for ANGLE, returning default driver choice
+07-26 20:20:50.840 11249 11249 V GraphicsEnvironment: Neither updatable production driver nor prerelease driver is supported.
+07-26 20:20:50.886 11249 11249 I HWUI    : Using FreeType backend (prop=Auto)
+--------- beginning of system
+07-26 20:20:50.912 11249 11249 D ActivityThread: com.testloop.app will use render engine as VK
+07-26 20:20:50.912 11249 11249 D HWUI    : HWUI - treat SMPTE_170M as sRGB
+07-26 20:20:50.914 11249 11271 I DisplayManager: Choreographer implicitly registered for the refresh rate.
+07-26 20:20:50.915 11249 11271 D HWUI    : CacheManager constructor. deviceInfo=(1080, 1920)
+07-26 20:20:51.000 11249 11249 E ashmem  : Pinning is deprecated since Android Q. Please use trim or other methods.
+07-26 20:20:51.030 11249 11249 D CompatChangeReporter: Compat change id reported: 309578419; UID 10414; state: ENABLED
+07-26 20:20:51.031 11249 11249 D DesktopExperienceFlags: Toggle override initialized to: false
+07-26 20:20:51.031 11249 11249 D DesktopModeFlags: Toggle override initialized to: OVERRIDE_UNSET
+07-26 20:20:51.041 11249 11249 I DecorView: setWindowBackground: isPopOver=false color=fffafafa d=android.graphics.drawable.ColorDrawable@7fc8445
+07-26 20:20:51.185 11249 11249 I Supabase-Core: SupabaseClient created! Please report any bugs you find.
+07-26 20:20:51.547 11249 11249 W System.err: SLF4J(W): No SLF4J providers were found.
+07-26 20:20:51.547 11249 11249 W System.err: SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+07-26 20:20:51.547 11249 11249 W System.err: SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+07-26 20:20:53.137 11249 11285 I Supabase-Auth: Loading session from storage...
+07-26 20:20:53.188 11249 11249 D CompatChangeReporter: Compat change id reported: 349153669; UID 10414; state: ENABLED
+07-26 20:20:53.191 11249 11249 I ViewRootImpl: dVRR is disabled
+07-26 20:20:53.193 11249 11249 D HardwareRenderer: onDisplayChanged. displayId=0 current wxh=1080x2340 mLargest wxh=0x0
+07-26 20:20:53.193 11249 11271 D HWUI    : setMaxSurfaceArea requested wxh=(1080,2340) requestedSurfaceArea(2527200) mMaxSurfaceArea(2073600)
+07-26 20:20:53.193 11249 11249 D HardwareRenderer: Set largestWidth and largestHeight as logical resolution. (1080x2340)
+07-26 20:20:53.196 11249 11271 D NativeCustomFrequencyManager: [NativeCFMS] BpCustomFrequencyManager::BpCustomFrequencyManager()
+07-26 20:20:53.210 11249 11249 D InputTransport: Input channel constructed: '19c125e', fd=118
+07-26 20:20:53.215 11249 11249 I InsetsController: onStateChanged: host=com.testloop.app/com.testloop.app.MainActivity, from=android.view.ViewRootImpl.onInsetsStateChanged:3038, state=InsetsState: {mDisplayFrame=Rect(0, 0 - 1080, 2340), mDisplayCutout=DisplayCutout{insets=Rect(0, 89 - 0, 0) waterfall=Insets{left=0, top=0, right=0, bottom=0} boundingRect={Bounds=[Rect(0, 0 - 0, 0), Rect(507, 23 - 573, 89), Rect(0, 0 - 0, 0), Rect(0, 0 - 0, 0)]} cutoutPathParserInfo={CutoutPathParserInfo{displayWidth=1080 displayHeight=2340 physicalDisplayWidth=1080 physicalDisplayHeight=2340 density={2.8125} cutoutSpec={M 0,0 M 0,8.177777777777778 a 11.73333333333333,11.73333333333333 0 1,0 0,23.46666666666667 a 11.73333333333333,11.73333333333333 0 1,0 0,-23.46666666666667 Z @dp} rotation={0} scale={1.0} physicalPixelDisplaySizeRatio={1.0}}} sideOverrides={}}, mRoundedCorners=RoundedCorners{[RoundedCorner{position=TopLeft, radius=95, center=Point(95, 95)}, RoundedCorner{position=TopRight, radius=95, center=Point(985, 95)}, RoundedCorner{position=BottomRight, radius=95, center=Point(985, 2245)}, RoundedCorner{position=BottomLeft, radius=95, center=Point(95, 2245)}]}  mRoundedCornerFrame=Rect(0, 0 - 1080, 2340), mPrivacyIndicatorBounds=PrivacyIndicatorBounds {static bounds=Rect(964, 0 - 1080, 100) rotation=0}, mDisplayShape=DisplayShape{ spec=-311912193 displayWidth=1080 displayHeight=2340 physicalPixelDisplaySizeRatio=1.0 rotation=0 offsetX=0 offsetY=0 scale=1.0}, mSources= { InsetsSource: {3 mType=ime mFrame=[0,0][0,0] mAttachedInsets=null mVisible=false mFlags=INVALID mSideHint=NONE mBoundingRects=null}, InsetsSource: {27 mType=displayCutout mFrame=[0,0][1080,89] mAttachedInsets=null mVisible=true mFlags= mSideHint=TOP mBoundingRects=null}, InsetsSource: {3ef30000 mType=statusBars mFrame=[0,0][1080,100] mAttachedInsets=null mVisible=true mFlags= mSideHint=TOP mBoundingRects=null}, InsetsSource: {3ef30005 mType=mandatorySystemGestures mFrame=[0,0][1080,121] mAttachedInsets=null mVisible=true mFlags= mSideHint=TOP mBoundingRects=null}, InsetsSource: {3ef30006 mType=tappableElement mFrame=[0,0][1080,100] mAttachedInsets=null mVisible=true mFlags= mSideHint=TOP mBoundingRects=null}, InsetsSource: {5c9a0001 mType=navigationBars mFrame=[0,2214][1080,2340] mAttachedInsets=null mVisible=true mFlags= mSideHint=BOTTOM mBoundingRects=null}, InsetsSource: {5c9a0004 mType=systemGestures mFrame=[0,0][0,0] mAttachedInsets=null mVisible=true mFlags= mSideHint=NONE mBoundingRects=null}, InsetsSource: {5c9a0005 mType=mandatorySystemGestures mFrame=[0,2214][1080,2340] mAttachedInsets=null mVisible=true mFlags= mSideHint=BOTTOM mBoundingRects=null}, InsetsSource: {5c9a0006 mType=tappableElement mFrame=[0,2214][1080,2340] mAttachedInsets=null mVisible=true mFlags= mSideHint=BOTTOM mBoundingRects=null}, InsetsSource: {5c9a0024 mType=systemGestures mFrame=[0,0][0,0] mAttachedInsets=null mVisible=true mFlags= mSideHint=NONE mBoundingRects=null} }
+07-26 20:20:53.222 11249 11249 I VRI[MainActivity]@a999f04: synced displayState. AttachInfo displayState=2
+07-26 20:20:53.223 11249 11249 I VRI[MainActivity]@a999f04: setView = com.android.internal.policy.DecorView@657cca0 IsHRR=false mFlingFrameRateChange=0 TM=true
+07-26 20:20:53.224 11249 11249 I IDS_TAG : Starting IDS observe window
+07-26 20:20:53.224 11249 11249 I IDS_TAG : Getting Shared Preference for android.app.Application@bc02a63 uid = 10414
+07-26 20:20:53.227 11249 11249 I IDS_TAG : App android.app.Application@bc02a63 has not finished training
+07-26 20:20:53.234 11249 11249 I VRI[MainActivity]@a999f04: stopped(true) old = false
+07-26 20:20:53.234 11249 11249 D VRI[MainActivity]@a999f04: WindowStopped on com.testloop.app/com.testloop.app.MainActivity set to true
+07-26 20:20:53.234 11249 11271 D HWUI    : CacheManager::trimMemory(20)
+07-26 20:20:53.240 11249 11271 D HWUI    : HWUI - treat SMPTE_170M as sRGB
+07-26 20:20:53.240 11249 11249 I IDS_TAG : Closing IDS observe window
+07-26 20:20:53.240 11249 11249 I IDS_TAG : Getting Shared Preference for android.app.Application@bc02a63 uid = 10414
+07-26 20:20:53.241 11249 11249 I IDS_TAG : IDS count updated to 4 for android.app.Application@bc02a63
+07-26 20:20:53.246 11249 11249 D VRI[MainActivity]@a999f04: WindowInsets changed: 1080x2340 statusBars:[0,100,0,0] navigationBars:[0,0,0,126] mandatorySystemGestures:[0,121,0,126] 
+07-26 20:20:53.248 11249 11249 D WindowOnBackDispatcher: setTopOnBackInvokedCallback (unwrapped): android.view.ViewRootImpl$$ExternalSyntheticLambda16@2c35915
+07-26 20:20:53.258 11249 11249 I VRI[MainActivity]@a999f04: Relayout returned: old=(0,0,1080,2340) new=(0,0,1080,2340) relayoutAsync=false req=(0,0)4 dur=8 res=0x0 s={false 0x0} ch=false seqId=0
+07-26 20:20:53.258 11249 11249 D VRI[MainActivity]@a999f04: Not drawing due to not visible. Reason=View.INVISIBLE
+07-26 20:20:53.261 11249 11271 D HWUI    : CacheManager::trimMemory(20)
+07-26 20:20:53.691 11249 11255 I om.testloop.app: Compiler allocated 5313KB to compile void android.view.ViewRootImpl.performTraversals()
+07-26 20:20:53.699 11249 11249 I VRI[MainActivity]@a999f04: handleAppVisibility mAppVisible = true visible = false
+07-26 20:20:55.152 11249 11249 W om.testloop.app: Method void androidx.compose.runtime.snapshots.SnapshotStateListKt.clearImpl(androidx.compose.runtime.snapshots.SnapshotStateList) failed lock verification and will run slower.
+07-26 20:20:55.152 11249 11249 W om.testloop.app: Common causes for lock verification issues are non-optimized dex code
+07-26 20:20:55.152 11249 11249 W om.testloop.app: and incorrect proguard optimizations.
+07-26 20:20:55.372 11249 11249 I om.testloop.app: hiddenapi: Accessing hidden method Landroid/os/SystemProperties;->addChangeCallback(Ljava/lang/Runnable;)V (runtime_flags=0, domain=platform, api=unsupported) from Landroidx/compose/ui/platform/AndroidComposeView$Companion; (domain=app, TargetSdkVersion=35) using reflection: allowed
+07-26 20:20:55.402 11249 11249 E VibratorInfo: Invalid frequency profile received from HAL. resonantFrequencyHz=NaN, frequenciesHz=null, outputAccelerationsGs=null
+07-26 20:20:56.196 11249 11249 I Choreographer: Skipped 68 frames!  The application may be doing too much work on its main thread.
+07-26 20:20:56.197 11249 11271 D HWUI    : CacheManager::trimMemory(20)
+07-26 20:20:56.322 11249 11249 I VRI[MainActivity]@a999f04: Relayout returned: old=(0,0,1080,2340) new=(0,0,1080,2340) relayoutAsync=false req=(1080,2340)8 dur=6 res=0x0 s={false 0x0} ch=false seqId=0
+07-26 20:20:56.547 11249 11310 D ProfileInstaller: Installing profile for com.testloop.app
+07-26 20:21:00.427 11249 11249 I VRI[MainActivity]@a999f04: onDisplayChanged oldDisplayState=2 newDisplayState=1
+07-26 20:21:00.578 11249 11256 I om.testloop.app: Background concurrent mark compact GC freed 16MB AllocSpace bytes, 25(692KB) LOS objects, 49% free, 9664KB/18MB, paused 501us,7.840ms total 147.920ms
+07-26 20:21:01.196 11249 11249 I VRI[MainActivity]@a999f04: onDisplayChanged oldDisplayState=1 newDisplayState=3
+07-26 20:21:06.778 11249 11249 I VRI[MainActivity]@a999f04: onDisplayChanged oldDisplayState=3 newDisplayState=4
+07-26 20:21:18.322 11249 11249 I VRI[MainActivity]@a999f04: onDisplayChanged oldDisplayState=4 newDisplayState=3
+07-26 20:21:23.847 11249 11249 I VRI[MainActivity]@a999f04: onDisplayChanged oldDisplayState=3 newDisplayState=4
+07-26 20:21:28.400 11249 11249 I VRI[MainActivity]@a999f04: onDisplayChanged oldDisplayState=4 newDisplayState=3
+07-26 20:21:33.909 11249 11249 I VRI[MainActivity]@a999f04: onDisplayChanged oldDisplayState=3 newDisplayState=4
+07-26 20:21:48.579 11249 11249 I VRI[MainActivity]@a999f04: onDisplayChanged oldDisplayState=4 newDisplayState=3
+07-26 20:21:54.110 11249 11249 I VRI[MainActivity]@a999f04: onDisplayChanged oldDisplayState=3 newDisplayState=4
+07-26 20:21:58.682 11249 11249 I VRI[MainActivity]@a999f04: onDisplayChanged oldDisplayState=4 newDisplayState=3

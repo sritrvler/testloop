@@ -1,0 +1,263 @@
+host_timestamp=2026-07-26T20:25:26+05:30
+--- package path/version ---
+package:/data/app/~~qo8q3ADTyIQM_S-QfED6Tg==/com.testloop.app-SFhxowR9nv7a2jXJJeBEUA==/base.apk
+Activity Resolver Table:
+  Schemes:
+      testloop:
+        c379ad4 com.testloop.app/.MainActivity filter bf61f72
+          Action: "android.intent.action.VIEW"
+          Category: "android.intent.category.DEFAULT"
+          Category: "android.intent.category.BROWSABLE"
+          Scheme: "testloop"
+          Authority: "auth-callback": -1
+
+  Non-Data Actions:
+      android.intent.action.MAIN:
+        c379ad4 com.testloop.app/.MainActivity filter 8d1b47d
+          Action: "android.intent.action.MAIN"
+          Category: "android.intent.category.LAUNCHER"
+
+Receiver Resolver Table:
+  Non-Data Actions:
+      androidx.profileinstaller.action.SAVE_PROFILE:
+        5ca1b79 com.testloop.app/androidx.profileinstaller.ProfileInstallReceiver filter 52b706c
+          Action: "androidx.profileinstaller.action.SAVE_PROFILE"
+      androidx.profileinstaller.action.INSTALL_PROFILE:
+        5ca1b79 com.testloop.app/androidx.profileinstaller.ProfileInstallReceiver filter 402c0be
+          Action: "androidx.profileinstaller.action.INSTALL_PROFILE"
+      androidx.profileinstaller.action.SKIP_FILE:
+        5ca1b79 com.testloop.app/androidx.profileinstaller.ProfileInstallReceiver filter cda251f
+          Action: "androidx.profileinstaller.action.SKIP_FILE"
+      androidx.profileinstaller.action.BENCHMARK_OPERATION:
+        5ca1b79 com.testloop.app/androidx.profileinstaller.ProfileInstallReceiver filter f47f635
+          Action: "androidx.profileinstaller.action.BENCHMARK_OPERATION"
+      android.intent.action.BOOT_COMPLETED:
+        98c4fc3 com.testloop.app/.notifications.EveningReminderReceiver filter 4dd9040
+          Action: "android.intent.action.BOOT_COMPLETED"
+          Action: "com.testloop.app.action.EVENING_REMINDER"
+      com.testloop.app.action.EVENING_REMINDER:
+        98c4fc3 com.testloop.app/.notifications.EveningReminderReceiver filter 4dd9040
+          Action: "android.intent.action.BOOT_COMPLETED"
+          Action: "com.testloop.app.action.EVENING_REMINDER"
+
+Domain verification status:
+
+Permissions:
+  Permission [com.testloop.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION] (8a8a000):
+    sourcePackage=com.testloop.app
+    uid=10414 gids=[] type=0 prot=signature
+    perm=PermissionInfo{b995617 com.testloop.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION}
+    flags=0x0
+
+Registered ContentProviders:
+  com.testloop.app/androidx.startup.InitializationProvider:
+    Provider{54eda04 com.testloop.app/androidx.startup.InitializationProvider}
+
+ContentProvider Authorities:
+  [com.testloop.app.androidx-startup]:
+    Provider{54eda04 com.testloop.app/androidx.startup.InitializationProvider}
+      applicationInfo=ApplicationInfo{8c5039 com.testloop.app}
+
+Key Set Manager:
+  [com.testloop.app]
+      Signing KeySets: 175
+
+Packages:
+  Package [com.testloop.app] (145b67e):
+    appId=10414
+    pkg=Package{3d33cb3 com.testloop.app}
+    codePath=/data/app/~~qo8q3ADTyIQM_S-QfED6Tg==/com.testloop.app-SFhxowR9nv7a2jXJJeBEUA==
+    resourcePath=/data/app/~~qo8q3ADTyIQM_S-QfED6Tg==/com.testloop.app-SFhxowR9nv7a2jXJJeBEUA==
+    legacyNativeLibraryDir=/data/app/~~qo8q3ADTyIQM_S-QfED6Tg==/com.testloop.app-SFhxowR9nv7a2jXJJeBEUA==/lib
+    extractNativeLibs=false
+    primaryCpuAbi=arm64-v8a
+    secondaryCpuAbi=null
+    cpuAbiOverride=null
+    versionCode=13 minSdk=26 targetSdk=35
+    minExtensionVersions=[]
+    versionName=0.1.5
+    hiddenApiEnforcementPolicy=2
+    usesNonSdkApi=false
+    splits=[base]
+    apkSigningVersion=2
+    flags=[ DEBUGGABLE HAS_CODE ALLOW_CLEAR_USER_DATA ALLOW_BACKUP KILL_AFTER_RESTORE ]
+    privateFlags=[ PRIVATE_FLAG_ACTIVITIES_RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION ALLOW_AUDIO_PLAYBACK_CAPTURE PRIVATE_FLAG_ALLOW_NATIVE_HEAP_POINTER_TAGGING ]
+    forceQueryable=false
+    pageSizeCompat=0
+    queriesIntents=[Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] }]
+    scannedAsStoppedSystemApp=false
+    supportsScreens=[small, medium, large, xlarge, resizeable, anyDensity]
+    timeStamp=2026-07-26 20:14:41
+    lastUpdateTime=2026-07-26 20:14:51
+    installerPackageName=null
+    installerPackageUid=-1
+    initiatingPackageName=com.android.shell
+    originatingPackageName=null
+    category=manifest: -1, override: -1, by user: -1
+    packageSource=1
+    appMetadataFilePath=null
+    appMetadataSource=0
+    signatures=PackageSignatures{e91b1d3 version:2, signatures:[4bf6eaaf], past signatures:[]}
+    installPermissionsFixed=false
+    pkgFlags=[ DEBUGGABLE HAS_CODE ALLOW_CLEAR_USER_DATA ALLOW_BACKUP KILL_AFTER_RESTORE ]
+    privatePkgFlags=[ PRIVATE_FLAG_ACTIVITIES_RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION ALLOW_AUDIO_PLAYBACK_CAPTURE PRIVATE_FLAG_ALLOW_NATIVE_HEAP_POINTER_TAGGING ]
+    apexModuleName=null
+    componentsDeclared=4
+    declared permissions:
+      com.testloop.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION: prot=signature
+    requested permissions:
+      android.permission.POST_NOTIFICATIONS
+      com.testloop.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+      android.permission.RECEIVE_BOOT_COMPLETED
+      android.permission.INTERNET
+      android.permission.PACKAGE_USAGE_STATS
+      android.permission.ACCESS_NETWORK_STATE
+    install permissions:
+      com.testloop.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION: granted=true
+      android.permission.RECEIVE_BOOT_COMPLETED: granted=true
+      android.permission.INTERNET: granted=true
+      android.permission.ACCESS_NETWORK_STATE: granted=true
+    User 0: ceDataInode=187902 deDataInode=681664 installed=true hidden=false suspended=false distractionFlags=0 stopped=false notLaunched=false enabled=0 instant=false virtual=false quarantined=false
+      installReason=0
+      dataDir=/data/user/0/com.testloop.app
+      firstInstallTime=2026-07-26 13:01:45
+      uninstallReason=0
+      overlay paths:
+        /product/overlay/NavigationBarMode3Button/NavigationBarMode3ButtonOverlay.apk
+      legacy overlay paths:
+        /product/overlay/NavigationBarMode3Button/NavigationBarMode3ButtonOverlay.apk
+      gids=[3003]
+      runtime permissions:
+        android.permission.POST_NOTIFICATIONS: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]
+
+Queries:
+  system apps queryable: false
+  queries via forceQueryable:
+  queries via package name:
+  queries via component:
+    com.nic.mparivahan:
+      com.testloop.app
+    com.samsung.android.bixby.agent:
+      com.testloop.app
+    com.samsung.android.dynamiclock:
+      com.testloop.app
+    com.android.settings.intelligence:
+      com.testloop.app
+    com.google.android.apps.accessibility.voiceaccess:
+      com.testloop.app
+    com.google.android.as:
+      com.testloop.app
+    com.google.android.as.oss:
+      com.testloop.app
+    com.google.android.apps.messaging:
+      com.testloop.app
+    com.facebook.katana:
+      com.testloop.app
+    com.truecaller:
+      com.testloop.app
+    org.cris.aikyam:
+      com.testloop.app
+    com.csam.icici.bank.imobile:
+      com.testloop.app
+    com.iexceed.ib.digitalbankingprod:
+      com.testloop.app
+    com.iexceed.appzillon.ippbMB:
+      com.testloop.app
+    in.startv.hotstar:
+      com.testloop.app
+    com.yahoo.mobile.client.android.mail:
+      com.testloop.app
+    com.eaglefleet.redtaxi:
+      com.testloop.app
+    net.one97.paytm:
+      com.testloop.app
+    com.ryzmedia.tatasky:
+      com.testloop.app
+    com.phonepe.app:
+      com.testloop.app
+    com.whatsapp:
+      com.testloop.app
+    com.samsung.android.mocca:
+      com.testloop.app
+    com.sbi.lotusintouch:
+      com.testloop.app
+    com.instagram.android:
+      com.testloop.app
+    com.axis.mobile:
+      com.testloop.app
+    org.altruist.BajajExperia:
+      com.testloop.app
+    in.mohalla.sharechat:
+      com.testloop.app
+    in.redbus.android:
+      com.testloop.app
+    in.org.npci.upiapp:
+      com.testloop.app
+    in.amazon.mShop.android.shopping:
+      com.testloop.app
+    com.cuvora.carinfo:
+      com.testloop.app
+    com.digilocker.android:
+      com.testloop.app
+    in.gov.uidai.pehchaan:
+      com.testloop.app
+    com.maruti.icp:
+      com.testloop.app
+    in.swiggy.android:
+      com.testloop.app
+    com.testloop.app:
+      com.sbi.authenticator
+      com.nic.mparivahan
+      com.google.android.documentsui
+      com.sec.android.app.samsungapps
+      com.microsoft.skydrive
+      com.sec.android.app.billing
+      com.samsung.android.app.contacts
+      com.samsung.android.themestore
+      com.microsoft.appmanager
+      com.google.audio.hearing.visualization.accessibility.scribe
+      com.google.android.apps.accessibility.voiceaccess
+      com.google.android.projection.gearhead
+      com.google.android.apps.messaging
+      com.google.android.googlequicksearchbox
+      com.google.android.apps.tachyon
+      com.google.android.apps.bard
+      com.clearpath.tracker
+      com.android.chrome
+      com.google.android.youtube
+      com.google.android.apps.maps
+      com.google.android.gm
+      com.mygalaxy
+      com.samsung.ecomm.global.in
+      com.opera.max.oem
+      com.google.android.cellbroadcastreceiver
+      com.facebook.katana
+      com.sec.android.app.popupcalculator
+      com.sec.android.app.clockpackage
+      com.mobile.tmbepassbook
+      com.samsung.android.app.notes
+      com.truecaller
+      com.jio.myjio
+      com.google.android.apps.nbu.paisa.user
+      com.samsung.android.calendar
+      org.cris.aikyam
+      com.csam.icici.bank.imobile
+      com.daamitt.walnut.app
+      com.google.android.apps.photos
+      com.dreamplug.androidapp
+      com.iexceed.ib.digitalbankingprod
+      com.sec.android.app.voicenote
+      com.samsung.android.app.reminder
+      com.openai.chatgpt
+      com.sec.android.app.kidshome
+      com.samsung.android.app.find
+      com.iexceed.appzillon.ippbMB
+      in.startv.hotstar
+      com.yahoo.mobile.client.android.mail
+      com.eduarve.mydollarexpenses
+      com.eaglefleet.redtaxi
+      net.one97.paytm
+      com.whereismytrain.android
+      trai.gov.in.dnd
+      com.google.android.apps.nbu.files
+      com.marutisuzuki.rewards

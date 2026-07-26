@@ -1,0 +1,29 @@
+run_id=run-20260726-202305+0530
+artifact_root=/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530
+host_timestamp=2026-07-26T20:26:42+05:30
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/logs/logcat-filtered-tail.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/logs/logcat-testloop-pid-tail.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/adb-source-state.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/apk-badging.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/apk-manifest-derived.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/artifact-index.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/device-identity-connectivity.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/device-identity.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/final-lock-recheck.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/initial-device-lock-check.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/installed-dependency-matrix.csv
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/lock-recheck-after-metadata.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/package-dumpsys.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/permissions-appops.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/source-candidates.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/source-files-map.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/source-snippets/ExternalAppLauncher.kt.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/source-snippets/FlowsAndProfile-profile-guide-delete.kt.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/source-snippets/InstallStatusReporter.kt.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/source-snippets/MainActivity.kt.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/source-snippets/OnboardingAndToday-loading-empty.kt.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/source-snippets/PortfolioAndDiscover-empty.kt.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/source-snippets/SupabaseAuthRepository-delete.kt.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/source-snippets/TestLoopApp-navigation.kt.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/source-snippets/TestLoopApp-primary-action.kt.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/run-20260726-202305+0530/metadata/source-snippets/UsageAccessReporter.kt.txt

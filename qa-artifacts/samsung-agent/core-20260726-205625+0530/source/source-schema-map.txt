@@ -1,0 +1,514 @@
+host_timestamp=2026-07-26T20:56:44+05:30
+--- source/schema files ---
+build.gradle.kts
+app/src/main/java/com/testloop/app/domain/Models.kt
+app/src/main/java/com/testloop/app/data/SupabaseChatRepository.kt
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt
+app/src/main/java/com/testloop/app/data/ChatRepository.kt
+app/src/main/java/com/testloop/app/tracking/UsageAccessReporter.kt
+app/src/main/java/com/testloop/app/tracking/InstallStatusReporter.kt
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt
+app/src/main/AndroidManifest.xml
+app/build.gradle.kts
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt
+app/src/main/java/com/testloop/app/ui/ChatScreens.kt
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt
+--- core symbols ---
+app/src/main/java/com/testloop/app/notifications/EveningReminderScheduler.kt:105:        val launchIntent = context.packageManager.getLaunchIntentForPackage(context.packageName)
+supabase/migrations/20260725150000_restore_activity_tracking.sql:99:           join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726020000_leave_commitment.sql:1:-- Allow either participant to leave a pending or active commitment. Leaving
+supabase/migrations/20260726020000_leave_commitment.sql:21:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726020000_leave_commitment.sql:29:    raise exception 'An app owner cannot join their own campaign';
+supabase/migrations/20260726020000_leave_commitment.sql:44:      or new.joined_at <> old.joined_at
+supabase/migrations/20260726020000_leave_commitment.sql:48:      raise exception 'Campaign, tester, reciprocal app, join date, and target duration are immutable';
+supabase/migrations/20260726020000_leave_commitment.sql:67:  -- Locking the campaign row makes the slot check safe for concurrent joins.
+supabase/migrations/20260726020000_leave_commitment.sql:99:create or replace function public.leave_commitment(target_commitment_id uuid)
+supabase/migrations/20260726020000_leave_commitment.sql:128:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726020000_leave_commitment.sql:133:    raise exception 'Only a commitment participant can leave it';
+supabase/migrations/20260726020000_leave_commitment.sql:179:revoke all on function public.leave_commitment(uuid) from public, anon;
+supabase/migrations/20260726020000_leave_commitment.sql:180:grant execute on function public.leave_commitment(uuid) to authenticated;
+app/src/main/java/com/testloop/app/domain/Models.kt:22:    val packageName: String,
+app/src/main/java/com/testloop/app/domain/Models.kt:37:    val joinedTesterCount: Int,
+app/src/main/java/com/testloop/app/domain/Models.kt:42:    val activeTesterCount: Int = joinedTesterCount,
+app/src/main/java/com/testloop/app/domain/Models.kt:47:    val reservedTesterCount: Int = joinedTesterCount,
+app/src/main/java/com/testloop/app/domain/Models.kt:50:    val replacementOpen: Boolean = false,
+app/src/main/java/com/testloop/app/domain/Models.kt:51:    val replacementJoinedAt: Instant? = null,
+app/src/main/java/com/testloop/app/domain/Models.kt:66:    val progress: CampaignProgress get() = CampaignProgress(requestedTesters, activeTesterCount, targetDays, testingStatus, testingStartedAt, releaseApprovedAt, closedTestConfirmedAt, riskDecision, replacementOpen, replacementJoinedAt, restartConfirmedAt)
+app/src/main/java/com/testloop/app/domain/Models.kt:82:    val replacementOpen: Boolean = false,
+app/src/main/java/com/testloop/app/domain/Models.kt:83:    val replacementJoinedAt: Instant? = null,
+app/src/main/java/com/testloop/app/domain/Models.kt:127:    val packageName: String,
+app/src/main/java/com/testloop/app/domain/Models.kt:133:    val joinedTesterCount: Int,
+app/src/main/java/com/testloop/app/domain/Models.kt:141:    val activeTesterCount: Int = joinedTesterCount,
+app/src/main/java/com/testloop/app/domain/Models.kt:147:    val reservedTesterCount: Int = joinedTesterCount,
+app/src/main/java/com/testloop/app/domain/Models.kt:151:    val replacementOpen: Boolean = false,
+app/src/main/java/com/testloop/app/domain/Models.kt:152:    val replacementJoinedAt: Instant? = null,
+app/src/main/java/com/testloop/app/domain/Models.kt:167:    val progress: CampaignProgress get() = CampaignProgress(requestedTesters, activeTesterCount, targetDays, testingStatus, testingStartedAt, releaseApprovedAt, closedTestConfirmedAt, riskDecision, replacementOpen, replacementJoinedAt, restartConfirmedAt)
+app/src/main/java/com/testloop/app/domain/Models.kt:172:        !(riskDecision in setOf(CampaignRiskDecision.RESTART, CampaignRiskDecision.REOPEN) && restartConfirmedAt == null && (!replacementOpen || slotsRemaining == 0))
+app/src/main/java/com/testloop/app/domain/Models.kt:174:fun PublicApp.discoverStateLabel(): String = if (replacementOpen && slotsRemaining > 0) {
+app/src/main/java/com/testloop/app/domain/Models.kt:175:    if (slotsRemaining == 1) "Replacement tester needed · 1 replacement slot open" else "Replacement testers needed · $slotsRemaining replacement slots open"
+app/src/main/java/com/testloop/app/domain/Models.kt:180:enum class InstallSignal(val label: String) {
+app/src/main/java/com/testloop/app/domain/Models.kt:186:enum class ActivitySignal(val label: String) {
+app/src/main/java/com/testloop/app/domain/Models.kt:193:    val install: InstallSignal,
+app/src/main/java/com/testloop/app/domain/Models.kt:194:    val activity: ActivitySignal,
+app/src/main/java/com/testloop/app/domain/Models.kt:199:enum class CommitmentLifecycle { PENDING_SETUP, ACTIVE, COMPLETED, LEFT }
+app/src/main/java/com/testloop/app/domain/Models.kt:202:fun CommitmentLifecycle.isCurrentTester(): Boolean = this == CommitmentLifecycle.ACTIVE
+app/src/main/java/com/testloop/app/domain/Models.kt:211:    val joinedOn: LocalDate,
+app/src/main/java/com/testloop/app/domain/Models.kt:216:    val lifecycle: CommitmentLifecycle = CommitmentLifecycle.ACTIVE
+app/src/main/java/com/testloop/app/domain/Models.kt:219:    fun elapsedDays(today: LocalDate): Int = (java.time.temporal.ChronoUnit.DAYS.between(joinedOn, today).toInt() + 1).coerceIn(1, targetDays)
+supabase/migrations/20260725230000_optional_messaging_id.sql:30:  public.campaign_active_tester_count(c.id) as joined_tester_count,
+supabase/migrations/20260725230000_optional_messaging_id.sql:46:join public.profiles p on p.id = oa.owner_id
+supabase/migrations/20260725230000_optional_messaging_id.sql:47:join public.campaigns c on c.owned_app_id = oa.id
+app/src/main/java/com/testloop/app/data/SupabaseChatRepository.kt:62:        val conversation = supabase.postgrest.rpc(
+supabase/migrations/20260726050000_fix_public_listing_null_filters.sql:16:  public.campaign_active_tester_count(c.id) as joined_tester_count,
+supabase/migrations/20260726050000_fix_public_listing_null_filters.sql:33:  (c.replacement_open and public.public_reserved_count(c.id) < c.requested_testers) as replacement_open,
+supabase/migrations/20260726050000_fix_public_listing_null_filters.sql:34:  c.replacement_joined_at,
+supabase/migrations/20260726050000_fix_public_listing_null_filters.sql:37:join public.profiles p on p.id = oa.owner_id
+supabase/migrations/20260726050000_fix_public_listing_null_filters.sql:38:join public.campaigns c on c.owned_app_id = oa.id
+supabase/migrations/20260726050000_fix_public_listing_null_filters.sql:50:      c.replacement_open
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:6:import com.testloop.app.domain.ActivitySignal
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:10:import com.testloop.app.domain.CommitmentLifecycle
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:12:import com.testloop.app.domain.InstallSignal
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:60:    override suspend fun refresh(): Result<Unit> = refreshInternal()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:64:        val ownRows = supabase.from("owned_apps").select {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:72:            supabase.from("campaigns").select {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:81:        val profileRows = supabase.from("profiles").select().decodeList<TesterProfileRow>()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:93:            runCatching { reportInstallStatusInternal(commitment, listings, userId) }
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:104:        // Keep joined listings in this cache so commitment details can still
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:105:        // resolve the app name and both Play links. Discover filters joined
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:136:            campaign.toCampaign(if (isOwner) active else (listing?.joinedTesterCount ?: active)).copy(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:139:                replacementOpen = campaign.replacementOpen && (if (isOwner) campaign.requestedTesters - reserved else listing?.slotsRemaining ?: 0) > 0
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:150:                supabase.from("reminders").select { filter { eq("commitment_id", commitment.id) } }
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:162:                    compareBy<ReciprocalCommitment> { if (it.lifecycle == CommitmentLifecycle.ACTIVE) 1 else 0 }
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:167:        _notifications.value = supabase.from("notifications").select {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:170:        _bookmarks.value = supabase.from("app_bookmarks").select {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:178:        val inserted = supabase.from("owned_apps").insert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:182:                packageName = app.packageName.trim(),
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:193:        supabase.from("campaigns").insert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:200:        refresh().getOrThrow()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:211:        supabase.from("campaigns").update(CampaignTesterCountUpdate(requestedTesters)) {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:214:        refresh().getOrThrow()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:219:        supabase.from("campaigns").update(CampaignLifecycleUpdate(lifecycle = "closed", closedAt = Instant.now().toString())) {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:222:        supabase.from("owned_apps").update(OwnedAppLifecycleUpdate(lifecycle = "archived")) {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:225:        refresh().getOrThrow()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:230:        supabase.from("owned_apps").update(OwnedAppPublicationUpdate(playStorePublishedAt = Instant.now().toString())) {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:233:        refresh().getOrThrow()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:238:        supabase.postgrest.rpc("confirm_closed_testing", CampaignActionParams(campaignId))
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:240:        refresh().getOrThrow()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:246:            supabase.postgrest.rpc("reopen_campaign_replacement", CampaignActionParams(campaignId))
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:248:            refresh().getOrThrow()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:252:            "Choose the tester commitment to release before requesting a replacement"
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:254:        supabase.postgrest.rpc(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:258:        refresh().getOrThrow()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:263:        supabase.postgrest.rpc("finalize_campaign_restart", CampaignActionParams(campaignId))
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:265:        refresh().getOrThrow()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:268:    override suspend fun syncUsageAccess(hasAccess: Boolean): Result<Unit> = runCatching {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:270:        val status = supabase.postgrest.rpc("record_usage_access_status", UsageAccessStatusParams(hasAccess))
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:277:    override suspend fun joinCampaign(publicAppId: String, ownAppId: String?): Result<ReciprocalCommitment> = runCatching {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:283:            error("You cannot join your own app.")
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:299:        refresh().getOrThrow()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:306:        supabase.from("app_bookmarks").upsert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:315:        refresh()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:321:        supabase.from("app_bookmarks").delete {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:325:        refresh()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:329:    override suspend fun reportInstallStatus(commitmentId: String): Result<Unit> = runCatching {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:338:        reportInstallStatusInternal(row, listingRows, userId)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:342:        refresh().getOrThrow()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:345:    override suspend fun leaveCommitment(commitmentId: String): Result<Unit> = runCatching {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:347:        supabase.postgrest.rpc("leave_commitment", LeaveCommitmentParams(commitmentId))
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:354:        refresh().getOrThrow()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:357:    override suspend fun sendReminder(commitmentId: String): Result<Unit> = runCatching {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:363:        supabase.from("reminders").insert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:372:        refresh().getOrThrow()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:379:                supabase.from("notifications").update(NotificationReadUpdate(readAt = Instant.now().toString())) {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:387:    private suspend fun reportInstallStatusInternal(commitment: CommitmentRow, listings: List<PublicListingRow>, userId: String) {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:398:        val installed = installReporter.isInstalled(listing.packageName)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:410:            supabase.from("app_bookmarks").delete {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:414:        usageReporter.openedOn(listing.packageName)?.let { opened ->
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:431:    @SerialName("package_name") val packageName: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:442:    fun toOwnedApp(campaignId: String?, details: String = this.details) = OwnedApp(id, title, packageName, installUrl, optInUrl, iconSeed, campaignId.orEmpty(), details, playStorePublishedAt?.let(Instant::parse), groupUrl.orEmpty(), messagingId.orEmpty())
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:449:    @SerialName("package_name") val packageName: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:496:    @SerialName("replacement_open") val replacementOpen: Boolean = false,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:497:    @SerialName("replacement_joined_at") val replacementJoinedAt: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:500:    fun toCampaign(activeTesterCount: Int = 0) = Campaign(id, ownedAppId, requestedTesters, activeTesterCount, parseDate(startedOn), isActive = lifecycle == "active", instructions = instructions, targetDays = targetDays, activeTesterCount = activeTesterCount, testingStartedAt = testingStartedAt?.let(Instant::parse), testingCompletedAt = testingCompletedAt?.let(Instant::parse), progressResetAt = progressResetAt?.let(Instant::parse), closedTestConfirmedAt = closedTestConfirmedAt?.let(Instant::parse), riskDecision = riskDecision.toRiskDecision(), replacementOpen = replacementOpen, replacementJoinedAt = replacementJoinedAt?.let(Instant::parse), restartConfirmedAt = restartConfirmedAt?.let(Instant::parse))
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:543:    @SerialName("package_name") val packageName: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:551:    @SerialName("joined_tester_count") val joinedTesterCount: Int,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:565:    @SerialName("replacement_open") val replacementOpen: Boolean = false,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:566:    @SerialName("replacement_joined_at") val replacementJoinedAt: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:570:    fun toPublicApp() = PublicApp(id, title, packageName, ownerId, ownerUsername, installUrl, optInUrl, requestedTesters, joinedTesterCount, instructions, details, category, postedLabel(createdAt), title, campaignId, targetDays, joinedTesterCount, testingStartedAt?.let(Instant::parse), testingCompletedAt?.let(Instant::parse), progressResetAt?.let(Instant::parse), releaseApprovedAt?.let(Instant::parse), groupUrl.orEmpty(), (requestedTesters - slotsRemaining).coerceAtLeast(0), messagingId.orEmpty(), closedTestConfirmedAt?.let(Instant::parse), riskDecision.toRiskDecision(), replacementOpen, replacementJoinedAt?.let(Instant::parse), restartConfirmedAt?.let(Instant::parse))
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:581:    @SerialName("joined_at") val joinedAt: String
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:596:            joinedOn = parseDate(joinedAt),
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:601:            lifecycle = lifecycle.toCommitmentLifecycle()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:717:    return DirectionSignal(install = row?.status.toInstallSignal(), activity = when (opened) { true -> ActivitySignal.OPENED_TODAY; false -> ActivitySignal.NOT_DETECTED; null -> ActivitySignal.UNAVAILABLE }, lastCheckedLabel = if (row == null) "Not checked yet" else "Checked today")
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:720:private fun String?.toInstallSignal() = when (this) {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:721:    "installed" -> InstallSignal.INSTALLED
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:722:    "not_installed" -> InstallSignal.NOT_INSTALLED
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:723:    else -> InstallSignal.UNAVAILABLE
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:726:private fun installRank(signal: InstallSignal): Int = when (signal) {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:727:    InstallSignal.INSTALLED -> 2
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:728:    InstallSignal.NOT_INSTALLED -> 1
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:729:    InstallSignal.UNAVAILABLE -> 0
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:732:private fun activityRank(signal: ActivitySignal): Int = when (signal) {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:733:    ActivitySignal.OPENED_TODAY -> 2
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:734:    ActivitySignal.NOT_DETECTED -> 1
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:735:    ActivitySignal.UNAVAILABLE -> 0
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:738:private fun String.toCommitmentLifecycle() = when (this) {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:739:    "active" -> CommitmentLifecycle.ACTIVE
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:740:    "completed" -> CommitmentLifecycle.COMPLETED
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:741:    "left" -> CommitmentLifecycle.LEFT
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:742:    else -> CommitmentLifecycle.PENDING_SETUP
+supabase/migrations/20260724170000_fix_activation_for_archived_reciprocal_app.sql:23:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260724170000_fix_activation_for_archived_reciprocal_app.sql:31:    raise exception 'An app owner cannot join their own campaign';
+supabase/migrations/20260724170000_fix_activation_for_archived_reciprocal_app.sql:44:      or new.joined_at <> old.joined_at
+supabase/migrations/20260724170000_fix_activation_for_archived_reciprocal_app.sql:48:      raise exception 'Campaign, tester, reciprocal app, join date, and target duration are immutable';
+supabase/migrations/20260724170000_fix_activation_for_archived_reciprocal_app.sql:67:  -- Locking the campaign row makes the slot check safe for concurrent joins.
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:5:import com.testloop.app.domain.ActivitySignal
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:9:import com.testloop.app.domain.CommitmentLifecycle
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:11:import com.testloop.app.domain.InstallSignal
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:69:    private fun ownPreview(app: OwnedApp, requested: Int, joined: Int, instructions: String) = PublicApp(
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:72:        packageName = app.packageName,
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:78:        joinedTesterCount = joined,
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:84:        activeTesterCount = joined,
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:85:        reservedTesterCount = joined
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:95:                joinedTesterCount = campaign.joinedTesterCount,
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:102:                replacementOpen = campaign.replacementOpen,
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:103:                replacementJoinedAt = campaign.replacementJoinedAt,
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:109:    private fun adjustPublicListing(appId: String, reservedDelta: Int = 0, joinedDelta: Int = 0) {
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:112:                joinedTesterCount = (listing.joinedTesterCount + joinedDelta).coerceAtLeast(0),
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:113:                activeTesterCount = (listing.activeTesterCount + joinedDelta).coerceAtLeast(0),
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:119:    private val installedOpened = DirectionSignal(InstallSignal.INSTALLED, ActivitySignal.OPENED_TODAY, 12)
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:120:    private val installedPending = DirectionSignal(InstallSignal.INSTALLED, ActivitySignal.NOT_DETECTED)
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:121:    private val notInstalled = DirectionSignal(InstallSignal.NOT_INSTALLED, ActivitySignal.UNAVAILABLE)
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:129:        AppNotification("n-install", NotificationKind.RECIPROCAL, "Install Budget Bee to start", "You joined alex_dev's commitment, but Budget Bee is not installed yet.", "12 min ago", true, "pair-alex"),
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:197:                it.currentUserOwnAppId == campaign.ownedAppId && it.lifecycle == CommitmentLifecycle.LEFT
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:198:            } ?: return Result.failure(IllegalStateException("No released commitment is available for replacement"))
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:202:                    replacementOpen = true,
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:203:                    replacementJoinedAt = null,
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:213:            if (affected.lifecycle != CommitmentLifecycle.ACTIVE) {
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:216:            _commitments.value = _commitments.value.map { if (it.commitmentId == affected.commitmentId) it.copy(lifecycle = CommitmentLifecycle.LEFT) else it }
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:219:            if (it.id == campaignId) it.copy(riskDecision = decision, replacementOpen = decision == CampaignRiskDecision.RESTART) else it
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:223:            _notifications.value += AppNotification("n-replacement-$campaignId", NotificationKind.RECIPROCAL, "Replacement tester needed", "The owner released your commitment for a replacement tester. Your previous commitment is no longer active.", "Just now", true, affectedCommitmentId)
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:232:            return Result.failure(IllegalStateException("The replacement count is not restored yet"))
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:236:            if (it.id == campaignId) it.copy(replacementOpen = false, replacementJoinedAt = now, restartConfirmedAt = now, testingStartedAt = now, testingCompletedAt = null, progressResetAt = now) else it
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:243:    override suspend fun syncUsageAccess(hasAccess: Boolean): Result<Unit> {
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:248:    override suspend fun joinCampaign(publicAppId: String, ownAppId: String?): Result<ReciprocalCommitment> {
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:250:        if (publicApp.ownerId == demoUserId) return Result.failure(IllegalArgumentException("You cannot join your own app."))
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:251:        if (_commitments.value.any { it.appBeingTestedByCurrentUserId == publicAppId }) return Result.failure(IllegalStateException("Already joined"))
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:254:                    it.lifecycle in setOf(CommitmentLifecycle.PENDING_SETUP, CommitmentLifecycle.ACTIVE)
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:256:        val pair = ReciprocalCommitment("pair-$publicAppId", publicAppId, ownAppId, publicApp.ownerId, publicApp.ownerUsername, today, youOweSignal = DirectionSignal(InstallSignal.UNAVAILABLE, ActivitySignal.UNAVAILABLE), theyOweSignal = ownAppId?.let { DirectionSignal(InstallSignal.UNAVAILABLE, ActivitySignal.UNAVAILABLE) }, lifecycle = CommitmentLifecycle.PENDING_SETUP)
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:273:    override suspend fun refresh(): Result<Unit> = Result.success(Unit)
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:275:    override suspend fun reportInstallStatus(commitmentId: String): Result<Unit> {
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:278:        if (existing.lifecycle == CommitmentLifecycle.LEFT) {
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:281:        val wasInstalled = existing.youOweSignal.install == InstallSignal.INSTALLED
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:283:            if (commitment.commitmentId == commitmentId) commitment.copy(youOweSignal = commitment.youOweSignal.copy(install = InstallSignal.INSTALLED), lifecycle = CommitmentLifecycle.ACTIVE) else commitment
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:288:            adjustPublicListing(installedAppId, joinedDelta = 1)
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:293:                if (campaign.ownedAppId == ownAppId && _commitments.value.count { it.currentUserOwnAppId == ownAppId && it.lifecycle == CommitmentLifecycle.ACTIVE } > campaign.joinedTesterCount) {
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:294:                    campaign.copy(joinedTesterCount = campaign.joinedTesterCount + 1)
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:302:    override suspend fun leaveCommitment(commitmentId: String): Result<Unit> {
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:305:        if (pair.lifecycle == CommitmentLifecycle.COMPLETED) {
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:308:        if (pair.lifecycle == CommitmentLifecycle.LEFT) return Result.success(Unit)
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:310:            if (it.commitmentId == commitmentId) it.copy(lifecycle = CommitmentLifecycle.LEFT) else it
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:316:                    joinedTesterCount = if (pair.lifecycle == CommitmentLifecycle.ACTIVE) (campaign.joinedTesterCount - 1).coerceAtLeast(0) else campaign.joinedTesterCount,
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:317:                    activeTesterCount = if (pair.lifecycle == CommitmentLifecycle.ACTIVE) (campaign.activeTesterCount - 1).coerceAtLeast(0) else campaign.activeTesterCount,
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:320:                    replacementOpen = false
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:325:        adjustPublicListing(pair.appBeingTestedByCurrentUserId, reservedDelta = -1, joinedDelta = if (pair.lifecycle == CommitmentLifecycle.ACTIVE) -1 else 0)
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:329:    override suspend fun sendReminder(commitmentId: String): Result<Unit> {
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt:34:                    // Do not leave the OAuth tab underneath MainActivity after the
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt:99:            supabase.from("profiles").update(ProfileUpdate(username = clean)) {
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt:118:        supabase.from("profiles").update(ProfileUpdate(trackingSetupComplete = true)) {
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt:134:        supabase.from("profiles").select { filter { eq("id", id) } }.decodeList<ProfileRow>().firstOrNull()
+app/src/main/java/com/testloop/app/data/Repositories.kt:42:    suspend fun syncUsageAccess(hasAccess: Boolean): Result<Unit>
+app/src/main/java/com/testloop/app/data/Repositories.kt:43:    suspend fun joinCampaign(publicAppId: String, ownAppId: String?): Result<ReciprocalCommitment>
+app/src/main/java/com/testloop/app/data/Repositories.kt:46:    suspend fun refresh(): Result<Unit>
+app/src/main/java/com/testloop/app/data/Repositories.kt:47:    suspend fun reportInstallStatus(commitmentId: String): Result<Unit>
+app/src/main/java/com/testloop/app/data/Repositories.kt:48:    suspend fun leaveCommitment(commitmentId: String): Result<Unit>
+app/src/main/java/com/testloop/app/data/Repositories.kt:49:    suspend fun sendReminder(commitmentId: String): Result<Unit>
+app/src/main/java/com/testloop/app/tracking/UsageAccessReporter.kt:16:    fun openedOn(packageName: String, day: LocalDate = LocalDate.now()): Boolean?
+app/src/main/java/com/testloop/app/tracking/UsageAccessReporter.kt:21: * leaves the device.
+app/src/main/java/com/testloop/app/tracking/UsageAccessReporter.kt:29:            appOps.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
+app/src/main/java/com/testloop/app/tracking/UsageAccessReporter.kt:32:            appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
+app/src/main/java/com/testloop/app/tracking/UsageAccessReporter.kt:43:    override fun openedOn(packageName: String, day: LocalDate): Boolean? {
+app/src/main/java/com/testloop/app/tracking/UsageAccessReporter.kt:49:            .firstOrNull { it.packageName == packageName }
+supabase/migrations/20260723040000_enrollment_activation.sql:2:-- app. Provisional commitments reserve capacity but are not counted as joined
+supabase/migrations/20260723040000_enrollment_activation.sql:5:create or replace function public.public_joined_count(target_campaign_id uuid)
+supabase/migrations/20260723040000_enrollment_activation.sql:44:  public.public_joined_count(c.id) as joined_tester_count,
+supabase/migrations/20260723040000_enrollment_activation.sql:53:join public.profiles p on p.id = oa.owner_id
+supabase/migrations/20260723040000_enrollment_activation.sql:54:join public.campaigns c on c.owned_app_id = oa.id
+supabase/migrations/20260723040000_enrollment_activation.sql:77:  join public.campaigns c on c.id = rc.campaign_id
+supabase/migrations/20260723040000_enrollment_activation.sql:104:    join public.campaigns c on c.id = rc.campaign_id
+supabase/migrations/20260723040000_enrollment_activation.sql:129:  join public.owned_apps oa on oa.id = c.owned_app_id
+app/src/main/java/com/testloop/app/tracking/InstallStatusReporter.kt:7:    fun isInstalled(packageName: String): Boolean
+app/src/main/java/com/testloop/app/tracking/InstallStatusReporter.kt:14:    override fun isInstalled(packageName: String): Boolean {
+app/src/main/java/com/testloop/app/tracking/InstallStatusReporter.kt:15:        val target = packageName.trim()
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:14:    fun launch(packageName: String): LaunchResult
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:32:    override fun launch(packageName: String): LaunchResult {
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:33:        val target = packageName.trim()
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:53:    private fun isInstalled(packageName: String): Boolean = runCatching {
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:54:        context.packageManager.getApplicationInfo(packageName, PackageManager.ApplicationInfoFlags.of(0))
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:63:        if (!PlayUrlPolicy.isAllowedUrl(url)) return LaunchResult.Blocked
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:7:  add column if not exists replacement_open boolean not null default false,
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:8:  add column if not exists replacement_requested_at timestamptz,
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:9:  add column if not exists replacement_joined_at timestamptz,
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:19:create table if not exists public.campaign_replacement_events (
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:24:  replacement_commitment_id uuid references public.reciprocal_commitments (id) on delete set null,
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:26:  replacement_joined_at timestamptz,
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:28:  constraint campaign_replacement_events_one_open unique (campaign_id, released_commitment_id)
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:31:create index if not exists campaign_replacement_events_campaign_idx
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:32:  on public.campaign_replacement_events (campaign_id, created_at desc);
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:34:alter table public.campaign_replacement_events enable row level security;
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:35:create policy campaign_replacement_events_participant_read
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:36:on public.campaign_replacement_events for select to authenticated
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:41:    join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:42:    where c.id = campaign_replacement_events.campaign_id
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:48:    where rc.id = campaign_replacement_events.replacement_commitment_id
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:52:revoke all on public.campaign_replacement_events from anon, authenticated;
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:53:grant select on public.campaign_replacement_events to authenticated;
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:83:  if campaign_row.replacement_open then
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:85:    set replacement_open = false
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:105:create or replace function public.mark_replacement_commitment_joined()
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:113:  replacement_event_id uuid;
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:122:     and campaign_row.replacement_joined_at is null
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:124:    select id into replacement_event_id
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:125:    from public.campaign_replacement_events
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:127:      and replacement_commitment_id is null
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:132:    if replacement_event_id is not null then
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:133:      update public.campaign_replacement_events
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:134:      set replacement_commitment_id = new.id,
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:135:          replacement_joined_at = timezone('utc', now())
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:136:      where id = replacement_event_id;
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:138:      set replacement_joined_at = timezone('utc', now())
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:146:drop trigger if exists commitments_mark_replacement_joined on public.reciprocal_commitments;
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:147:create trigger commitments_mark_replacement_joined
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:149:for each row execute function public.mark_replacement_commitment_joined();
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:169:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:229:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:244:    if campaign_row.risk_decision = 'restart' and campaign_row.replacement_requested_at is not null then
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:261:    insert into public.campaign_replacement_events (campaign_id, released_commitment_id, released_tester_id)
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:267:        replacement_open = true,
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:268:        replacement_requested_at = timezone('utc', now()),
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:269:        replacement_joined_at = null,
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:277:      'The owner chose the replacement path after an install drop. This commitment was released so a replacement tester can join; it is not a judgment about your test quality.',
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:284:        replacement_open = false
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:309:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:321:  if campaign_row.replacement_joined_at is null then raise exception 'A replacement tester must join before restart'; end if;
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:331:      replacement_open = false
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:340:  join public.owned_apps oa on oa.id = campaign_row.owned_app_id
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:355:-- while exposing replacement state separately.
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:369:  public.campaign_active_tester_count(c.id) as joined_tester_count,
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:386:  (c.replacement_open and public.public_reserved_count(c.id) < c.requested_testers) as replacement_open,
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:387:  c.replacement_joined_at,
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:390:join public.profiles p on p.id = oa.owner_id
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:391:join public.campaigns c on c.owned_app_id = oa.id
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:402:    and (not c.replacement_open or public.public_reserved_count(c.id) >= c.requested_testers)
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:405:revoke all on public.campaign_replacement_events from anon, authenticated;
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:406:grant select on public.campaign_replacement_events to authenticated;
+app/src/main/java/com/testloop/app/platform/PlayUrlPolicy.kt:12:object PlayUrlPolicy {
+app/src/main/java/com/testloop/app/platform/PlayUrlPolicy.kt:21:    fun isInstallLink(raw: String, packageName: String): Boolean =
+app/src/main/java/com/testloop/app/platform/PlayUrlPolicy.kt:22:        packageFromInstallLink(raw) == packageName
+app/src/main/java/com/testloop/app/platform/PlayUrlPolicy.kt:24:    fun isTestingLink(raw: String, packageName: String): Boolean =
+app/src/main/java/com/testloop/app/platform/PlayUrlPolicy.kt:26:            parsed.path == "/apps/testing/$packageName" && parsed.query.isEmpty()
+app/src/main/java/com/testloop/app/platform/PlayUrlPolicy.kt:27:        } == true && PACKAGE_NAME.matches(packageName)
+supabase/migrations/20260725210000_encrypted_chat.sql:76:    join public.campaigns c on c.id = rc.campaign_id
+supabase/migrations/20260725210000_encrypted_chat.sql:77:    join public.owned_apps oa on oa.id = c.owned_app_id
+app/src/main/java/com/testloop/app/platform/FeedbackForm.kt:21:            .joinToString(" ")
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:27:  join public.campaigns c on c.id = rc.campaign_id
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:110:create or replace function public.public_joined_count(target_campaign_id uuid)
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:133:  public.campaign_active_tester_count(c.id) as joined_tester_count,
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:146:join public.profiles p on p.id = oa.owner_id
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:147:join public.campaigns c on c.owned_app_id = oa.id
+supabase/migrations/20260724160000_usage_access_enforcement.sql:59:           join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726060000_reopen_replacement_path.sql:2:-- choose whether to keep the campaign hidden or reopen one replacement slot.
+supabase/migrations/20260726060000_reopen_replacement_path.sql:21:        replacement_open = false
+supabase/migrations/20260726060000_reopen_replacement_path.sql:35:-- already-left commitment as replacement history and opens Discover. It does
+supabase/migrations/20260726060000_reopen_replacement_path.sql:37:create or replace function public.reopen_campaign_replacement(target_campaign_id uuid)
+supabase/migrations/20260726060000_reopen_replacement_path.sql:52:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726060000_reopen_replacement_path.sql:59:  if owner_id <> auth.uid() then raise exception 'Only the app owner can reopen a replacement slot'; end if;
+supabase/migrations/20260726060000_reopen_replacement_path.sql:60:  if campaign_row.replacement_open then
+supabase/migrations/20260726060000_reopen_replacement_path.sql:65:    raise exception 'No replacement slot is available';
+supabase/migrations/20260726060000_reopen_replacement_path.sql:73:      select 1 from public.campaign_replacement_events cre
+supabase/migrations/20260726060000_reopen_replacement_path.sql:80:    raise exception 'No released commitment is available for replacement';
+supabase/migrations/20260726060000_reopen_replacement_path.sql:83:  insert into public.campaign_replacement_events (campaign_id, released_commitment_id, released_tester_id)
+supabase/migrations/20260726060000_reopen_replacement_path.sql:89:      replacement_open = true,
+supabase/migrations/20260726060000_reopen_replacement_path.sql:90:      replacement_requested_at = timezone('utc', now()),
+supabase/migrations/20260726060000_reopen_replacement_path.sql:91:      replacement_joined_at = null,
+supabase/migrations/20260726060000_reopen_replacement_path.sql:100:-- Replacement joins and final restart are shared by the explicit restart and
+supabase/migrations/20260726060000_reopen_replacement_path.sql:102:create or replace function public.mark_replacement_commitment_joined()
+supabase/migrations/20260726060000_reopen_replacement_path.sql:110:  replacement_event_id uuid;
+supabase/migrations/20260726060000_reopen_replacement_path.sql:119:     and campaign_row.replacement_joined_at is null
+supabase/migrations/20260726060000_reopen_replacement_path.sql:121:    select id into replacement_event_id
+supabase/migrations/20260726060000_reopen_replacement_path.sql:122:    from public.campaign_replacement_events
+supabase/migrations/20260726060000_reopen_replacement_path.sql:124:      and replacement_commitment_id is null
+supabase/migrations/20260726060000_reopen_replacement_path.sql:129:    if replacement_event_id is not null then
+supabase/migrations/20260726060000_reopen_replacement_path.sql:130:      update public.campaign_replacement_events
+supabase/migrations/20260726060000_reopen_replacement_path.sql:131:      set replacement_commitment_id = new.id,
+supabase/migrations/20260726060000_reopen_replacement_path.sql:132:          replacement_joined_at = timezone('utc', now())
+supabase/migrations/20260726060000_reopen_replacement_path.sql:133:      where id = replacement_event_id;
+supabase/migrations/20260726060000_reopen_replacement_path.sql:135:      set replacement_joined_at = timezone('utc', now())
+supabase/migrations/20260726060000_reopen_replacement_path.sql:159:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726060000_reopen_replacement_path.sql:171:  if campaign_row.replacement_joined_at is null then raise exception 'A replacement tester must join before restart'; end if;
+supabase/migrations/20260726060000_reopen_replacement_path.sql:181:      replacement_open = false
+supabase/migrations/20260726060000_reopen_replacement_path.sql:190:  join public.owned_apps oa on oa.id = campaign_row.owned_app_id
+supabase/migrations/20260726060000_reopen_replacement_path.sql:210:  public.campaign_active_tester_count(c.id) as joined_tester_count,
+supabase/migrations/20260726060000_reopen_replacement_path.sql:227:  (c.replacement_open and public.public_reserved_count(c.id) < c.requested_testers) as replacement_open,
+supabase/migrations/20260726060000_reopen_replacement_path.sql:228:  c.replacement_joined_at,
+supabase/migrations/20260726060000_reopen_replacement_path.sql:231:join public.profiles p on p.id = oa.owner_id
+supabase/migrations/20260726060000_reopen_replacement_path.sql:232:join public.campaigns c on c.owned_app_id = oa.id
+supabase/migrations/20260726060000_reopen_replacement_path.sql:245:      c.replacement_open
+supabase/migrations/20260726060000_reopen_replacement_path.sql:250:revoke all on function public.reopen_campaign_replacement(uuid) from public, anon;
+supabase/migrations/20260726060000_reopen_replacement_path.sql:251:grant execute on function public.reopen_campaign_replacement(uuid) to authenticated;
+supabase/migrations/20260725170000_usage_access_one_hour_enforcement.sql:55:           join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260723000000_initial_testloop.sql:94:  joined_at timestamptz not null default timezone('utc', now()),
+supabase/migrations/20260723000000_initial_testloop.sql:108:  on public.reciprocal_commitments (tester_id, lifecycle, joined_at desc);
+supabase/migrations/20260723000000_initial_testloop.sql:110:  on public.reciprocal_commitments (campaign_id, lifecycle, joined_at desc);
+supabase/migrations/20260723000000_initial_testloop.sql:286:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260723000000_initial_testloop.sql:294:    raise exception 'An app owner cannot join their own campaign';
+supabase/migrations/20260723000000_initial_testloop.sql:307:      or new.joined_at <> old.joined_at
+supabase/migrations/20260723000000_initial_testloop.sql:310:      raise exception 'Campaign, tester, join date, and target duration are immutable';
+supabase/migrations/20260723000000_initial_testloop.sql:328:  -- Locking the campaign row makes the slot check safe for concurrent joins.
+supabase/migrations/20260723000000_initial_testloop.sql:377:  join public.campaigns c on c.id = rc.campaign_id
+supabase/migrations/20260723000000_initial_testloop.sql:378:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260723000000_initial_testloop.sql:422:  join public.campaigns c on c.id = rc.campaign_id
+supabase/migrations/20260723000000_initial_testloop.sql:423:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260723000000_initial_testloop.sql:462:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260723000000_initial_testloop.sql:468:    'A new tester joined',
+supabase/migrations/20260723000000_initial_testloop.sql:469:    'Someone joined your app campaign. Open the commitment to review the exact app pairing.',
+supabase/migrations/20260723000000_initial_testloop.sql:509:create or replace function public.public_joined_count(target_campaign_id uuid)
+supabase/migrations/20260723000000_initial_testloop.sql:535:  public.public_joined_count(c.id) as joined_tester_count,
+supabase/migrations/20260723000000_initial_testloop.sql:536:  greatest(c.requested_testers - public.public_joined_count(c.id), 0) as slots_remaining,
+supabase/migrations/20260723000000_initial_testloop.sql:544:join public.profiles p on p.id = oa.owner_id
+supabase/migrations/20260723000000_initial_testloop.sql:545:join public.campaigns c on c.owned_app_id = oa.id
+supabase/migrations/20260723000000_initial_testloop.sql:588:    join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260723000000_initial_testloop.sql:759:revoke execute on function public.public_joined_count(uuid) from public, anon, authenticated;
+supabase/migrations/20260723000000_initial_testloop.sql:764:grant execute on function public.public_joined_count(uuid) to authenticated;
+supabase/migrations/20260725220000_fix_usage_access_function.sql:57:           join public.owned_apps oa on oa.id = c.owned_app_id
+app/src/main/java/com/testloop/app/MainActivity.kt:83:                repository.refresh()
+supabase/migrations/20260725130000_campaign_target_and_reciprocal_guards.sql:1:-- Live publishers may adjust their tester target as offline testers join.
+supabase/migrations/20260725100000_testing_group_link_and_optional_opt_in.sql:45:  public.campaign_active_tester_count(c.id) as joined_tester_count,
+supabase/migrations/20260725100000_testing_group_link_and_optional_opt_in.sql:60:join public.profiles p on p.id = oa.owner_id
+supabase/migrations/20260725100000_testing_group_link_and_optional_opt_in.sql:61:join public.campaigns c on c.owned_app_id = oa.id
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:99:                        Text("Preview only — you can’t join your own test. This is how your public listing appears to other testers.", color = Ink500, style = MaterialTheme.typography.bodyMedium)
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:128:                Text("A tester sees these actions; you can’t join your own test.", color = Ink500, style = MaterialTheme.typography.bodyMedium)
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:171:    var joining by remember { mutableStateOf(false) }
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:172:    var joinError by remember { mutableStateOf<String?>(null) }
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:189:                                Text("${alreadyUsedApps.joinToString { it.title }} is already offered in another active commitment. Choose a different app or volunteer so you don’t create duplicate work.", color = Ink500, style = MaterialTheme.typography.bodySmall)
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:224:                        joinError?.let { InlineNotice(it, isError = true) }
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:225:                        if (joining) InlineNotice("Joining this app and checking whether it is installed on your phone…")
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:228:                                joining = true
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:229:                                joinError = null
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:234:                                            joining = false
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:235:                                            joinError = userFriendlyError(it, "We couldn't join this app right now. Check your connection and try again.")
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:240:                            enabled = consent && !joining
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:241:                        ) { Text(if (joining) "Joining…" else "Join commitment") }
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:254:    var packageName by remember { mutableStateOf("") }
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:279:                    Field(installUrl, { installUrl = it; packageName = PlayLinkValidator.packageFromInstallLink(it).orEmpty() }, "Play install link", error = installLinkError)
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:280:                    Field(packageName, {}, "Package ID", "Extracted automatically from the Play install link", readOnly = true)
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:281:                    InlineNotice(if (packageName.isBlank()) "Paste a valid Google Play install link to detect the package ID." else "Package ID detected: $packageName")
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:285:                    val optInLinkValid = optInUrl.isBlank() || PlayLinkValidator.isTestingLink(optInUrl, packageName)
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:307:                            !optInLinkValid -> "The Play opt-in link must match $packageName."
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:309:                            else -> "The Play opt-in link is optional and must match $packageName."
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:320:            Spacer(Modifier.weight(1f)); val canContinue = when (step) { 1 -> title.length > 1 && PlayLinkValidator.isInstallLink(installUrl, packageName) && packageName.contains('.'); 2 -> PlayLinkValidator.isGroupLink(groupUrl) && (optInUrl.isBlank() || PlayLinkValidator.isTestingLink(optInUrl, packageName)) && testerCount.toIntOrNull()?.let { it in MIN_TESTERS..MAX_TESTERS } == true; else -> instructions.length in MIN_INSTRUCTIONS_LENGTH..MAX_INSTRUCTIONS_LENGTH }
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:326:                    val app = OwnedApp("own-$id", title, packageName, installUrl.trim(), optInUrl.trim().ifBlank { null }, title, "campaign-$id", instructions.trim(), groupUrl = groupUrl.trim(), messagingId = messagingId.trim())
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:77:import com.testloop.app.domain.CommitmentLifecycle
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:81:import com.testloop.app.domain.InstallSignal
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:131:        it.lifecycle == CommitmentLifecycle.ACTIVE &&
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:138:        .filter { it.currentUserOwnAppId != null && it.lifecycle in setOf(CommitmentLifecycle.PENDING_SETUP, CommitmentLifecycle.ACTIVE) }
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:143:            (it.youOweSignal.install != InstallSignal.INSTALLED ||
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:144:                it.youOweSignal.activity != com.testloop.app.domain.ActivitySignal.OPENED_TODAY)
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:198:            repo.refresh()
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:211:                repo.refresh()
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:220:            if (activeCommitmentCount > 0) repo.syncUsageAccess(liveUsageAccessGranted)
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:235:            val targetPackageName = publicApp?.packageName ?: ownedTarget?.packageName
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:241:            if (pair.youOweSignal.install != InstallSignal.INSTALLED) {
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:251:            if (result != LaunchResult.Unavailable) repo.reportInstallStatus(id)
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:312:            pendingCommitment = commitments.firstOrNull { it.appBeingTestedByCurrentUserId == current.appId && it.lifecycle == com.testloop.app.domain.CommitmentLifecycle.PENDING_SETUP },
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:314:            onJoin = { publicId, ownId -> repo.joinCampaign(publicId, ownId) },
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:328:            repo.reportInstallStatus(id).onFailure {
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:339:        }, onReminder = { id, person -> scope.launch { repo.sendReminder(id).onSuccess { snack("Helpful check-in sent to @$person") }.onFailure { snack(userFriendlyError(it, "We couldn’t send the check-in. Check your connection and try again.")) } } }, onLeave = { id -> scope.launch {
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:340:            repo.leaveCommitment(id)
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:344:                .onFailure { snack(userFriendlyError(it, "We couldn’t leave this commitment. Check your connection and try again.")) }
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:357:        is AppScreen.OwnDetail -> OwnAppDetailScreen(current.appId, current.attentionOnly, ownedApps, campaigns, commitments, discoverApps, onBack = ::back, onPair = { navigate(AppScreen.PairDetail(it)) }, onReminder = { id, person -> scope.launch { repo.sendReminder(id).onSuccess { snack("Reminder sent to @$person. They'll see it today") }.onFailure { snack(userFriendlyError(it, "We couldn't send the reminder. Check your connection and try again.")) } } }, onSwitch = { replace(AppScreen.OwnDetail(it)) }, onDelist = { id -> repo.delistOwnedApp(id).onSuccess { replace(AppScreen.Main(MainDestination.APPS)); snack("Your app has been removed from Discover") }.onFailure { snack(userFriendlyError(it, "We couldn't remove this app from Discover. Check your connection and try again.")) } }, onMarkPublished = { id -> repo.markOwnedAppPublished(id).onSuccess { snack("Your app status was saved. TestLoop cannot verify Google Play approval.") }.onFailure { snack(userFriendlyError(it, "We couldn't update your Google Play status. Check your connection and try again.")) } }, onUpdateTesterCount = { id, count -> repo.updateCampaignTesterCount(id, count).onSuccess { snack("Tester target updated to $count. Discover and progress are now up to date.") }.onFailure { snack(userFriendlyError(it, "We couldn't update the tester target. Check your connection and try again.")) } }, onConfirmClosedTesting = { id -> scope.launch { repo.confirmClosedTesting(id).onSuccess { snack("Closed testing confirmation saved. Daily tasks are now available.") }.onFailure { snack(userFriendlyError(it, "We couldn't save the closed-testing confirmation. Check your connection and try again.")) } } }, onRiskDecision = { id, decision, commitmentId -> scope.launch { repo.chooseCampaignRiskDecision(id, decision, commitmentId).onSuccess { snack(if (decision == CampaignRiskDecision.RESTART || decision == CampaignRiskDecision.REOPEN) "Replacement slot opened in Discover. The timer is unchanged until you confirm the restart." else "Campaign decision saved. The current timer is unchanged.") }.onFailure { snack(userFriendlyError(it, "We couldn't save the campaign decision. Check your connection and try again.")) } } }, onFinalRestart = { id -> scope.launch { repo.finalizeCampaignRestart(id).onSuccess { snack("Restart confirmed. Testers now have a new Day 1 and end date.") }.onFailure { snack(userFriendlyError(it, "We couldn't restart the campaign yet. Check that the replacement tester is installed.")) } } })
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:446:            Text("For every app you join, you will see", style = MaterialTheme.typography.labelLarge, color = Brand600)
+app/src/main/java/com/testloop/app/ui/PlayLinkValidator.kt:3:import com.testloop.app.platform.PlayUrlPolicy
+app/src/main/java/com/testloop/app/ui/PlayLinkValidator.kt:7:    fun packageFromInstallLink(raw: String): String? = PlayUrlPolicy.packageFromInstallLink(raw)
+app/src/main/java/com/testloop/app/ui/PlayLinkValidator.kt:8:    fun isInstallLink(raw: String, packageName: String): Boolean = PlayUrlPolicy.isInstallLink(raw, packageName)
+app/src/main/java/com/testloop/app/ui/PlayLinkValidator.kt:9:    fun isTestingLink(raw: String, packageName: String): Boolean = PlayUrlPolicy.isTestingLink(raw, packageName)
+app/src/main/java/com/testloop/app/ui/PlayLinkValidator.kt:10:    fun isGroupLink(raw: String): Boolean = PlayUrlPolicy.isGroupLink(raw)
+supabase/migrations/20260726030000_fix_leave_commitment_rpc.sql:2:-- the output column of leave_commitment().
+supabase/migrations/20260726030000_fix_leave_commitment_rpc.sql:4:create or replace function public.leave_commitment(target_commitment_id uuid)
+supabase/migrations/20260726030000_fix_leave_commitment_rpc.sql:33:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726030000_fix_leave_commitment_rpc.sql:38:    raise exception 'Only a commitment participant can leave it';
+supabase/migrations/20260726030000_fix_leave_commitment_rpc.sql:82:revoke all on function public.leave_commitment(uuid) from public, anon;
+supabase/migrations/20260726030000_fix_leave_commitment_rpc.sql:83:grant execute on function public.leave_commitment(uuid) to authenticated;
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:63:import com.testloop.app.domain.ActivitySignal
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:68:import com.testloop.app.domain.CommitmentLifecycle
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:70:import com.testloop.app.domain.InstallSignal
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:98:    val canActOnCommitment = pair.lifecycle in setOf(CommitmentLifecycle.PENDING_SETUP, CommitmentLifecycle.ACTIVE)
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:106:                        CommitmentLifecycle.LEFT -> "You left this commitment. It no longer reserves a tester slot."
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:107:                        CommitmentLifecycle.COMPLETED -> "This commitment is complete and no longer accepts actions."
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:128:                if (pair.youOweSignal.install == InstallSignal.INSTALLED) {
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:160:                "Leaving now may interrupt the app owner’s closed test, cost them progress toward production access, and force them to find a replacement tester. Please leave only if you can no longer continue. This cannot be undone."
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:213:        mutableStateOf(commitment.youOweSignal.install != InstallSignal.UNAVAILABLE)
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:217:    val found = installSignal == InstallSignal.INSTALLED
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:220:        hasChecked && installSignal == InstallSignal.NOT_INSTALLED -> installStep
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:303:                                if (hasChecked && installSignal == InstallSignal.NOT_INSTALLED) {
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:418:    GroupSurface { Column(Modifier.padding(16.dp)) { Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold); Spacer(Modifier.height(4.dp)); Text(description, color = Ink500); Spacer(Modifier.height(12.dp)); if (!currentUserDirection && signal.activity == ActivitySignal.UNAVAILABLE) { Text("Waiting for ${pair.otherUsername} to open TestLoop so we can update today’s status.", style = MaterialTheme.typography.bodySmall, color = Ink500); Spacer(Modifier.height(8.dp)) }; EvidenceLabels(signal, waitingForTester = !currentUserDirection); Text(signal.lastCheckedLabel, modifier = Modifier.padding(top = 8.dp), style = MaterialTheme.typography.labelSmall, color = Ink500) } }
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:461:                    else "The required installed count dropped. The owner is deciding whether to continue, recruit a replacement, or decide later. The current timer and history are preserved.",
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:464:                CampaignTestingStatus.RESTART_PENDING -> Text(if (progress.replacementJoinedAt == null) "The owner plans to restart after replacing or adding a tester. A replacement tester may be required; the current timer is preserved." else "A replacement tester has joined. Install detection must restore the required count before the owner can confirm a restart.", color = Ink500)
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:526:    val hasReleasedCommitment = commitments.any { it.currentUserOwnAppId == appId && it.lifecycle == CommitmentLifecycle.LEFT }
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:616:                pairs.filter { it.lifecycle == CommitmentLifecycle.ACTIVE }.forEach { pair ->
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:623:                        Text("Open a replacement slot in Discover")
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:626:                Text("Releasing a selected commitment opens one replacement slot in Discover. The restart still needs a separate final confirmation after the required count returns.", style = MaterialTheme.typography.bodySmall, color = Ink500)
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:714:                Text(if (campaign.replacementJoinedAt == null) "Replacement tester needed" else "Waiting for replacement install", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:715:                Text("The owner plans to restart after a replacement tester restores the required installed count. The current timer is preserved.", color = Ink500)
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:716:                if (campaign.replacementOpen) Text("Discover shows one replacement slot open for this campaign.", style = MaterialTheme.typography.bodySmall, color = Brand600)
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:722:                Text("Review the replacement tester, then confirm only if you want a new Day 1. This is the only action that changes testing_started_at.", color = Ink500)
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:749:        if (theirs.activity == ActivitySignal.UNAVAILABLE) Text("Waiting for ${pair.otherUsername} to open TestLoop for the latest status.", style = MaterialTheme.typography.bodySmall, color = Ink500, modifier = Modifier.padding(top = 6.dp))
+app/src/main/java/com/testloop/app/ui/UserFacingMessages.kt:7:            .joinToString(" ") { "${it::class.simpleName.orEmpty()} ${it.message.orEmpty()}" }
+app/src/main/java/com/testloop/app/ui/UserFacingMessages.kt:22:        details.contains("already joined", ignoreCase = true) ->
+app/src/main/java/com/testloop/app/ui/UserFacingMessages.kt:23:            "You have already joined this app's test. Open Today to continue where you left off."
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql:16:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql:79:  public.campaign_active_tester_count(c.id) as joined_tester_count,
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql:93:join public.profiles p on p.id = oa.owner_id
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql:94:join public.campaigns c on c.owned_app_id = oa.id
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:53:import com.testloop.app.domain.ActivitySignal
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:62:import com.testloop.app.domain.CommitmentLifecycle
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:63:import com.testloop.app.domain.InstallSignal
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:110:        it.lifecycle == CommitmentLifecycle.ACTIVE &&
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:117:        .sortedWith(compareBy<ReciprocalCommitment> { taskPriority(it) }.thenBy { it.joinedOn })
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:234:        Text("Explore apps available for testing and join one. In return, that publisher can test your app too.", color = Ink500)
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:249:        GuideRow(Icons.Default.Explore, "Discover", "Explore apps available for testing, join a group, and get your app tested in return.")
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:267:        Text("Your daily test list will appear here after you join an app in Discover.", color = Ink500)
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:285:        pair.youOweSignal.install != InstallSignal.INSTALLED -> "Install"
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:286:        pair.youOweSignal.activity != ActivitySignal.OPENED_TODAY -> "Open"
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:312:    CampaignTestingStatus.RESTART_PENDING -> if (replacementJoinedAt == null) "Replacement tester needed · $activeTesterCount/$requiredTesters active testers" else "Replacement tester joined · $activeTesterCount/$requiredTesters active testers"
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:349:                        CampaignTestingStatus.RESTART_PENDING -> "The owner is arranging a replacement before restarting."
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:360:                if (signal.activity == ActivitySignal.UNAVAILABLE) {
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:374:        Text("When someone joins one of your app's tests, their name and today's status will appear here.", color = Ink500)
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:380:private fun needsYourAction(pair: ReciprocalCommitment): Boolean = pair.youOweSignal.install != InstallSignal.INSTALLED || pair.youOweSignal.activity != ActivitySignal.OPENED_TODAY
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:383:    pair.youOweSignal.install != InstallSignal.INSTALLED -> 0
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:384:    pair.youOweSignal.activity != ActivitySignal.OPENED_TODAY -> 1
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:388:fun needsAttention(signal: com.testloop.app.domain.DirectionSignal?): Boolean = signal == null || signal.install != InstallSignal.INSTALLED || signal.activity != ActivitySignal.OPENED_TODAY
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:87:    val count = campaign?.joinedTesterCount ?: 0
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:138:    val joinedAppIds = commitments.filter { it.lifecycle != com.testloop.app.domain.CommitmentLifecycle.PENDING_SETUP }.mapTo(mutableSetOf()) { it.appBeingTestedByCurrentUserId }
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:147:        .filter { it.id in ownedAppIds || it.id !in joinedAppIds }
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:149:        .filter { it.title.contains(query, true) || it.ownerUsername.contains(query, true) || it.packageName.contains(query, true) }
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:154:    val joinableApps = filtered.filterNot { it.id in ownedAppIds }
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:156:        item { TestLoopTopBar("Discover", "Explore apps, join their test groups, and get your app tested in return", unreadCount = unread, onNotifications = onNotifications, actionContent = {
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:167:                    Text(if (hideMyApps) "Showing apps you can join" else "Show your listings as preview cards", style = MaterialTheme.typography.bodySmall, color = Ink500)
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:185:            if (joinableApps.isNotEmpty()) {
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:189:                        joinableApps.forEachIndexed { index, app ->
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:191:                            if (index != joinableApps.lastIndex) RowDivider()
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:218:        AppMonogram(app.title); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(app.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold); Text("@${app.ownerUsername} · ${app.postedLabel}", style = MaterialTheme.typography.labelMedium, color = Ink500); Spacer(Modifier.height(5.dp)); Text(app.instructions, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall, color = Ink500); Spacer(Modifier.height(7.dp)); Text(if (isOwnerPreview && app.replacementOpen && app.slotsRemaining > 0) "Replacement slot open · Your listing" else if (isOwnerPreview) "Preview only · Your app" else app.discoverStateLabel(), style = MaterialTheme.typography.labelMedium, color = Brand600) }
+app/src/main/java/com/testloop/app/ui/DesignSystem.kt:41:import com.testloop.app.domain.ActivitySignal
+app/src/main/java/com/testloop/app/ui/DesignSystem.kt:42:import com.testloop.app.domain.InstallSignal
+app/src/main/java/com/testloop/app/ui/DesignSystem.kt:74:        signal.install == InstallSignal.NOT_INSTALLED -> Quad("Install needed", Icons.Default.ErrorOutline, Attention700, Attention100)
+app/src/main/java/com/testloop/app/ui/DesignSystem.kt:75:        signal.install == InstallSignal.UNAVAILABLE -> Quad("Install check pending", Icons.Default.HourglassEmpty, Ink500, Brand100)
+app/src/main/java/com/testloop/app/ui/DesignSystem.kt:76:        signal.activity == ActivitySignal.OPENED_TODAY -> Quad("Opened today", Icons.Default.CheckCircle, Success700, Success100)
+app/src/main/java/com/testloop/app/ui/DesignSystem.kt:77:        signal.activity == ActivitySignal.NOT_DETECTED -> Quad("Not opened today", Icons.Default.ErrorOutline, Attention700, Attention100)
+app/src/main/java/com/testloop/app/ui/DesignSystem.kt:78:        signal.activity == ActivitySignal.UNAVAILABLE -> Quad(if (waitingForTester) "Waiting for TestLoop check" else "Open status unavailable", Icons.Default.ErrorOutline, Ink500, Brand100)
+app/src/main/java/com/testloop/app/ui/DesignSystem.kt:95:        InstallSignal.INSTALLED -> Triple("Installed", Success700, Success100)
+app/src/main/java/com/testloop/app/ui/DesignSystem.kt:96:        InstallSignal.NOT_INSTALLED -> Triple("Not installed", Attention700, Attention100)
+app/src/main/java/com/testloop/app/ui/DesignSystem.kt:97:        InstallSignal.UNAVAILABLE -> Triple("Install check pending", Ink500, Brand100)
+app/src/main/java/com/testloop/app/ui/DesignSystem.kt:115:        ActivitySignal.OPENED_TODAY -> Triple("Opened today", Success700, Success100)
+app/src/main/java/com/testloop/app/ui/DesignSystem.kt:116:        ActivitySignal.NOT_DETECTED -> Triple("Not opened today", Attention700, Attention100)
+app/src/main/java/com/testloop/app/ui/DesignSystem.kt:117:        ActivitySignal.UNAVAILABLE -> Triple(if (waitingForTester) "Waiting for TestLoop check" else "Open status unavailable", Ink500, Brand100)

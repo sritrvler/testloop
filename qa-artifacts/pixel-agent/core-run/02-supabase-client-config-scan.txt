@@ -1,0 +1,2 @@
+timestamp_utc=2026-07-26T15:21:58Z
+zsh:1: no matches found: java*

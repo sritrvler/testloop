@@ -1,0 +1,11 @@
+timestamp_utc=2026-07-26T15:21:36Z
+total 0
+drwxr-xr-x@  5 srinathsmac  staff   160 Jul 25 13:59 .
+drwxr-xr-x@ 23 srinathsmac  staff   736 Jul 26 20:15 ..
+drwxr-xr-x@ 11 srinathsmac  staff   352 Jul 23 11:05 .temp
+drwxr-xr-x@ 37 srinathsmac  staff  1184 Jul 26 14:04 migrations
+drwxr-xr-x@  3 srinathsmac  staff    96 Jul 25 13:59 supabase
+/opt/homebrew/bin/supabase
+2.109.1
+failed to inspect container health: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+Try rerunning the command with --debug to troubleshoot the error.

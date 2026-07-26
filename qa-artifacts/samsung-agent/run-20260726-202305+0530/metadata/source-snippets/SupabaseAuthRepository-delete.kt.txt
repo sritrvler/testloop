@@ -1,0 +1,41 @@
+            } else {
+                Result.failure(IllegalStateException("Could not save your username. Please try again."))
+            }
+        }
+    }
+
+    override suspend fun completeTrackingSetup(): Result<Unit> = runCatching {
+        val user = supabase.auth.currentUserOrNull() ?: error("Please sign in again")
+        supabase.from("profiles").update(ProfileUpdate(trackingSetupComplete = true)) {
+            filter { eq("id", user.id) }
+        }
+        _account.value = user.toAccount(supabase).copy(trackingSetupComplete = true)
+    }
+
+    override suspend fun deleteAccount(): Result<Unit> = runCatching {
+        supabase.auth.signOut()
+        _account.value = null
+    }
+
+}
+
+private suspend fun UserInfo.toAccount(supabase: io.github.jan.supabase.SupabaseClient): Account {
+    val basic = toAccountWithoutProfile()
+    val profile = runCatching {
+        supabase.from("profiles").select { filter { eq("id", id) } }.decodeList<ProfileRow>().firstOrNull()
+    }.getOrNull()
+    return basic.copy(username = profile?.username ?: basic.username, trackingSetupComplete = profile?.trackingSetupComplete == true)
+}
+
+private fun UserInfo.toAccountWithoutProfile(): Account {
+    val username = userMetadata?.get("username")?.toString()?.trim('"').orEmpty()
+    return Account(id = id, username = username, email = email.orEmpty())
+}
+
+private fun Throwable.hasUsernameConflict(): Boolean =
+    generateSequence(this) { it.cause }.any { current ->
+        val text = "${current::class.qualifiedName} ${current.message.orEmpty()}"
+        text.contains("profiles_username_lower_key", ignoreCase = true) ||
+            text.contains("duplicate key", ignoreCase = true)
+    }
+

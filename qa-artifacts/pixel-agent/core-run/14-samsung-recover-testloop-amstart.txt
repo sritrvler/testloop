@@ -1,0 +1,8 @@
+Starting: Intent { flg=0x20000 cmp=com.testloop.app/.MainActivity }
+Warning: Activity not started, its current task has been brought to the front
+Status: ok
+LaunchState: HOT
+Activity: com.testloop.app/.MainActivity
+TotalTime: 78
+WaitTime: 81
+Complete

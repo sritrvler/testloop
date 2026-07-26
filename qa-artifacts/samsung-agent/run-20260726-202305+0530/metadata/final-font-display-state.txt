@@ -1,0 +1,12 @@
+host_timestamp=2026-07-26T20:36:15+05:30
+--- font/display settings ---
+1.15
+4
+null
+420
+Physical size: 1080x2340
+Physical density: 450
+Override density: 420
+--- current focus ---
+  mCurrentFocus=Window{8d69aa u0 com.testloop.app/com.testloop.app.MainActivity}
+    mShowingDream=false mDreamingLockscreen=false

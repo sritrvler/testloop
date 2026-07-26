@@ -1,0 +1,5 @@
+timestamp_utc=2026-07-26T15:35:01Z
+reason=Samsung foreground ended in Camera during CRED publish attempt; moved final capture artifacts out of core evidence.
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/pixel-agent/core-run/out-of-scope-redacted/12-samsung-cred-after-publish.png
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/pixel-agent/core-run/out-of-scope-redacted/12-samsung-cred-after-publish.xml
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/pixel-agent/core-run/out-of-scope-redacted/12-samsung-cred-after-publish-text.txt

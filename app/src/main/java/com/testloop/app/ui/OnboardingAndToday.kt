@@ -129,8 +129,9 @@ fun TodayRedesign(padding: PaddingValues, username: String, dataLoaded: Boolean,
     }
     val hasNoActivity = active.isEmpty()
     val firstRun = hasNoActivity && ownedApps.isEmpty()
-    LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(horizontal = Gutter, vertical = 0.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { TestLoopTopBar("Today", "${timeGreeting()}, ${username.ifBlank { "there" }} · ${today.format(DateTimeFormatter.ofPattern("EEEE, d MMMM"))}", unreadCount = unread, onNotifications = onNotifications) }
+    Column(Modifier.fillMaxSize().padding(padding)) {
+        TestLoopTopBar("Today", "${timeGreeting()}, ${username.ifBlank { "there" }} · ${today.format(DateTimeFormatter.ofPattern("EEEE, d MMMM"))}", unreadCount = unread, onNotifications = onNotifications)
+        LazyColumn(Modifier.fillMaxWidth().weight(1f), contentPadding = PaddingValues(start = Gutter, top = 0.dp, end = Gutter, bottom = ScreenBottomReserve), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         if (campaigns.any { it.progress.ownerActionRequired() }) item {
             OwnerCampaignActionBanner(campaigns.filter { it.progress.ownerActionRequired() }, onOwnApp)
         }
@@ -148,6 +149,7 @@ fun TodayRedesign(padding: PaddingValues, username: String, dataLoaded: Boolean,
             item { if (incoming.isEmpty()) EmptyIncomingHint(onDiscover) else GroupSurface { incoming.forEachIndexed { index, pair -> PartnerStatusRow(pair, ownedApps, targetProgress(pair, publicApps, ownedApps, campaigns), today, onOwnApp, onPair); if (index != incoming.lastIndex) RowDivider() } } }
             if (incoming.isNotEmpty() && incomingNeedsAction == 0) item { AllTestersCaughtUp() }
             item { InlineNotice("TestLoop shows the installed count and the owner’s campaign decision. It does not verify Google Play approval or reset the timer automatically.") }
+        }
         }
     }
 }

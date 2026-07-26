@@ -1,0 +1,6 @@
+artifact_run=run-20260726-202305+0530
+host_timestamp=2026-07-26T20:24:37+05:30
+utc_timestamp=2026-07-26T14:54:37+00:00
+apk=/Users/srinathsmac/Documents/Android testing/app/build/outputs/apk/debug/app-debug.apk
+-rw-r--r--@ 1 srinathsmac  staff  24439960 Jul 26 20:14 /Users/srinathsmac/Documents/Android testing/app/build/outputs/apk/debug/app-debug.apk
+aapt_unavailable=true

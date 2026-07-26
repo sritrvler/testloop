@@ -98,7 +98,7 @@ fun PairDetailScreen(pair: ReciprocalCommitment?, ownedApps: List<OwnedApp>, cam
     val canActOnCommitment = pair.lifecycle in setOf(CommitmentLifecycle.PENDING_SETUP, CommitmentLifecycle.ACTIVE)
     Column(Modifier.fillMaxSize().navigationBarsPadding()) {
         TestLoopTopBar("Reciprocal pair", if (volunteer) "Volunteer tester for ${ownApp.title}" else "${otherApp?.title ?: "Test app"} for ${ownApp?.title ?: "one-way commitment"}", onBack = onBack)
-        LazyColumn(contentPadding = PaddingValues(Gutter), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        LazyColumn(contentPadding = PaddingValues(start = Gutter, top = Gutter, end = Gutter, bottom = Gutter + ScreenBottomReserve), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             item { PairHeader(otherApp?.title ?: "Volunteer", ownApp?.title, pair.otherUsername) }
             if (!canActOnCommitment) item {
                 InlineNotice(
@@ -245,12 +245,12 @@ fun CommitmentReadyScreen(commitment: ReciprocalCommitment?, publicApps: List<Pu
 
     Column(Modifier.fillMaxSize().navigationBarsPadding()) {
         TestLoopTopBar("Get ready to test", appName, onBack = onBack)
-        LazyColumn(contentPadding = PaddingValues(Gutter), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        LazyColumn(contentPadding = PaddingValues(start = Gutter, top = Gutter, end = Gutter, bottom = Gutter + ScreenBottomReserve), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             item {
                 Column {
                     Text("Complete these steps", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                     Spacer(Modifier.height(6.dp))
-                    Text("Then we’ll confirm that $appName is installed on this phone.", color = Ink500, style = MaterialTheme.typography.bodyLarge)
+                            Text("Then we’ll confirm that $appName is installed on this phone.", color = Ink500, style = MaterialTheme.typography.bodyMedium)
                 }
             }
             item {
@@ -405,7 +405,7 @@ private fun CommitmentFoundScreen(appName: String, onBack: () -> Unit) {
             Spacer(Modifier.height(20.dp))
             Text("You’re ready to test", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(8.dp))
-            Text("$appName was found on this phone. Your testing commitment is active.", color = Ink500, style = MaterialTheme.typography.bodyLarge)
+            Text("$appName was found on this phone. Your testing commitment is active.", color = Ink500, style = MaterialTheme.typography.bodyMedium)
         }
     }
 }
@@ -415,7 +415,7 @@ private fun PairHeader(other: String, own: String?, person: String) { Row(Modifi
 
 @Composable
 private fun DirectionBlock(title: String, description: String, signal: DirectionSignal, pair: ReciprocalCommitment, currentUserDirection: Boolean) {
-    GroupSurface { Column(Modifier.padding(16.dp)) { Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold); Spacer(Modifier.height(4.dp)); Text(description, color = Ink500); Spacer(Modifier.height(12.dp)); if (!currentUserDirection && signal.activity == ActivitySignal.UNAVAILABLE) { Text("Waiting for ${pair.otherUsername} to open TestLoop so we can update today’s status.", style = MaterialTheme.typography.bodySmall, color = Ink500); Spacer(Modifier.height(8.dp)) }; EvidenceLabels(signal, waitingForTester = !currentUserDirection); Text(signal.lastCheckedLabel, modifier = Modifier.padding(top = 8.dp), style = MaterialTheme.typography.labelSmall, color = Ink500) } }
+    GroupSurface { Column(Modifier.padding(16.dp)) { Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold); Spacer(Modifier.height(4.dp)); Text(description, color = Ink500, style = MaterialTheme.typography.bodyMedium); Spacer(Modifier.height(10.dp)); if (!currentUserDirection && signal.activity == ActivitySignal.UNAVAILABLE) { Text("Waiting for ${pair.otherUsername} to open TestLoop so we can update today’s status.", style = MaterialTheme.typography.bodySmall, color = Ink500); Spacer(Modifier.height(8.dp)) }; EvidenceLabels(signal, waitingForTester = !currentUserDirection); Text(signal.lastCheckedLabel, modifier = Modifier.padding(top = 8.dp), style = MaterialTheme.typography.labelSmall, color = Ink500) } }
 }
 private fun progressForPair(pair: ReciprocalCommitment, ownedApps: List<OwnedApp>, campaigns: List<Campaign>, publicApps: List<PublicApp>): CampaignProgress {
     publicApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }?.let { return it.progress }
@@ -433,6 +433,20 @@ private fun progressLabel(progress: CampaignProgress, today: LocalDate): String 
     else -> progress.statusLabel()
 }
 
+/** Short label for the compact campaign summary card. The full status remains available in the app's detail data. */
+private fun compactProgressLabel(progress: CampaignProgress, today: LocalDate): String = when (progress.status) {
+    CampaignTestingStatus.IN_PROGRESS -> {
+        val day = progressDay(progress, today)
+        "Day $day/${progress.targetDays} · ${progress.activeTesterCount}/${progress.requiredTesters} active"
+    }
+    CampaignTestingStatus.WAITING_FOR_TESTERS -> "Waiting for ${progress.requiredTesters - progress.activeTesterCount} · ${progress.activeTesterCount}/${progress.requiredTesters} installed"
+    CampaignTestingStatus.READY_FOR_OWNER_CONFIRMATION -> "Ready to start · ${progress.activeTesterCount}/${progress.requiredTesters} installed"
+    CampaignTestingStatus.AT_RISK -> "${if (progress.riskDecision == CampaignRiskDecision.CONTINUE) "Continuing" else "At risk"} · ${progress.activeTesterCount}/${progress.requiredTesters} active"
+    CampaignTestingStatus.RESTART_PENDING -> "Replacement needed · ${progress.activeTesterCount}/${progress.requiredTesters} active"
+    CampaignTestingStatus.READY_TO_RESTART -> "Ready to restart · ${progress.activeTesterCount}/${progress.requiredTesters} active"
+    CampaignTestingStatus.COMPLETE -> "Complete · ${progress.activeTesterCount}/${progress.requiredTesters} active"
+}
+
 private fun progressDay(progress: CampaignProgress, today: LocalDate): Int {
     val start = progress.testingStartedAt?.atZone(java.time.ZoneId.systemDefault())?.toLocalDate() ?: today
     return (java.time.temporal.ChronoUnit.DAYS.between(start, today).toInt() + 1).coerceIn(1, progress.targetDays)
@@ -443,28 +457,28 @@ private fun CampaignProgressBlock(progress: CampaignProgress, today: LocalDate) 
     var showRequirements by remember(progress.status) { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
     GroupSurface {
-        Column(Modifier.padding(16.dp)) {
-            Text(progressLabel(progress, today), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(compactProgressLabel(progress, today), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold, maxLines = 1)
             when (progress.status) {
                 CampaignTestingStatus.READY_FOR_OWNER_CONFIRMATION -> {
                     Row(
-                        Modifier.fillMaxWidth().clickable { showRequirements = true }.padding(top = 10.dp),
+                        Modifier.fillMaxWidth().clickable { showRequirements = true },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text("How to reach production access", style = MaterialTheme.typography.labelLarge, color = Brand600, modifier = Modifier.weight(1f))
                         Icon(Icons.Default.Info, contentDescription = "Show production access requirements", tint = Brand600, modifier = Modifier.padding(start = 8.dp))
                     }
                 }
-                CampaignTestingStatus.WAITING_FOR_TESTERS -> Text("Waiting for ${progress.requiredTesters - progress.activeTesterCount} more tester install${if (progress.requiredTesters - progress.activeTesterCount == 1) "" else "s"}. Daily open tasks stay locked until all installs are detected and the owner confirms closed testing is live.", color = Ink500)
+                CampaignTestingStatus.WAITING_FOR_TESTERS -> Text("Daily tasks unlock after all installs are detected and closed testing is confirmed.", color = Ink500, style = MaterialTheme.typography.bodySmall)
                 CampaignTestingStatus.AT_RISK -> Text(
-                    if (progress.riskDecision == CampaignRiskDecision.CONTINUE) "The owner is continuing the current run. TestLoop is not observing the full threshold right now; the owner may be relying on buffer or testers outside TestLoop. This does not verify the threshold here."
-                    else "The required installed count dropped. The owner is deciding whether to continue, recruit a replacement, or decide later. The current timer and history are preserved.",
-                    color = Ink500
+                    if (progress.riskDecision == CampaignRiskDecision.CONTINUE) "The run continues while the observed count is below target."
+                    else "Installed count dropped below target. The timer and history are preserved.",
+                    color = Ink500, style = MaterialTheme.typography.bodySmall
                 )
-                CampaignTestingStatus.RESTART_PENDING -> Text(if (progress.replacementJoinedAt == null) "The owner plans to restart after replacing or adding a tester. A replacement tester may be required; the current timer is preserved." else "A replacement tester has joined. Install detection must restore the required count before the owner can confirm a restart.", color = Ink500)
-                CampaignTestingStatus.READY_TO_RESTART -> Text("The required count is restored. The owner must explicitly confirm the restart; only that confirmation sets Day 1 and a new end date.", color = Ink500)
+                CampaignTestingStatus.RESTART_PENDING -> Text(if (progress.replacementJoinedAt == null) "The owner is replacing a tester. The current timer is preserved." else "Replacement joined; waiting for install detection.", color = Ink500, style = MaterialTheme.typography.bodySmall)
+                CampaignTestingStatus.READY_TO_RESTART -> Text("The count is restored. Confirm to start a new Day 1.", color = Ink500, style = MaterialTheme.typography.bodySmall)
                 CampaignTestingStatus.IN_PROGRESS -> DayProgress(progressDay(progress, today), progress.targetDays, (progress.targetDays - progressDay(progress, today)).coerceAtLeast(0))
-                CampaignTestingStatus.COMPLETE -> Text("The required overlap was maintained for the full testing window.", color = Ink500)
+                CampaignTestingStatus.COMPLETE -> Text("The required overlap was maintained for the full testing window.", color = Ink500, style = MaterialTheme.typography.bodySmall)
             }
         }
     }
@@ -499,12 +513,14 @@ fun ObligationsScreen(commitments: List<ReciprocalCommitment>, ownedApps: List<O
     val theyOwe = visible.filter { pair ->
         pair.currentUserOwnAppId != null && ownedApps.any { it.id == pair.currentUserOwnAppId }
     }.distinctBy { it.currentUserOwnAppId to it.otherUserId }
-    LazyColumn(Modifier.fillMaxSize().navigationBarsPadding(), contentPadding = PaddingValues(Gutter), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { TestLoopTopBar("Obligations", "Every direction, named clearly", onBack = onBack) }
+    Column(Modifier.fillMaxSize().navigationBarsPadding()) {
+        TestLoopTopBar("Obligations", "Every direction, named clearly", onBack = onBack)
+        LazyColumn(Modifier.fillMaxWidth().weight(1f), contentPadding = PaddingValues(start = Gutter, top = 8.dp, end = Gutter, bottom = Gutter + ScreenBottomReserve), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item { SectionHeader("You owe them") }
         item { if (youOwe.isEmpty()) EmptyObligationsState("You have no active app to test today.") else GroupSurface { youOwe.forEachIndexed { index, pair -> val other = publicApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }; val owned = ownedApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }; val appTitle = other?.title ?: owned?.title ?: "Test app"; ObligationRow("You test $appTitle for ${pair.otherUsername}", pair.youOweSignal, progressForPair(pair, ownedApps, campaigns, publicApps), pair, today, onPair); if (index != youOwe.lastIndex) RowDivider() } } }
         item { SectionHeader("They owe you") }
         item { if (theyOwe.isEmpty()) EmptyObligationsState("No one is currently testing one of your active apps.") else GroupSurface { theyOwe.forEachIndexed { index, pair -> val own = ownedApps.first { it.id == pair.currentUserOwnAppId }; ObligationRow("${pair.otherUsername} tests ${own.title} for you", pair.theyOweSignal ?: pair.youOweSignal, progressForPair(pair, ownedApps, campaigns, publicApps), pair, today, onPair); if (index != theyOwe.lastIndex) RowDivider() } } }
+        }
     }
 }
 
@@ -518,7 +534,7 @@ private fun ObligationRow(text: String, signal: DirectionSignal, progress: Campa
 
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
-fun OwnAppDetailScreen(appId: String, attentionOnly: Boolean, ownedApps: List<OwnedApp>, campaigns: List<Campaign>, commitments: List<ReciprocalCommitment>, publicApps: List<PublicApp>, onBack: () -> Unit, onPair: (String) -> Unit, onReminder: (String, String) -> Unit, onSwitch: (String) -> Unit, onDelist: suspend (String) -> Result<Unit>, onMarkPublished: suspend (String) -> Result<Unit>, onUpdateTesterCount: suspend (String, Int) -> Result<Unit>, onConfirmClosedTesting: (String) -> Unit, onRiskDecision: (String, com.testloop.app.domain.CampaignRiskDecision, String?) -> Unit, onFinalRestart: (String) -> Unit) {
+fun OwnAppDetailScreen(appId: String, attentionOnly: Boolean, ownedApps: List<OwnedApp>, campaigns: List<Campaign>, commitments: List<ReciprocalCommitment>, publicApps: List<PublicApp>, onBack: () -> Unit, onPair: (String) -> Unit, onReminder: suspend (String, String) -> Result<Unit>, onSwitch: (String) -> Unit, onDelist: suspend (String) -> Result<Unit>, onMarkPublished: suspend (String) -> Result<Unit>, onUpdateTesterCount: suspend (String, Int) -> Result<Unit>, onConfirmClosedTesting: (String) -> Unit, onRiskDecision: (String, com.testloop.app.domain.CampaignRiskDecision, String?) -> Unit, onFinalRestart: (String) -> Unit) {
     val app = ownedApps.firstOrNull { it.id == appId } ?: run { MissingScreen(onBack); return }
     val campaign = campaigns.firstOrNull { it.ownedAppId == appId }
     val pairs = commitments.filter { it.currentUserOwnAppId == appId && it.lifecycle.isCurrentTester() }
@@ -557,7 +573,7 @@ fun OwnAppDetailScreen(appId: String, attentionOnly: Boolean, ownedApps: List<Ow
                 Icon(Icons.Default.CheckCircle, "Published on Google Play", tint = Brand600, modifier = Modifier.padding(horizontal = 12.dp))
             }
         })
-        LazyColumn(contentPadding = PaddingValues(Gutter), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        LazyColumn(contentPadding = PaddingValues(start = Gutter, top = 8.dp, end = Gutter, bottom = Gutter + ScreenBottomReserve), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             item { OwnAppSwitcher(app, ownedApps, onSwitch) }
             item { campaign?.let { CampaignProgressBlock(it.progress, LocalDate.now()) } }
             item {
@@ -574,7 +590,10 @@ fun OwnAppDetailScreen(appId: String, attentionOnly: Boolean, ownedApps: List<Ow
                 }
             }
             item { CompactFilterControl(filter, { filter = it }, pairs.size, pairs.count { needsAttention(it.theyOweSignal) }, pairs.count { !needsAttention(it.theyOweSignal) }) }
-            if (displayed.isEmpty()) item { Text("Everyone is on track", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold); Text("No tester currently needs attention for this app.", color = Ink500) }
+            if (displayed.isEmpty()) item {
+                Text("Everyone is on track", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text("No tester needs attention right now.", color = Ink500, style = MaterialTheme.typography.bodySmall)
+            }
             item { GroupSurface { displayed.forEachIndexed { index, pair -> TesterRow(pair, app, publicApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }, campaign?.progress ?: CampaignProgress(12, 0, 14, CampaignTestingStatus.WAITING_FOR_TESTERS), onPair, onReminder); if (index != displayed.lastIndex) RowDivider() } } }
         }
     }
@@ -686,40 +705,40 @@ private fun CampaignOwnerActionSurface(
 ) {
     when (campaign.testingStatus) {
         CampaignTestingStatus.READY_FOR_OWNER_CONFIRMATION -> GroupSurface {
-            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text("Confirm closed testing is live", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                Text("TestLoop detected every required install. Check Google Play Console yourself, then confirm here. TestLoop cannot verify Google’s approval.", color = Ink500)
+            Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text("Confirm closed testing is live", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                Text("All required installs are detected. Confirm closed testing in Play Console.", color = Ink500, style = MaterialTheme.typography.bodySmall)
                 Text("Checklist: Closed testing track is live · tester count is complete · you understand this starts Day 1.", style = MaterialTheme.typography.bodySmall, color = Ink500)
                 Button(onClick = { onConfirmClosedTesting(campaign.id) }, modifier = Modifier.fillMaxWidth()) { Text("Confirm closed testing is live") }
             }
         }
         CampaignTestingStatus.AT_RISK -> GroupSurface {
-            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text("Your campaign is at risk", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                Text("The observed installed count is below the target. Choose how to handle the current run; TestLoop will not reset the timer automatically.", color = Ink500)
+            Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text("Your campaign is at risk", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                Text("Installed count is below target. Choose whether to continue, replace a tester, or decide later.", color = Ink500, style = MaterialTheme.typography.bodySmall)
                 Button(onClick = onChooseRisk, modifier = Modifier.fillMaxWidth()) { Text("Choose a campaign decision") }
             }
         }
         CampaignTestingStatus.WAITING_FOR_TESTERS -> if (campaign.riskDecision == CampaignRiskDecision.CONTINUE && hasReleasedCommitment) {
             GroupSurface {
-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Text("A tester slot is available", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                    Text("The released commitment is hidden from Discover until you choose what to do.", color = Ink500)
+                Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text("A tester slot is available", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                    Text("A released commitment is hidden from Discover until you choose what to do.", color = Ink500, style = MaterialTheme.typography.bodySmall)
                     Button(onClick = onChooseRisk, modifier = Modifier.fillMaxWidth()) { Text("Choose a campaign decision") }
                 }
             }
         }
         CampaignTestingStatus.RESTART_PENDING -> GroupSurface {
-            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text(if (campaign.replacementJoinedAt == null) "Replacement tester needed" else "Waiting for replacement install", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                Text("The owner plans to restart after a replacement tester restores the required installed count. The current timer is preserved.", color = Ink500)
+            Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(if (campaign.replacementJoinedAt == null) "Replacement tester needed" else "Waiting for replacement install", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                Text("The owner plans to restart after the required count is restored. The timer is preserved.", color = Ink500, style = MaterialTheme.typography.bodySmall)
                 if (campaign.replacementOpen) Text("Discover shows one replacement slot open for this campaign.", style = MaterialTheme.typography.bodySmall, color = Brand600)
             }
         }
         CampaignTestingStatus.READY_TO_RESTART -> GroupSurface {
-            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text("Replacement count restored", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                Text("Review the replacement tester, then confirm only if you want a new Day 1. This is the only action that changes testing_started_at.", color = Ink500)
+            Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text("Replacement count restored", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                Text("Review the replacement tester, then confirm to start a new Day 1.", color = Ink500, style = MaterialTheme.typography.bodySmall)
                 Button(onClick = { onFinalRestart(campaign.id) }, modifier = Modifier.fillMaxWidth()) { Text("Confirm restart at Day 1") }
             }
         }
@@ -731,8 +750,11 @@ private fun CampaignOwnerActionSurface(
 private fun OwnAppSwitcher(selected: OwnedApp, ownedApps: List<OwnedApp>, onSwitch: (String) -> Unit) { var expanded by remember { mutableStateOf(false) }; Column { OutlinedButton(onClick = { expanded = !expanded }) { AppMonogram(selected.title, small = true); Spacer(Modifier.width(8.dp)); Text(selected.title); Icon(Icons.Default.ExpandMore, null) }; if (expanded) GroupSurface { ownedApps.filter { it.id != selected.id }.forEach { app -> Text(app.title, modifier = Modifier.fillMaxWidth().clickable { expanded = false; onSwitch(app.id) }.padding(14.dp), style = MaterialTheme.typography.labelLarge) } } } }
 
 @Composable
-private fun TesterRow(pair: ReciprocalCommitment, ownApp: OwnedApp, otherApp: PublicApp?, progress: CampaignProgress, onPair: (String) -> Unit, onReminder: (String, String) -> Unit) {
+private fun TesterRow(pair: ReciprocalCommitment, ownApp: OwnedApp, otherApp: PublicApp?, progress: CampaignProgress, onPair: (String) -> Unit, onReminder: suspend (String, String) -> Result<Unit>) {
     var expanded by remember { mutableStateOf(false) }
+    var sendingReminder by remember { mutableStateOf(false) }
+    var reminderSent by remember { mutableStateOf(false) }
+    val reminderScope = rememberCoroutineScope()
     val theirs = pair.theyOweSignal ?: pair.youOweSignal
     Column(Modifier.fillMaxWidth().clickable { expanded = !expanded }.padding(16.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -756,9 +778,20 @@ private fun TesterRow(pair: ReciprocalCommitment, ownApp: OwnedApp, otherApp: Pu
                 if (pair.currentUserOwnAppId != null && otherApp != null) {
                     FilledTonalButton(onClick = { onPair(pair.commitmentId) }) { Text("Open their app") }
                 }
-                if (needsAttention(pair.theyOweSignal) && pair.youCanSendReminder) OutlinedButton(onClick = { onReminder(pair.commitmentId, pair.otherUsername) }) { Text("Send check-in") }
+                if (needsAttention(pair.theyOweSignal) && pair.youCanSendReminder && !reminderSent) OutlinedButton(
+                    onClick = {
+                        if (sendingReminder) return@OutlinedButton
+                        sendingReminder = true
+                        reminderScope.launch {
+                            onReminder(pair.commitmentId, pair.otherUsername)
+                                .onSuccess { reminderSent = true }
+                            sendingReminder = false
+                        }
+                    },
+                    enabled = !sendingReminder
+                ) { Text(if (sendingReminder) "Sending…" else "Send check-in") }
+                if (reminderSent || !pair.youCanSendReminder) Text("Check-in sent today", style = MaterialTheme.typography.labelMedium, color = Ink500, modifier = Modifier.padding(top = 12.dp))
             }
-            if (!pair.youCanSendReminder) Text("Check-in sent today", style = MaterialTheme.typography.labelMedium, color = Ink500, modifier = Modifier.padding(top = 12.dp))
         }
     }
 }

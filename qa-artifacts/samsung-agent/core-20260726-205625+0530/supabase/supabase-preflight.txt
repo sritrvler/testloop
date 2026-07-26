@@ -1,0 +1,603 @@
+host_timestamp=2026-07-26T20:57:01+05:30
+--- supabase cli ---
+/opt/homebrew/bin/supabase
+2.109.1
+--- supabase project files ---
+supabase/.temp/cli-latest
+supabase/.temp/gotrue-version
+supabase/.temp/linked-project.json
+supabase/.temp/pooler-url
+supabase/.temp/postgres-version
+supabase/.temp/project-ref
+supabase/.temp/rest-version
+supabase/.temp/storage-migration
+supabase/.temp/storage-version
+supabase/migrations/20260723000000_initial_testloop.sql
+supabase/migrations/20260723010000_install_states.sql
+supabase/migrations/20260723020000_remove_activity_storage.sql
+supabase/migrations/20260723030000_daily_open_states.sql
+supabase/migrations/20260723040000_enrollment_activation.sql
+supabase/migrations/20260723050000_app_bookmarks.sql
+supabase/migrations/20260724120000_listing_text_limits.sql
+supabase/migrations/20260724130000_fix_public_listing_permissions.sql
+supabase/migrations/20260724140000_delist_apps.sql
+supabase/migrations/20260724150000_app_status_and_bookmark_permissions.sql
+supabase/migrations/20260724160000_usage_access_enforcement.sql
+supabase/migrations/20260724170000_fix_activation_for_archived_reciprocal_app.sql
+supabase/migrations/20260724190000_campaign_overlap_progress.sql
+supabase/migrations/20260724200000_grant_campaign_progress_read.sql
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql
+supabase/migrations/20260724220000_require_closed_test_threshold.sql
+supabase/migrations/20260725090000_strict_play_links.sql
+supabase/migrations/20260725100000_testing_group_link_and_optional_opt_in.sql
+supabase/migrations/20260725110000_require_group_for_new_listings.sql
+supabase/migrations/20260725120000_friendlier_testloop_reminders.sql
+supabase/migrations/20260725130000_campaign_target_and_reciprocal_guards.sql
+supabase/migrations/20260725140000_remove_legacy_activity_tracking.sql
+supabase/migrations/20260725150000_restore_activity_tracking.sql
+supabase/migrations/20260725160000_allow_target_to_match_enrollment.sql
+supabase/migrations/20260725170000_usage_access_one_hour_enforcement.sql
+supabase/migrations/20260725180000_fix_group_url_constraint.sql
+supabase/migrations/20260725210000_encrypted_chat.sql
+supabase/migrations/20260725220000_fix_usage_access_function.sql
+supabase/migrations/20260725230000_optional_messaging_id.sql
+supabase/migrations/20260726010000_correct_amazon_india_listing.sql
+supabase/migrations/20260726020000_leave_commitment.sql
+supabase/migrations/20260726030000_fix_leave_commitment_rpc.sql
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql
+supabase/migrations/20260726050000_fix_public_listing_null_filters.sql
+supabase/migrations/20260726060000_reopen_replacement_path.sql
+supabase/supabase/.temp/gotrue-version
+supabase/supabase/.temp/linked-project.json
+supabase/supabase/.temp/pooler-url
+supabase/supabase/.temp/postgres-version
+supabase/supabase/.temp/project-ref
+supabase/supabase/.temp/rest-version
+supabase/supabase/.temp/storage-migration
+supabase/supabase/.temp/storage-version
+--- migrations tables/functions quick ---
+supabase/migrations/20260723050000_app_bookmarks.sql:3:create table public.app_bookmarks (
+supabase/migrations/20260723050000_app_bookmarks.sql:4:  member_id uuid not null references public.profiles (id) on delete cascade,
+supabase/migrations/20260723050000_app_bookmarks.sql:5:  owned_app_id uuid not null references public.owned_apps (id) on delete cascade,
+supabase/migrations/20260723050000_app_bookmarks.sql:15:create policy app_bookmarks_self_read
+supabase/migrations/20260723050000_app_bookmarks.sql:19:create policy app_bookmarks_self_insert
+supabase/migrations/20260723050000_app_bookmarks.sql:23:create policy app_bookmarks_self_delete
+supabase/migrations/20260725180000_fix_group_url_constraint.sql:4:alter table public.owned_apps
+supabase/migrations/20260725180000_fix_group_url_constraint.sql:5:  drop constraint if exists owned_apps_group_url;
+supabase/migrations/20260725180000_fix_group_url_constraint.sql:7:alter table public.owned_apps
+supabase/migrations/20260725180000_fix_group_url_constraint.sql:8:  add constraint owned_apps_group_url check (
+supabase/migrations/20260725150000_restore_activity_tracking.sql:16:alter table public.profiles
+supabase/migrations/20260725150000_restore_activity_tracking.sql:21:create table if not exists public.commitment_daily_open_states (
+supabase/migrations/20260725150000_restore_activity_tracking.sql:22:  commitment_id uuid not null references public.reciprocal_commitments (id) on delete cascade,
+supabase/migrations/20260725150000_restore_activity_tracking.sql:23:  reporter_id uuid not null references public.profiles (id) on delete cascade,
+supabase/migrations/20260725150000_restore_activity_tracking.sql:24:  target_owned_app_id uuid not null references public.owned_apps (id) on delete cascade,
+supabase/migrations/20260725150000_restore_activity_tracking.sql:34:create policy daily_open_participant_read
+supabase/migrations/20260725150000_restore_activity_tracking.sql:39:create policy daily_open_self_insert
+supabase/migrations/20260725150000_restore_activity_tracking.sql:44:create policy daily_open_self_update
+supabase/migrations/20260725150000_restore_activity_tracking.sql:52:create or replace function public.record_usage_access_status(has_access boolean)
+supabase/migrations/20260725150000_restore_activity_tracking.sql:70:    update public.profiles
+supabase/migrations/20260725150000_restore_activity_tracking.sql:75:    update public.profiles
+supabase/migrations/20260725150000_restore_activity_tracking.sql:81:  from public.profiles p where p.id = auth.uid();
+supabase/migrations/20260725150000_restore_activity_tracking.sql:85:    update public.campaigns c
+supabase/migrations/20260725150000_restore_activity_tracking.sql:89:        select 1 from public.owned_apps oa
+supabase/migrations/20260725150000_restore_activity_tracking.sql:98:           select 1 from public.campaigns c
+supabase/migrations/20260725150000_restore_activity_tracking.sql:99:           join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726020000_leave_commitment.sql:4:create or replace function public.validate_commitment()
+supabase/migrations/20260726020000_leave_commitment.sql:20:  from public.campaigns c
+supabase/migrations/20260726020000_leave_commitment.sql:21:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726020000_leave_commitment.sql:32:    raise exception 'Only active campaigns accept testers';
+supabase/migrations/20260726020000_leave_commitment.sql:55:    from public.owned_apps where id = new.current_user_owned_app_id;
+supabase/migrations/20260726020000_leave_commitment.sql:60:      select 1 from public.owned_apps
+supabase/migrations/20260726020000_leave_commitment.sql:70:    from public.reciprocal_commitments
+supabase/migrations/20260726020000_leave_commitment.sql:99:create or replace function public.leave_commitment(target_commitment_id uuid)
+supabase/migrations/20260726020000_leave_commitment.sql:110:  commitment_row public.reciprocal_commitments%rowtype;
+supabase/migrations/20260726020000_leave_commitment.sql:117:  from public.reciprocal_commitments rc
+supabase/migrations/20260726020000_leave_commitment.sql:127:  from public.campaigns c
+supabase/migrations/20260726020000_leave_commitment.sql:128:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726020000_leave_commitment.sql:145:  update public.reciprocal_commitments
+supabase/migrations/20260726020000_leave_commitment.sql:148:    and public.reciprocal_commitments.lifecycle in ('pending_setup', 'active')
+supabase/migrations/20260726020000_leave_commitment.sql:160:  insert into public.notifications (recipient_id, kind, title, message, commitment_id, owned_app_id)
+supabase/migrations/20260726020000_leave_commitment.sql:167:    (select owned_app_id from public.campaigns where id = commitment_row.campaign_id)
+supabase/migrations/20260723010000_install_states.sql:3:create table public.commitment_install_states (
+supabase/migrations/20260723010000_install_states.sql:4:  commitment_id uuid not null references public.reciprocal_commitments (id) on delete cascade,
+supabase/migrations/20260723010000_install_states.sql:5:  reporter_id uuid not null references public.profiles (id) on delete cascade,
+supabase/migrations/20260723010000_install_states.sql:6:  target_owned_app_id uuid not null references public.owned_apps (id) on delete cascade,
+supabase/migrations/20260723010000_install_states.sql:13:create index commitment_install_states_target_idx
+supabase/migrations/20260723010000_install_states.sql:14:  on public.commitment_install_states (target_owned_app_id, status, updated_at desc);
+supabase/migrations/20260723010000_install_states.sql:16:create trigger commitment_install_states_set_updated_at
+supabase/migrations/20260723010000_install_states.sql:17:before update on public.commitment_install_states
+supabase/migrations/20260723010000_install_states.sql:20:alter table public.commitment_install_states enable row level security;
+supabase/migrations/20260723010000_install_states.sql:22:create policy commitment_install_states_participant_read
+supabase/migrations/20260723010000_install_states.sql:23:on public.commitment_install_states for select to authenticated
+supabase/migrations/20260723010000_install_states.sql:26:create policy commitment_install_states_reporter_insert
+supabase/migrations/20260723010000_install_states.sql:27:on public.commitment_install_states for insert to authenticated
+supabase/migrations/20260723010000_install_states.sql:33:create policy commitment_install_states_reporter_update
+supabase/migrations/20260723010000_install_states.sql:34:on public.commitment_install_states for update to authenticated
+supabase/migrations/20260723010000_install_states.sql:38:revoke all on table public.commitment_install_states from anon, authenticated;
+supabase/migrations/20260723010000_install_states.sql:39:grant select, insert, update on table public.commitment_install_states to authenticated;
+supabase/migrations/20260723010000_install_states.sql:41:comment on table public.commitment_install_states is
+supabase/migrations/20260725230000_optional_messaging_id.sql:5:alter table public.owned_apps
+supabase/migrations/20260725230000_optional_messaging_id.sql:8:alter table public.owned_apps
+supabase/migrations/20260725230000_optional_messaging_id.sql:9:  drop constraint if exists owned_apps_messaging_id_length;
+supabase/migrations/20260725230000_optional_messaging_id.sql:11:alter table public.owned_apps
+supabase/migrations/20260725230000_optional_messaging_id.sql:12:  add constraint owned_apps_messaging_id_length check (
+supabase/migrations/20260725230000_optional_messaging_id.sql:45:from public.owned_apps oa
+supabase/migrations/20260725230000_optional_messaging_id.sql:46:join public.profiles p on p.id = oa.owner_id
+supabase/migrations/20260725230000_optional_messaging_id.sql:47:join public.campaigns c on c.owned_app_id = oa.id
+supabase/migrations/20260725090000_strict_play_links.sql:5:alter table public.owned_apps
+supabase/migrations/20260725090000_strict_play_links.sql:6:  drop constraint if exists owned_apps_install_url,
+supabase/migrations/20260725090000_strict_play_links.sql:7:  drop constraint if exists owned_apps_opt_in_url;
+supabase/migrations/20260725090000_strict_play_links.sql:9:alter table public.owned_apps
+supabase/migrations/20260725090000_strict_play_links.sql:10:  add constraint owned_apps_install_url check (
+supabase/migrations/20260725090000_strict_play_links.sql:13:  add constraint owned_apps_opt_in_url check (
+supabase/migrations/20260724140000_delist_apps.sql:3:drop index if exists public.owned_apps_package_name_key;
+supabase/migrations/20260724140000_delist_apps.sql:5:create unique index owned_apps_package_name_key
+supabase/migrations/20260724140000_delist_apps.sql:6:on public.owned_apps (lower(package_name))
+supabase/migrations/20260725120000_friendlier_testloop_reminders.sql:1:-- Keep reminders useful and low-pressure. The database trigger supplies the
+supabase/migrations/20260725120000_friendlier_testloop_reminders.sql:3:create or replace function public.notify_new_reminder()
+supabase/migrations/20260725120000_friendlier_testloop_reminders.sql:10:  insert into public.notifications (recipient_id, kind, title, message, commitment_id, owned_app_id)
+supabase/migrations/20260726050000_fix_public_listing_null_filters.sql:36:from public.owned_apps oa
+supabase/migrations/20260726050000_fix_public_listing_null_filters.sql:37:join public.profiles p on p.id = oa.owner_id
+supabase/migrations/20260726050000_fix_public_listing_null_filters.sql:38:join public.campaigns c on c.owned_app_id = oa.id
+supabase/migrations/20260724170000_fix_activation_for_archived_reciprocal_app.sql:6:create or replace function public.validate_commitment()
+supabase/migrations/20260724170000_fix_activation_for_archived_reciprocal_app.sql:22:  from public.campaigns c
+supabase/migrations/20260724170000_fix_activation_for_archived_reciprocal_app.sql:23:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260724170000_fix_activation_for_archived_reciprocal_app.sql:34:    raise exception 'Only active campaigns accept testers';
+supabase/migrations/20260724170000_fix_activation_for_archived_reciprocal_app.sql:55:    from public.owned_apps where id = new.current_user_owned_app_id;
+supabase/migrations/20260724170000_fix_activation_for_archived_reciprocal_app.sql:60:      select 1 from public.owned_apps
+supabase/migrations/20260724170000_fix_activation_for_archived_reciprocal_app.sql:70:    from public.reciprocal_commitments
+supabase/migrations/20260726010000_correct_amazon_india_listing.sql:3:update public.owned_apps
+supabase/migrations/20260724220000_require_closed_test_threshold.sql:3:alter table public.campaigns
+supabase/migrations/20260724220000_require_closed_test_threshold.sql:4:  drop constraint if exists campaigns_requested_testers;
+supabase/migrations/20260724220000_require_closed_test_threshold.sql:6:alter table public.campaigns
+supabase/migrations/20260724220000_require_closed_test_threshold.sql:7:  add constraint campaigns_requested_testers check (requested_testers between 12 and 100);
+supabase/migrations/20260725160000_allow_target_to_match_enrollment.sql:3:alter table public.campaigns
+supabase/migrations/20260725160000_allow_target_to_match_enrollment.sql:4:  drop constraint if exists campaigns_requested_testers;
+supabase/migrations/20260725160000_allow_target_to_match_enrollment.sql:6:alter table public.campaigns
+supabase/migrations/20260725160000_allow_target_to_match_enrollment.sql:7:  add constraint campaigns_requested_testers check (requested_testers between 1 and 100);
+supabase/migrations/20260725160000_allow_target_to_match_enrollment.sql:9:create or replace function public.prevent_campaign_target_below_reserved()
+supabase/migrations/20260723040000_enrollment_activation.sql:2:-- app. Provisional commitments reserve capacity but are not counted as joined
+supabase/migrations/20260723040000_enrollment_activation.sql:5:create or replace function public.public_joined_count(target_campaign_id uuid)
+supabase/migrations/20260723040000_enrollment_activation.sql:13:  from public.reciprocal_commitments
+supabase/migrations/20260723040000_enrollment_activation.sql:18:create or replace function public.public_reserved_count(target_campaign_id uuid)
+supabase/migrations/20260723040000_enrollment_activation.sql:26:  from public.reciprocal_commitments
+supabase/migrations/20260723040000_enrollment_activation.sql:52:from public.owned_apps oa
+supabase/migrations/20260723040000_enrollment_activation.sql:53:join public.profiles p on p.id = oa.owner_id
+supabase/migrations/20260723040000_enrollment_activation.sql:54:join public.campaigns c on c.owned_app_id = oa.id
+supabase/migrations/20260723040000_enrollment_activation.sql:60:create or replace function public.activate_commitment_after_install()
+supabase/migrations/20260723040000_enrollment_activation.sql:76:  from public.reciprocal_commitments rc
+supabase/migrations/20260723040000_enrollment_activation.sql:77:  join public.campaigns c on c.id = rc.campaign_id
+supabase/migrations/20260723040000_enrollment_activation.sql:82:    update public.reciprocal_commitments
+supabase/migrations/20260723040000_enrollment_activation.sql:92:drop trigger if exists commitment_install_states_activate on public.commitment_install_states;
+supabase/migrations/20260723040000_enrollment_activation.sql:93:create trigger commitment_install_states_activate
+supabase/migrations/20260723040000_enrollment_activation.sql:94:after insert or update of status on public.commitment_install_states
+supabase/migrations/20260723040000_enrollment_activation.sql:98:update public.reciprocal_commitments rc
+supabase/migrations/20260723040000_enrollment_activation.sql:103:    from public.commitment_install_states cis
+supabase/migrations/20260723040000_enrollment_activation.sql:104:    join public.campaigns c on c.id = rc.campaign_id
+supabase/migrations/20260723040000_enrollment_activation.sql:113:create or replace function public.notify_new_commitment()
+supabase/migrations/20260723040000_enrollment_activation.sql:128:  from public.campaigns c
+supabase/migrations/20260723040000_enrollment_activation.sql:129:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260723040000_enrollment_activation.sql:132:  insert into public.notifications (recipient_id, kind, title, message, commitment_id, owned_app_id)
+supabase/migrations/20260723040000_enrollment_activation.sql:139:    (select owned_app_id from public.campaigns where id = new.campaign_id)
+supabase/migrations/20260723040000_enrollment_activation.sql:145:drop trigger if exists commitments_notify_owner_active on public.reciprocal_commitments;
+supabase/migrations/20260723040000_enrollment_activation.sql:146:create trigger commitments_notify_owner_active
+supabase/migrations/20260723040000_enrollment_activation.sql:147:after update of lifecycle on public.reciprocal_commitments
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:3:alter table public.campaigns
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:12:alter table public.campaigns
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:13:  drop constraint if exists campaigns_risk_decision;
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:15:alter table public.campaigns
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:16:  add constraint campaigns_risk_decision
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:19:create table if not exists public.campaign_replacement_events (
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:21:  campaign_id uuid not null references public.campaigns (id) on delete cascade,
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:22:  released_commitment_id uuid not null references public.reciprocal_commitments (id) on delete restrict,
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:23:  released_tester_id uuid not null references public.profiles (id) on delete restrict,
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:24:  replacement_commitment_id uuid references public.reciprocal_commitments (id) on delete set null,
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:35:create policy campaign_replacement_events_participant_read
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:40:    from public.campaigns c
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:41:    join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:47:    select 1 from public.reciprocal_commitments rc
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:58:create or replace function public.refresh_campaign_testing_progress(target_campaign_id uuid)
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:65:  campaign_row public.campaigns%rowtype;
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:69:  from public.campaigns c
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:84:    update public.campaigns
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:98:    update public.campaigns
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:105:create or replace function public.mark_replacement_commitment_joined()
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:112:  campaign_row public.campaigns%rowtype;
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:116:  from public.campaigns c
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:137:      update public.campaigns
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:146:drop trigger if exists commitments_mark_replacement_joined on public.reciprocal_commitments;
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:147:create trigger commitments_mark_replacement_joined
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:148:after insert on public.reciprocal_commitments
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:151:create or replace function public.confirm_closed_testing(target_campaign_id uuid)
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:152:returns setof public.campaigns
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:158:  campaign_row public.campaigns%rowtype;
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:168:  from public.campaigns c
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:169:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:174:  from public.owned_apps oa
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:187:    update public.campaigns
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:196:    insert into public.notifications (recipient_id, kind, title, message, commitment_id, owned_app_id)
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:200:    from public.reciprocal_commitments rc
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:208:create or replace function public.choose_campaign_risk_decision(
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:213:returns setof public.campaigns
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:219:  campaign_row public.campaigns%rowtype;
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:221:  commitment_row public.reciprocal_commitments%rowtype;
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:228:  from public.campaigns c
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:229:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:233:  from public.owned_apps oa
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:250:    from public.reciprocal_commitments rc
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:257:    update public.reciprocal_commitments
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:264:    update public.campaigns
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:274:    insert into public.notifications (recipient_id, kind, title, message, commitment_id, owned_app_id)
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:281:    update public.campaigns
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:293:create or replace function public.finalize_campaign_restart(target_campaign_id uuid)
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:294:returns setof public.campaigns
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:300:  campaign_row public.campaigns%rowtype;
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:308:  from public.campaigns c
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:309:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:313:  from public.owned_apps oa
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:326:  update public.campaigns
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:335:  insert into public.notifications (recipient_id, kind, title, message, owned_app_id)
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:339:  from public.reciprocal_commitments rc
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:340:  join public.owned_apps oa on oa.id = campaign_row.owned_app_id
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:389:from public.owned_apps oa
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:390:join public.profiles p on p.id = oa.owner_id
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql:391:join public.campaigns c on c.owned_app_id = oa.id
+supabase/migrations/20260725210000_encrypted_chat.sql:5:create table public.chat_key_bundles (
+supabase/migrations/20260725210000_encrypted_chat.sql:6:  user_id uuid primary key references public.profiles (id) on delete cascade,
+supabase/migrations/20260725210000_encrypted_chat.sql:16:create table public.chat_conversations (
+supabase/migrations/20260725210000_encrypted_chat.sql:18:  participant_a uuid not null references public.profiles (id) on delete cascade,
+supabase/migrations/20260725210000_encrypted_chat.sql:19:  participant_b uuid not null references public.profiles (id) on delete cascade,
+supabase/migrations/20260725210000_encrypted_chat.sql:27:create table public.chat_messages (
+supabase/migrations/20260725210000_encrypted_chat.sql:30:  sender_id uuid not null references public.profiles (id) on delete cascade,
+supabase/migrations/20260725210000_encrypted_chat.sql:31:  recipient_id uuid not null references public.profiles (id) on delete cascade,
+supabase/migrations/20260725210000_encrypted_chat.sql:58:create or replace function public.get_or_create_chat_conversation(target_user_id uuid)
+supabase/migrations/20260725210000_encrypted_chat.sql:75:    from public.reciprocal_commitments rc
+supabase/migrations/20260725210000_encrypted_chat.sql:76:    join public.campaigns c on c.id = rc.campaign_id
+supabase/migrations/20260725210000_encrypted_chat.sql:77:    join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260725210000_encrypted_chat.sql:106:create policy chat_key_bundles_authenticated_read
+supabase/migrations/20260725210000_encrypted_chat.sql:110:create policy chat_key_bundles_self_insert
+supabase/migrations/20260725210000_encrypted_chat.sql:114:create policy chat_key_bundles_self_update
+supabase/migrations/20260725210000_encrypted_chat.sql:119:create policy chat_conversations_participant_read
+supabase/migrations/20260725210000_encrypted_chat.sql:123:create policy chat_messages_participant_read
+supabase/migrations/20260725210000_encrypted_chat.sql:133:create policy chat_messages_sender_insert
+supabase/migrations/20260724160000_usage_access_enforcement.sql:3:alter table public.profiles
+supabase/migrations/20260724160000_usage_access_enforcement.sql:7:create or replace function public.record_usage_access_status(has_access boolean)
+supabase/migrations/20260724160000_usage_access_enforcement.sql:25:    update public.profiles
+supabase/migrations/20260724160000_usage_access_enforcement.sql:30:    update public.profiles
+supabase/migrations/20260724160000_usage_access_enforcement.sql:37:  from public.profiles p
+supabase/migrations/20260724160000_usage_access_enforcement.sql:42:    update public.campaigns c
+supabase/migrations/20260724160000_usage_access_enforcement.sql:47:        from public.owned_apps oa
+supabase/migrations/20260724160000_usage_access_enforcement.sql:58:           from public.campaigns c
+supabase/migrations/20260724160000_usage_access_enforcement.sql:59:           join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260723000000_initial_testloop.sql:18:create table public.profiles (
+supabase/migrations/20260723000000_initial_testloop.sql:24:  constraint profiles_username_format check (
+supabase/migrations/20260723000000_initial_testloop.sql:29:create unique index profiles_username_lower_key
+supabase/migrations/20260723000000_initial_testloop.sql:30:  on public.profiles (lower(username))
+supabase/migrations/20260723000000_initial_testloop.sql:35:create table public.owned_apps (
+supabase/migrations/20260723000000_initial_testloop.sql:37:  owner_id uuid not null references public.profiles (id) on delete cascade,
+supabase/migrations/20260723000000_initial_testloop.sql:48:  constraint owned_apps_title_length check (char_length(trim(title)) between 1 and 80),
+supabase/migrations/20260723000000_initial_testloop.sql:49:  constraint owned_apps_package_format check (package_name ~ '^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+$'),
+supabase/migrations/20260723000000_initial_testloop.sql:50:  constraint owned_apps_install_url check (
+supabase/migrations/20260723000000_initial_testloop.sql:53:  constraint owned_apps_opt_in_url check (
+supabase/migrations/20260723000000_initial_testloop.sql:58:create unique index owned_apps_package_name_key on public.owned_apps (lower(package_name));
+supabase/migrations/20260723000000_initial_testloop.sql:59:create index owned_apps_owner_id_idx on public.owned_apps (owner_id, lifecycle, created_at desc);
+supabase/migrations/20260723000000_initial_testloop.sql:63:create table public.campaigns (
+supabase/migrations/20260723000000_initial_testloop.sql:65:  owned_app_id uuid not null unique references public.owned_apps (id) on delete cascade,
+supabase/migrations/20260723000000_initial_testloop.sql:73:  constraint campaigns_requested_testers check (requested_testers between 1 and 100),
+supabase/migrations/20260723000000_initial_testloop.sql:74:  constraint campaigns_instructions_length check (char_length(instructions) between 0 and 4000),
+supabase/migrations/20260723000000_initial_testloop.sql:75:  constraint campaigns_closed_at_consistency check (
+supabase/migrations/20260723000000_initial_testloop.sql:80:create index campaigns_public_idx on public.campaigns (lifecycle, started_on desc);
+supabase/migrations/20260723000000_initial_testloop.sql:81:create index campaigns_owned_app_id_idx on public.campaigns (owned_app_id);
+supabase/migrations/20260723000000_initial_testloop.sql:87:create table public.reciprocal_commitments (
+supabase/migrations/20260723000000_initial_testloop.sql:89:  campaign_id uuid not null references public.campaigns (id) on delete cascade,
+supabase/migrations/20260723000000_initial_testloop.sql:90:  tester_id uuid not null references public.profiles (id) on delete cascade,
+supabase/migrations/20260723000000_initial_testloop.sql:91:  current_user_owned_app_id uuid references public.owned_apps (id) on delete set null,
+supabase/migrations/20260723000000_initial_testloop.sql:99:  constraint reciprocal_commitments_target_days check (target_days between 1 and 30),
+supabase/migrations/20260723000000_initial_testloop.sql:100:  constraint reciprocal_commitments_tester_once unique (campaign_id, tester_id),
+supabase/migrations/20260723000000_initial_testloop.sql:101:  constraint reciprocal_commitments_terminal_timestamps check (
+supabase/migrations/20260723000000_initial_testloop.sql:107:create index reciprocal_commitments_tester_idx
+supabase/migrations/20260723000000_initial_testloop.sql:108:  on public.reciprocal_commitments (tester_id, lifecycle, joined_at desc);
+supabase/migrations/20260723000000_initial_testloop.sql:109:create index reciprocal_commitments_campaign_idx
+supabase/migrations/20260723000000_initial_testloop.sql:110:  on public.reciprocal_commitments (campaign_id, lifecycle, joined_at desc);
+supabase/migrations/20260723000000_initial_testloop.sql:111:create index reciprocal_commitments_selected_app_idx
+supabase/migrations/20260723000000_initial_testloop.sql:112:  on public.reciprocal_commitments (current_user_owned_app_id, lifecycle);
+supabase/migrations/20260723000000_initial_testloop.sql:117:create table public.daily_activity_summaries (
+supabase/migrations/20260723000000_initial_testloop.sql:119:  commitment_id uuid not null references public.reciprocal_commitments (id) on delete cascade,
+supabase/migrations/20260723000000_initial_testloop.sql:120:  reported_by uuid not null references public.profiles (id) on delete cascade,
+supabase/migrations/20260723000000_initial_testloop.sql:121:  target_owned_app_id uuid not null references public.owned_apps (id) on delete cascade,
+supabase/migrations/20260723000000_initial_testloop.sql:149:create table public.reminders (
+supabase/migrations/20260723000000_initial_testloop.sql:151:  commitment_id uuid not null references public.reciprocal_commitments (id) on delete cascade,
+supabase/migrations/20260723000000_initial_testloop.sql:152:  sender_id uuid not null references public.profiles (id) on delete cascade,
+supabase/migrations/20260723000000_initial_testloop.sql:153:  recipient_id uuid not null references public.profiles (id) on delete cascade,
+supabase/migrations/20260723000000_initial_testloop.sql:154:  target_owned_app_id uuid not null references public.owned_apps (id) on delete cascade,
+supabase/migrations/20260723000000_initial_testloop.sql:158:  constraint reminders_sender_recipient_different check (sender_id <> recipient_id),
+supabase/migrations/20260723000000_initial_testloop.sql:159:  constraint reminders_message_length check (message is null or char_length(message) <= 280),
+supabase/migrations/20260723000000_initial_testloop.sql:160:  constraint reminders_unique_per_direction_day unique (
+supabase/migrations/20260723000000_initial_testloop.sql:165:create index reminders_recipient_idx on public.reminders (recipient_id, created_at desc);
+supabase/migrations/20260723000000_initial_testloop.sql:166:create index reminders_commitment_idx on public.reminders (commitment_id, created_at desc);
+supabase/migrations/20260723000000_initial_testloop.sql:168:create table public.notifications (
+supabase/migrations/20260723000000_initial_testloop.sql:170:  recipient_id uuid not null references public.profiles (id) on delete cascade,
+supabase/migrations/20260723000000_initial_testloop.sql:174:  commitment_id uuid references public.reciprocal_commitments (id) on delete cascade,
+supabase/migrations/20260723000000_initial_testloop.sql:175:  owned_app_id uuid references public.owned_apps (id) on delete set null,
+supabase/migrations/20260723000000_initial_testloop.sql:178:  constraint notifications_title_length check (char_length(title) between 1 and 160),
+supabase/migrations/20260723000000_initial_testloop.sql:179:  constraint notifications_message_length check (char_length(message) between 1 and 1000)
+supabase/migrations/20260723000000_initial_testloop.sql:182:create index notifications_recipient_unread_idx
+supabase/migrations/20260723000000_initial_testloop.sql:183:  on public.notifications (recipient_id, read_at, created_at desc);
+supabase/migrations/20260723000000_initial_testloop.sql:184:create index notifications_commitment_idx on public.notifications (commitment_id, created_at desc);
+supabase/migrations/20260723000000_initial_testloop.sql:187:create or replace function public.set_updated_at()
+supabase/migrations/20260723000000_initial_testloop.sql:199:create trigger profiles_set_updated_at
+supabase/migrations/20260723000000_initial_testloop.sql:200:before update on public.profiles
+supabase/migrations/20260723000000_initial_testloop.sql:202:create trigger owned_apps_set_updated_at
+supabase/migrations/20260723000000_initial_testloop.sql:203:before update on public.owned_apps
+supabase/migrations/20260723000000_initial_testloop.sql:205:create trigger campaigns_set_updated_at
+supabase/migrations/20260723000000_initial_testloop.sql:206:before update on public.campaigns
+supabase/migrations/20260723000000_initial_testloop.sql:208:create trigger commitments_set_updated_at
+supabase/migrations/20260723000000_initial_testloop.sql:209:before update on public.reciprocal_commitments
+supabase/migrations/20260723000000_initial_testloop.sql:217:create or replace function public.handle_new_user()
+supabase/migrations/20260723000000_initial_testloop.sql:224:  insert into public.profiles (id)
+supabase/migrations/20260723000000_initial_testloop.sql:237:create or replace function public.validate_campaign()
+supabase/migrations/20260723000000_initial_testloop.sql:248:  from public.owned_apps where id = new.owned_app_id;
+supabase/migrations/20260723000000_initial_testloop.sql:257:    raise exception 'Only closed campaigns may have closed_at';
+supabase/migrations/20260723000000_initial_testloop.sql:266:create trigger campaigns_validate
+supabase/migrations/20260723000000_initial_testloop.sql:267:before insert or update on public.campaigns
+supabase/migrations/20260723000000_initial_testloop.sql:270:create or replace function public.validate_commitment()
+supabase/migrations/20260723000000_initial_testloop.sql:285:  from public.campaigns c
+supabase/migrations/20260723000000_initial_testloop.sql:286:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260723000000_initial_testloop.sql:297:    raise exception 'Only active campaigns accept testers';
+supabase/migrations/20260723000000_initial_testloop.sql:316:    from public.owned_apps where id = new.current_user_owned_app_id;
+supabase/migrations/20260723000000_initial_testloop.sql:321:      select 1 from public.owned_apps
+supabase/migrations/20260723000000_initial_testloop.sql:331:    from public.reciprocal_commitments
+supabase/migrations/20260723000000_initial_testloop.sql:358:create trigger commitments_validate
+supabase/migrations/20260723000000_initial_testloop.sql:359:before insert or update on public.reciprocal_commitments
+supabase/migrations/20260723000000_initial_testloop.sql:362:create or replace function public.validate_activity_summary()
+supabase/migrations/20260723000000_initial_testloop.sql:376:  from public.reciprocal_commitments rc
+supabase/migrations/20260723000000_initial_testloop.sql:377:  join public.campaigns c on c.id = rc.campaign_id
+supabase/migrations/20260723000000_initial_testloop.sql:378:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260723000000_initial_testloop.sql:406:create or replace function public.validate_reminder()
+supabase/migrations/20260723000000_initial_testloop.sql:421:  from public.reciprocal_commitments rc
+supabase/migrations/20260723000000_initial_testloop.sql:422:  join public.campaigns c on c.id = rc.campaign_id
+supabase/migrations/20260723000000_initial_testloop.sql:423:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260723000000_initial_testloop.sql:426:  select owner_id into app_owner from public.owned_apps where id = new.target_owned_app_id;
+supabase/migrations/20260723000000_initial_testloop.sql:429:    raise exception 'A member may send reminders only as themselves';
+supabase/migrations/20260723000000_initial_testloop.sql:445:create trigger reminders_validate
+supabase/migrations/20260723000000_initial_testloop.sql:446:before insert on public.reminders
+supabase/migrations/20260723000000_initial_testloop.sql:450:-- INSERT policy for client roles on notifications.
+supabase/migrations/20260723000000_initial_testloop.sql:451:create or replace function public.notify_new_commitment()
+supabase/migrations/20260723000000_initial_testloop.sql:461:  from public.campaigns c
+supabase/migrations/20260723000000_initial_testloop.sql:462:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260723000000_initial_testloop.sql:464:  insert into public.notifications (recipient_id, kind, title, message, commitment_id, owned_app_id)
+supabase/migrations/20260723000000_initial_testloop.sql:471:    (select owned_app_id from public.campaigns where id = new.campaign_id)
+supabase/migrations/20260723000000_initial_testloop.sql:477:create trigger commitments_notify_owner
+supabase/migrations/20260723000000_initial_testloop.sql:478:after insert on public.reciprocal_commitments
+supabase/migrations/20260723000000_initial_testloop.sql:481:create or replace function public.notify_new_reminder()
+supabase/migrations/20260723000000_initial_testloop.sql:488:  insert into public.notifications (recipient_id, kind, title, message, commitment_id, owned_app_id)
+supabase/migrations/20260723000000_initial_testloop.sql:501:create trigger reminders_notify_recipient
+supabase/migrations/20260723000000_initial_testloop.sql:502:after insert on public.reminders
+supabase/migrations/20260723000000_initial_testloop.sql:509:create or replace function public.public_joined_count(target_campaign_id uuid)
+supabase/migrations/20260723000000_initial_testloop.sql:517:  from public.reciprocal_commitments
+supabase/migrations/20260723000000_initial_testloop.sql:543:from public.owned_apps oa
+supabase/migrations/20260723000000_initial_testloop.sql:544:join public.profiles p on p.id = oa.owner_id
+supabase/migrations/20260723000000_initial_testloop.sql:545:join public.campaigns c on c.owned_app_id = oa.id
+supabase/migrations/20260723000000_initial_testloop.sql:552:create or replace function public.is_app_owner(target_app_id uuid)
+supabase/migrations/20260723000000_initial_testloop.sql:560:    select 1 from public.owned_apps
+supabase/migrations/20260723000000_initial_testloop.sql:565:create or replace function public.is_published_app(target_app_id uuid)
+supabase/migrations/20260723000000_initial_testloop.sql:573:    select 1 from public.owned_apps
+supabase/migrations/20260723000000_initial_testloop.sql:578:create or replace function public.is_campaign_owner(target_campaign_id uuid)
+supabase/migrations/20260723000000_initial_testloop.sql:587:    from public.campaigns c
+supabase/migrations/20260723000000_initial_testloop.sql:588:    join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260723000000_initial_testloop.sql:593:create or replace function public.is_commitment_participant(target_commitment_id uuid)
+supabase/migrations/20260723000000_initial_testloop.sql:601:    select 1 from public.reciprocal_commitments rc
+supabase/migrations/20260723000000_initial_testloop.sql:613:alter table public.profiles enable row level security;
+supabase/migrations/20260723000000_initial_testloop.sql:614:alter table public.owned_apps enable row level security;
+supabase/migrations/20260723000000_initial_testloop.sql:615:alter table public.campaigns enable row level security;
+supabase/migrations/20260723000000_initial_testloop.sql:616:alter table public.reciprocal_commitments enable row level security;
+supabase/migrations/20260723000000_initial_testloop.sql:618:alter table public.reminders enable row level security;
+supabase/migrations/20260723000000_initial_testloop.sql:619:alter table public.notifications enable row level security;
+supabase/migrations/20260723000000_initial_testloop.sql:621:create policy profiles_authenticated_read
+supabase/migrations/20260723000000_initial_testloop.sql:622:on public.profiles for select to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:625:create policy profiles_self_update
+supabase/migrations/20260723000000_initial_testloop.sql:626:on public.profiles for update to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:630:create policy owned_apps_public_or_owner_read
+supabase/migrations/20260723000000_initial_testloop.sql:631:on public.owned_apps for select to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:637:create policy owned_apps_owner_insert
+supabase/migrations/20260723000000_initial_testloop.sql:638:on public.owned_apps for insert to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:641:create policy owned_apps_owner_update
+supabase/migrations/20260723000000_initial_testloop.sql:642:on public.owned_apps for update to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:646:create policy owned_apps_owner_delete
+supabase/migrations/20260723000000_initial_testloop.sql:647:on public.owned_apps for delete to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:650:create policy campaigns_public_or_owner_read
+supabase/migrations/20260723000000_initial_testloop.sql:651:on public.campaigns for select to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:657:create policy campaigns_owner_insert
+supabase/migrations/20260723000000_initial_testloop.sql:658:on public.campaigns for insert to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:663:create policy campaigns_owner_update
+supabase/migrations/20260723000000_initial_testloop.sql:664:on public.campaigns for update to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:668:create policy campaigns_owner_delete
+supabase/migrations/20260723000000_initial_testloop.sql:669:on public.campaigns for delete to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:672:create policy commitments_participant_read
+supabase/migrations/20260723000000_initial_testloop.sql:673:on public.reciprocal_commitments for select to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:676:create policy commitments_self_insert
+supabase/migrations/20260723000000_initial_testloop.sql:677:on public.reciprocal_commitments for insert to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:680:create policy commitments_tester_update
+supabase/migrations/20260723000000_initial_testloop.sql:681:on public.reciprocal_commitments for update to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:685:create policy commitments_tester_delete
+supabase/migrations/20260723000000_initial_testloop.sql:686:on public.reciprocal_commitments for delete to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:689:create policy activity_participant_read
+supabase/migrations/20260723000000_initial_testloop.sql:693:create policy activity_self_insert
+supabase/migrations/20260723000000_initial_testloop.sql:697:create policy activity_self_update
+supabase/migrations/20260723000000_initial_testloop.sql:702:create policy activity_self_delete
+supabase/migrations/20260723000000_initial_testloop.sql:706:create policy reminders_participant_read
+supabase/migrations/20260723000000_initial_testloop.sql:707:on public.reminders for select to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:710:create policy reminders_self_insert
+supabase/migrations/20260723000000_initial_testloop.sql:711:on public.reminders for insert to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:714:create policy notifications_recipient_read
+supabase/migrations/20260723000000_initial_testloop.sql:715:on public.notifications for select to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:718:create policy notifications_recipient_update
+supabase/migrations/20260723000000_initial_testloop.sql:719:on public.notifications for update to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:723:create policy notifications_recipient_delete
+supabase/migrations/20260723000000_initial_testloop.sql:724:on public.notifications for delete to authenticated
+supabase/migrations/20260723000000_initial_testloop.sql:728:-- insert notifications or profiles, and no client role can access auth.users.
+supabase/migrations/20260723000000_initial_testloop.sql:729:revoke all on table public.profiles from anon, authenticated;
+supabase/migrations/20260723000000_initial_testloop.sql:730:revoke all on table public.owned_apps from anon, authenticated;
+supabase/migrations/20260723000000_initial_testloop.sql:731:revoke all on table public.campaigns from anon, authenticated;
+supabase/migrations/20260723000000_initial_testloop.sql:732:revoke all on table public.reciprocal_commitments from anon, authenticated;
+supabase/migrations/20260723000000_initial_testloop.sql:734:revoke all on table public.reminders from anon, authenticated;
+supabase/migrations/20260723000000_initial_testloop.sql:735:revoke all on table public.notifications from anon, authenticated;
+supabase/migrations/20260723000000_initial_testloop.sql:738:grant select, update on table public.profiles to authenticated;
+supabase/migrations/20260723000000_initial_testloop.sql:739:grant select, insert, update, delete on table public.owned_apps to authenticated;
+supabase/migrations/20260723000000_initial_testloop.sql:740:grant select, insert, update, delete on table public.campaigns to authenticated;
+supabase/migrations/20260723000000_initial_testloop.sql:741:grant select, insert, update, delete on table public.reciprocal_commitments to authenticated;
+supabase/migrations/20260723000000_initial_testloop.sql:743:grant select, insert on table public.reminders to authenticated;
+supabase/migrations/20260723000000_initial_testloop.sql:744:grant select, update, delete on table public.notifications to authenticated;
+supabase/migrations/20260723000000_initial_testloop.sql:766:comment on table public.profiles is 'Public username and privacy settings only. Never copy auth email here.';
+supabase/migrations/20260723000000_initial_testloop.sql:767:comment on table public.owned_apps is 'Apps owned by a member. Package IDs and Play links are validated at the database boundary.';
+supabase/migrations/20260723000000_initial_testloop.sql:768:comment on table public.campaigns is 'One public closed-test listing per owned app in V1.';
+supabase/migrations/20260723000000_initial_testloop.sql:769:comment on table public.reciprocal_commitments is 'A directional app-to-app testing promise between two members.';
+supabase/migrations/20260723000000_initial_testloop.sql:771:comment on table public.reminders is 'One respectful reminder per commitment direction per UTC day.';
+supabase/migrations/20260723000000_initial_testloop.sql:772:comment on table public.notifications is 'Private inbox rows addressed to one member.';
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql:2:create or replace function public.refresh_campaign_testing_progress(target_campaign_id uuid)
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql:9:  campaign_row public.campaigns%rowtype;
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql:15:  from public.campaigns c
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql:16:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql:26:  from public.owned_apps oa
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql:30:    update public.campaigns
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql:43:      update public.campaigns
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql:53:    update public.campaigns
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql:59:    update public.campaigns
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql:92:from public.owned_apps oa
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql:93:join public.profiles p on p.id = oa.owner_id
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql:94:join public.campaigns c on c.owned_app_id = oa.id
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql:100:  for campaign_id in select id from public.campaigns loop
+supabase/migrations/20260723030000_daily_open_states.sql:2:create table public.commitment_daily_open_states (
+supabase/migrations/20260723030000_daily_open_states.sql:3:  commitment_id uuid not null references public.reciprocal_commitments (id) on delete cascade,
+supabase/migrations/20260723030000_daily_open_states.sql:4:  reporter_id uuid not null references public.profiles (id) on delete cascade,
+supabase/migrations/20260723030000_daily_open_states.sql:5:  target_owned_app_id uuid not null references public.owned_apps (id) on delete cascade,
+supabase/migrations/20260723030000_daily_open_states.sql:13:create policy daily_open_participant_read on public.commitment_daily_open_states for select to authenticated using (public.is_commitment_participant(commitment_id));
+supabase/migrations/20260723030000_daily_open_states.sql:14:create policy daily_open_self_insert on public.commitment_daily_open_states for insert to authenticated with check (reporter_id = auth.uid() and public.is_commitment_participant(commitment_id));
+supabase/migrations/20260723030000_daily_open_states.sql:15:create policy daily_open_self_update on public.commitment_daily_open_states for update to authenticated using (reporter_id = auth.uid()) with check (reporter_id = auth.uid());
+supabase/migrations/20260725140000_remove_legacy_activity_tracking.sql:10:alter table public.profiles
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:6:alter table public.campaigns
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:12:alter table public.campaigns
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:13:  drop constraint if exists campaigns_target_days;
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:15:alter table public.campaigns
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:16:  add constraint campaigns_target_days check (target_days between 1 and 30);
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:18:create or replace function public.campaign_active_tester_count(target_campaign_id uuid)
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:26:  from public.reciprocal_commitments rc
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:27:  join public.campaigns c on c.id = rc.campaign_id
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:32:      from public.commitment_install_states cis
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:40:create or replace function public.refresh_campaign_testing_progress(target_campaign_id uuid)
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:47:  campaign_row public.campaigns%rowtype;
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:51:  from public.campaigns
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:64:      update public.campaigns
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:74:    update public.campaigns
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:80:    update public.campaigns
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:87:create or replace function public.refresh_campaign_progress_from_install()
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:97:  from public.reciprocal_commitments rc
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:105:drop trigger if exists commitment_install_states_refresh_campaign on public.commitment_install_states;
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:106:create trigger commitment_install_states_refresh_campaign
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:107:after insert or update of status on public.commitment_install_states
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:110:create or replace function public.public_joined_count(target_campaign_id uuid)
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:145:from public.owned_apps oa
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:146:join public.profiles p on p.id = oa.owner_id
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:147:join public.campaigns c on c.owned_app_id = oa.id
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:150:-- Bring existing campaigns to the correct derived state after deployment.
+supabase/migrations/20260724190000_campaign_overlap_progress.sql:154:  for campaign_id in select id from public.campaigns loop
+supabase/migrations/20260726030000_fix_leave_commitment_rpc.sql:4:create or replace function public.leave_commitment(target_commitment_id uuid)
+supabase/migrations/20260726030000_fix_leave_commitment_rpc.sql:15:  commitment_row public.reciprocal_commitments%rowtype;
+supabase/migrations/20260726030000_fix_leave_commitment_rpc.sql:22:  from public.reciprocal_commitments rc
+supabase/migrations/20260726030000_fix_leave_commitment_rpc.sql:32:  from public.campaigns c
+supabase/migrations/20260726030000_fix_leave_commitment_rpc.sql:33:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726030000_fix_leave_commitment_rpc.sql:50:  update public.reciprocal_commitments
+supabase/migrations/20260726030000_fix_leave_commitment_rpc.sql:52:  where public.reciprocal_commitments.id = commitment_row.id
+supabase/migrations/20260726030000_fix_leave_commitment_rpc.sql:53:    and public.reciprocal_commitments.lifecycle in ('pending_setup', 'active')
+supabase/migrations/20260726030000_fix_leave_commitment_rpc.sql:65:  insert into public.notifications (recipient_id, kind, title, message, commitment_id, owned_app_id)
+supabase/migrations/20260726030000_fix_leave_commitment_rpc.sql:72:    (select owned_app_id from public.campaigns where id = commitment_row.campaign_id)
+supabase/migrations/20260725220000_fix_usage_access_function.sql:5:create or replace function public.record_usage_access_status(has_access boolean)
+supabase/migrations/20260725220000_fix_usage_access_function.sql:23:    update public.profiles as p
+supabase/migrations/20260725220000_fix_usage_access_function.sql:28:    update public.profiles as p
+supabase/migrations/20260725220000_fix_usage_access_function.sql:35:  from public.profiles p
+supabase/migrations/20260725220000_fix_usage_access_function.sql:40:    update public.campaigns c
+supabase/migrations/20260725220000_fix_usage_access_function.sql:45:        from public.owned_apps oa
+supabase/migrations/20260725220000_fix_usage_access_function.sql:56:           from public.campaigns c
+supabase/migrations/20260725220000_fix_usage_access_function.sql:57:           join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260724150000_app_status_and_bookmark_permissions.sql:3:create policy app_bookmarks_self_update
+supabase/migrations/20260724150000_app_status_and_bookmark_permissions.sql:13:alter table public.owned_apps
+supabase/migrations/20260724150000_app_status_and_bookmark_permissions.sql:16:comment on column public.owned_apps.play_store_published_at is
+supabase/migrations/20260725110000_require_group_for_new_listings.sql:4:create or replace function public.validate_owned_app_testing_links()
+supabase/migrations/20260725110000_require_group_for_new_listings.sql:24:drop trigger if exists owned_apps_validate_testing_links on public.owned_apps;
+supabase/migrations/20260725110000_require_group_for_new_listings.sql:25:create trigger owned_apps_validate_testing_links
+supabase/migrations/20260725110000_require_group_for_new_listings.sql:27:on public.owned_apps
+supabase/migrations/20260725130000_campaign_target_and_reciprocal_guards.sql:3:create or replace function public.refresh_campaign_progress_from_target_change()
+supabase/migrations/20260725130000_campaign_target_and_reciprocal_guards.sql:17:drop trigger if exists campaigns_refresh_progress_on_target_change on public.campaigns;
+supabase/migrations/20260725130000_campaign_target_and_reciprocal_guards.sql:18:create trigger campaigns_refresh_progress_on_target_change
+supabase/migrations/20260725130000_campaign_target_and_reciprocal_guards.sql:19:after update of requested_testers on public.campaigns
+supabase/migrations/20260725130000_campaign_target_and_reciprocal_guards.sql:22:create or replace function public.prevent_campaign_target_below_reserved()
+supabase/migrations/20260725130000_campaign_target_and_reciprocal_guards.sql:36:drop trigger if exists campaigns_prevent_target_below_reserved on public.campaigns;
+supabase/migrations/20260725130000_campaign_target_and_reciprocal_guards.sql:37:create trigger campaigns_prevent_target_below_reserved
+supabase/migrations/20260725130000_campaign_target_and_reciprocal_guards.sql:38:before update of requested_testers on public.campaigns
+supabase/migrations/20260725130000_campaign_target_and_reciprocal_guards.sql:44:create or replace function public.prevent_duplicate_reciprocal_app_offer()
+supabase/migrations/20260725130000_campaign_target_and_reciprocal_guards.sql:58:      from public.reciprocal_commitments existing
+supabase/migrations/20260725130000_campaign_target_and_reciprocal_guards.sql:71:drop trigger if exists commitments_prevent_duplicate_reciprocal_app on public.reciprocal_commitments;
+supabase/migrations/20260725130000_campaign_target_and_reciprocal_guards.sql:72:create trigger commitments_prevent_duplicate_reciprocal_app
+supabase/migrations/20260725130000_campaign_target_and_reciprocal_guards.sql:73:before insert or update of current_user_owned_app_id, lifecycle on public.reciprocal_commitments
+supabase/migrations/20260724120000_listing_text_limits.sql:2:alter table public.campaigns
+supabase/migrations/20260724120000_listing_text_limits.sql:3:    drop constraint if exists campaigns_instructions_length;
+supabase/migrations/20260724120000_listing_text_limits.sql:5:alter table public.campaigns
+supabase/migrations/20260724120000_listing_text_limits.sql:6:    add constraint campaigns_instructions_length
+supabase/migrations/20260724120000_listing_text_limits.sql:9:alter table public.owned_apps
+supabase/migrations/20260724120000_listing_text_limits.sql:10:    add constraint owned_apps_details_length
+supabase/migrations/20260726060000_reopen_replacement_path.sql:3:alter table public.campaigns
+supabase/migrations/20260726060000_reopen_replacement_path.sql:4:  drop constraint if exists campaigns_risk_decision;
+supabase/migrations/20260726060000_reopen_replacement_path.sql:6:alter table public.campaigns
+supabase/migrations/20260726060000_reopen_replacement_path.sql:7:  add constraint campaigns_risk_decision
+supabase/migrations/20260726060000_reopen_replacement_path.sql:10:create or replace function public.hide_campaign_after_commitment_release()
+supabase/migrations/20260726060000_reopen_replacement_path.sql:18:    update public.campaigns
+supabase/migrations/20260726060000_reopen_replacement_path.sql:29:drop trigger if exists commitments_hide_campaign_after_release on public.reciprocal_commitments;
+supabase/migrations/20260726060000_reopen_replacement_path.sql:30:create trigger commitments_hide_campaign_after_release
+supabase/migrations/20260726060000_reopen_replacement_path.sql:31:after update of lifecycle on public.reciprocal_commitments
+supabase/migrations/20260726060000_reopen_replacement_path.sql:37:create or replace function public.reopen_campaign_replacement(target_campaign_id uuid)
+supabase/migrations/20260726060000_reopen_replacement_path.sql:38:returns setof public.campaigns
+supabase/migrations/20260726060000_reopen_replacement_path.sql:44:  campaign_row public.campaigns%rowtype;
+supabase/migrations/20260726060000_reopen_replacement_path.sql:46:  released_commitment public.reciprocal_commitments%rowtype;
+supabase/migrations/20260726060000_reopen_replacement_path.sql:51:  from public.campaigns c
+supabase/migrations/20260726060000_reopen_replacement_path.sql:52:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726060000_reopen_replacement_path.sql:56:  from public.owned_apps oa
+supabase/migrations/20260726060000_reopen_replacement_path.sql:69:  from public.reciprocal_commitments rc
+supabase/migrations/20260726060000_reopen_replacement_path.sql:86:  update public.campaigns
+supabase/migrations/20260726060000_reopen_replacement_path.sql:102:create or replace function public.mark_replacement_commitment_joined()
+supabase/migrations/20260726060000_reopen_replacement_path.sql:109:  campaign_row public.campaigns%rowtype;
+supabase/migrations/20260726060000_reopen_replacement_path.sql:113:  from public.campaigns c
+supabase/migrations/20260726060000_reopen_replacement_path.sql:134:      update public.campaigns
+supabase/migrations/20260726060000_reopen_replacement_path.sql:143:create or replace function public.finalize_campaign_restart(target_campaign_id uuid)
+supabase/migrations/20260726060000_reopen_replacement_path.sql:144:returns setof public.campaigns
+supabase/migrations/20260726060000_reopen_replacement_path.sql:150:  campaign_row public.campaigns%rowtype;
+supabase/migrations/20260726060000_reopen_replacement_path.sql:158:  from public.campaigns c
+supabase/migrations/20260726060000_reopen_replacement_path.sql:159:  join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260726060000_reopen_replacement_path.sql:163:  from public.owned_apps oa
+supabase/migrations/20260726060000_reopen_replacement_path.sql:176:  update public.campaigns
+supabase/migrations/20260726060000_reopen_replacement_path.sql:185:  insert into public.notifications (recipient_id, kind, title, message, owned_app_id)
+supabase/migrations/20260726060000_reopen_replacement_path.sql:189:  from public.reciprocal_commitments rc
+supabase/migrations/20260726060000_reopen_replacement_path.sql:190:  join public.owned_apps oa on oa.id = campaign_row.owned_app_id
+supabase/migrations/20260726060000_reopen_replacement_path.sql:230:from public.owned_apps oa
+supabase/migrations/20260726060000_reopen_replacement_path.sql:231:join public.profiles p on p.id = oa.owner_id
+supabase/migrations/20260726060000_reopen_replacement_path.sql:232:join public.campaigns c on c.owned_app_id = oa.id
+supabase/migrations/20260725170000_usage_access_one_hour_enforcement.sql:3:create or replace function public.record_usage_access_status(has_access boolean)
+supabase/migrations/20260725170000_usage_access_one_hour_enforcement.sql:21:    update public.profiles
+supabase/migrations/20260725170000_usage_access_one_hour_enforcement.sql:26:    update public.profiles
+supabase/migrations/20260725170000_usage_access_one_hour_enforcement.sql:33:  from public.profiles p
+supabase/migrations/20260725170000_usage_access_one_hour_enforcement.sql:38:    update public.campaigns c
+supabase/migrations/20260725170000_usage_access_one_hour_enforcement.sql:43:        from public.owned_apps oa
+supabase/migrations/20260725170000_usage_access_one_hour_enforcement.sql:54:           from public.campaigns c
+supabase/migrations/20260725170000_usage_access_one_hour_enforcement.sql:55:           join public.owned_apps oa on oa.id = c.owned_app_id
+supabase/migrations/20260725100000_testing_group_link_and_optional_opt_in.sql:8:alter table public.owned_apps
+supabase/migrations/20260725100000_testing_group_link_and_optional_opt_in.sql:11:alter table public.owned_apps
+supabase/migrations/20260725100000_testing_group_link_and_optional_opt_in.sql:14:alter table public.owned_apps
+supabase/migrations/20260725100000_testing_group_link_and_optional_opt_in.sql:15:  drop constraint if exists owned_apps_install_url,
+supabase/migrations/20260725100000_testing_group_link_and_optional_opt_in.sql:16:  drop constraint if exists owned_apps_opt_in_url,
+supabase/migrations/20260725100000_testing_group_link_and_optional_opt_in.sql:17:  drop constraint if exists owned_apps_group_url;
+supabase/migrations/20260725100000_testing_group_link_and_optional_opt_in.sql:19:alter table public.owned_apps
+supabase/migrations/20260725100000_testing_group_link_and_optional_opt_in.sql:20:  add constraint owned_apps_install_url check (
+supabase/migrations/20260725100000_testing_group_link_and_optional_opt_in.sql:23:  add constraint owned_apps_opt_in_url check (
+supabase/migrations/20260725100000_testing_group_link_and_optional_opt_in.sql:27:  add constraint owned_apps_group_url check (
+supabase/migrations/20260725100000_testing_group_link_and_optional_opt_in.sql:59:from public.owned_apps oa
+supabase/migrations/20260725100000_testing_group_link_and_optional_opt_in.sql:60:join public.profiles p on p.id = oa.owner_id
+supabase/migrations/20260725100000_testing_group_link_and_optional_opt_in.sql:61:join public.campaigns c on c.owned_app_id = oa.id

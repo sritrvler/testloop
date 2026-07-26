@@ -1,0 +1,61 @@
+                delay(30_000)
+                repo.refresh()
+            }
+        }
+    }
+
+    LaunchedEffect(account?.id, account?.trackingSetupComplete, activeCommitmentCount, usageAccessGranted) {
+        if (account?.trackingSetupComplete == true && !account!!.id.equals("pending", ignoreCase = true)) {
+            liveUsageAccessGranted = isUsageAccessGrantedNow()
+            usageAccessChecked = true
+            if (activeCommitmentCount > 0) repo.syncUsageAccess(liveUsageAccessGranted)
+        }
+    }
+
+    LaunchedEffect(providerAuthError) {
+        providerAuthError?.let { authError = it }
+    }
+
+    fun performPrimaryAction(id: String) {
+        scope.launch {
+            val pair = commitments.firstOrNull { it.commitmentId == id }
+            val publicApp = pair?.let { selected -> discoverApps.firstOrNull { it.id == selected.appBeingTestedByCurrentUserId } }
+            val ownedTarget = pair?.let { selected -> ownedApps.firstOrNull { it.id == selected.appBeingTestedByCurrentUserId } }
+            val targetTitle = publicApp?.title ?: ownedTarget?.title
+            val targetInstallUrl = publicApp?.installUrl ?: ownedTarget?.installUrl
+            val targetPackageName = publicApp?.packageName ?: ownedTarget?.packageName
+            if (pair == null || targetTitle == null || targetInstallUrl == null || targetPackageName == null) {
+                snack("This test app is no longer available. Open the commitment to review it.")
+                return@launch
+            }
+
+            if (pair.youOweSignal.install != InstallSignal.INSTALLED) {
+                when (externalAppLauncher.openUrl(targetInstallUrl)) {
+                    LaunchResult.Opened -> snack("Opening Google Play for $targetTitle. Install it, then come back to TestLoop.")
+                    LaunchResult.Blocked -> snack("This install link was blocked. TestLoop only opens approved Google Play links.")
+                    else -> snack("We couldn't open Google Play. Open the commitment to see the install link.")
+                }
+                return@launch
+            }
+
+            val result = externalAppLauncher.launch(targetPackageName)
+            if (result != LaunchResult.Unavailable) repo.reportInstallStatus(id)
+            snack(when (result) {
+                LaunchResult.Opened -> "Opening $targetTitle. Use it for today's test, then come back here."
+                LaunchResult.NotInstalled -> "$targetTitle isn't installed on this phone. Tap Install to get it."
+                LaunchResult.NotLaunchable -> "$targetTitle is installed but Android can't launch it. Open the commitment to review the app link."
+                LaunchResult.Blocked -> "This app link was blocked because it is not an approved Google Play link."
+                LaunchResult.Unavailable -> "Android couldn't open $targetTitle right now. Try again."
+            })
+        }
+    }
+
+    val usageAccessEnforced = usageAccessChecked && account?.trackingSetupComplete == true && activeCommitmentCount > 0
+    if (screen is AppScreen.LeaveSuccess) {
+        CommitmentLeftScreen(onDone = { replace(AppScreen.Main()) })
+    } else if (usageAccessEnforced && !liveUsageAccessGranted) {
+        UsageAccessRequiredScreen(usageAccessStatus, onOpenUsageAccess)
+    } else when (val current = screen) {
+        AppScreen.Welcome -> WelcomeRedesign(
+            error = authError,
+            onSignIn = {

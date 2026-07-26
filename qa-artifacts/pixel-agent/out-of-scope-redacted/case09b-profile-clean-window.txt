@@ -1,0 +1,2 @@
+  mCurrentFocus=Window{a9cbff8 u0 com.google.android.googlequicksearchbox/com.google.android.apps.search.lens.LensActivity}
+  mFocusedApp=ActivityRecord{142340247 u0 com.google.android.googlequicksearchbox/com.google.android.apps.search.lens.LensActivity t1603}

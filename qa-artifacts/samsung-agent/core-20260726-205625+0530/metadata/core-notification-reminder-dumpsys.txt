@@ -1,0 +1,133 @@
+host_timestamp=2026-07-26T21:00:01+05:30
+--- appops ---
+Uid mode: COARSE_LOCATION: ignore
+FINE_LOCATION: ignore
+READ_CONTACTS: ignore
+WRITE_CONTACTS: ignore
+READ_CALL_LOG: ignore
+WRITE_CALL_LOG: ignore
+READ_CALENDAR: ignore
+WRITE_CALENDAR: ignore
+POST_NOTIFICATION: ignore
+CALL_PHONE: ignore
+READ_SMS: ignore
+RECEIVE_SMS: ignore
+RECEIVE_MMS: ignore
+RECEIVE_WAP_PUSH: ignore
+SEND_SMS: ignore
+CAMERA: ignore
+RECORD_AUDIO: ignore
+READ_PHONE_STATE: ignore
+ADD_VOICEMAIL: ignore
+USE_SIP: ignore
+PROCESS_OUTGOING_CALLS: ignore
+BODY_SENSORS: ignore
+READ_CELL_BROADCASTS: ignore
+READ_EXTERNAL_STORAGE: ignore
+WRITE_EXTERNAL_STORAGE: ignore
+GET_ACCOUNTS: ignore
+READ_PHONE_NUMBERS: ignore
+ANSWER_PHONE_CALLS: ignore
+ACCEPT_HANDOVER: ignore
+BLUETOOTH_SCAN: ignore
+ACTIVITY_RECOGNITION: ignore
+READ_MEDIA_AUDIO: ignore
+READ_MEDIA_VIDEO: ignore
+READ_MEDIA_IMAGES: ignore
+ACCESS_MEDIA_LOCATION: ignore
+BLUETOOTH_CONNECT: ignore
+UWB_RANGING: ignore
+BLUETOOTH_ADVERTISE: ignore
+NEARBY_WIFI_DEVICES: ignore
+READ_MEDIA_VISUAL_USER_SELECTED: ignore
+READ_HEART_RATE: ignore
+READ_SKIN_TEMPERATURE: ignore
+RANGING: ignore
+READ_OXYGEN_SATURATION: ignore
+GET_USAGE_STATS: allow; time=+7h16m8s63ms ago
+--- notification settings ---
+        NotificationChannel{mId='discover_notice_channel', mName=Notice, mDescription=, mImportance=4, mBypassDnd=false, mLockscreenVisibility=-1000, mSound=content://settings/system/notification_sound, mLights=false, mLightColor=0, mVibrationPattern=null, mVibrationEffect=null, mUserLockedFields=0, mUserVisibleTaskShown=false, mVibrationEnabled=false, mShowBadge=true, mDeleted=false, mDeletedTimeMs=-1, mGroup='null', mAudioAttributes=AudioAttributes: usage=USAGE_NOTIFICATION content=CONTENT_TYPE_SONIFICATION flags=0x800(FLAG_MUTE_HAPTIC)  tags= bundle=null, mBlockableSystem=false, mAllowBubbles=-1, mImportanceLockedByOEM=false, mImportanceLockedDefaultApp=true, mOriginalImp=-1000, mParent=null, mConversationId=null, mDemoted=false, mImportantConvo=false, mLastNotificationUpdateTimeMs=0, mSoundMissingReason=0}
+        NotificationChannel{mId='discover_marketing_channel', mName=Marketing, mDescription=, mImportance=4, mBypassDnd=false, mLockscreenVisibility=-1000, mSound=content://settings/system/notification_sound, mLights=false, mLightColor=0, mVibrationPattern=null, mVibrationEffect=null, mUserLockedFields=0, mUserVisibleTaskShown=false, mVibrationEnabled=false, mShowBadge=true, mDeleted=false, mDeletedTimeMs=-1, mGroup='null', mAudioAttributes=AudioAttributes: usage=USAGE_NOTIFICATION content=CONTENT_TYPE_SONIFICATION flags=0x800(FLAG_MUTE_HAPTIC)  tags= bundle=null, mBlockableSystem=false, mAllowBubbles=-1, mImportanceLockedByOEM=false, mImportanceLockedDefaultApp=true, mOriginalImp=-1000, mParent=null, mConversationId=null, mDemoted=false, mImportantConvo=false, mLastNotificationUpdateTimeMs=0, mSoundMissingReason=0}
+      AppSettings: com.sec.app.RilErrorNotifier (1000) fixedImportance=true bubblePreference=1
+      AppSettings: com.samsung.SMT.lang_en_us_l03 (10201)
+      AppSettings: com.samsung.android.mdecservice (1000) importance=DEFAULT userSet=false permission [pre-grant=true isPreload=true isSigned=true] fixedImportance=true bubblePreference=1
+        NotificationChannel{mId='notification_channel_category_general', mName=General notifications, mDescription=, mImportance=3, mBypassDnd=false, mLockscreenVisibility=-1000, mSound=null, mLights=false, mLightColor=0, mVibrationPattern=null, mVibrationEffect=null, mUserLockedFields=0, mUserVisibleTaskShown=false, mVibrationEnabled=false, mShowBadge=false, mDeleted=false, mDeletedTimeMs=-1, mGroup='null', mAudioAttributes=AudioAttributes: usage=USAGE_NOTIFICATION content=CONTENT_TYPE_SONIFICATION flags=0x800(FLAG_MUTE_HAPTIC)  tags= bundle=null, mBlockableSystem=false, mAllowBubbles=-1, mImportanceLockedByOEM=false, mImportanceLockedDefaultApp=true, mOriginalImp=3, mParent=null, mConversationId=null, mDemoted=false, mImportantConvo=false, mLastNotificationUpdateTimeMs=0, mSoundMissingReason=0}
+      AppSettings: com.sec.android.app.vepreload (10156) importance=DEFAULT userSet=false
+        NotificationChannelGroup{mId='notification_group_videomaker', mName=Categories, mDescription=, mBlocked=false, mChannels=[], mUserLockedFields=0}
+      AppSettings: com.testloop.app (10414) importance=NONE userSet=false
+Restored without uid:
+
+  Notification listeners:
+    Allowed notification listeners:
+      com.google.android.projection.gearhead/com.google.android.gearhead.notifications.SharedNotificationListenerManager$ListenerService:com.truecaller/com.truecaller.notifications.NotificationHandlerService:com.sec.android.app.launcher/com.android.launcher3.notification.NotificationListener:com.samsung.android.smartmirroring/com.samsung.android.smartmirroring.controller.NotificationService:com.sec.android.app.launcher/com.android.launcher3.framework.device.notification.NotificationListener (user: 0 isPrimary: true)
+    Approved uids for user 0: [10146, 10243, 10314, 10221]
+    Has user set:
+      userId=0 value={com.google.android.projection.gearhead/com.google.android.gearhead.notifications.SharedNotificationListenerManager$ListenerService, com.truecaller/com.truecaller.notifications.NotificationHandlerService, com.samsung.android.smartsuggestions/com.samsung.android.app.deepsky.data.dataobserver.notification.CommonNotificationListenerService, com.sec.android.app.launcher/com.android.launcher3.notification.NotificationListener, com.samsung.android.smartmirroring/com.samsung.android.smartmirroring.controller.NotificationService, com.sec.android.app.launcher/com.android.launcher3.framework.device.notification.NotificationListener}
+    All notification listeners (5) enabled for current profiles:
+      ComponentInfo{com.samsung.android.smartmirroring/com.samsung.android.smartmirroring.controller.NotificationService}
+      ComponentInfo{com.sec.android.app.launcher/com.android.launcher3.framework.device.notification.NotificationListener}
+      ComponentInfo{com.truecaller/com.truecaller.notifications.NotificationHandlerService}
+      ComponentInfo{com.sec.android.app.launcher/com.android.launcher3.notification.NotificationListener}
+      ComponentInfo{com.google.android.projection.gearhead/com.google.android.gearhead.notifications.SharedNotificationListenerManager$ListenerService}
+    Live notification listeners (13):
+      ComponentInfo{android/com.android.server.biometrics.BiometricNotificationLogger} (user -1): android.service.notification.NotificationListenerService$NotificationListenerWrapper@648befd SYSTEM
+      ComponentInfo{android/com.android.server.am.AppFGSTracker$NotificationListener} (user -1): android.service.notification.NotificationListenerService$NotificationListenerWrapper@bd897f2 SYSTEM
+      ComponentInfo{com.android.server.telecom.callsequencing.voip/com.android.server.telecom.callsequencing.voip.VoipCallMonitor} (user 0): android.service.notification.NotificationListenerService$NotificationListenerWrapper@b09e43 SYSTEM
+      ComponentInfo{com.android.systemui/com.android.systemui.statusbar.NotificationListener} (user -1): android.service.notification.INotificationListener$Stub$Proxy@63dfcc0 SYSTEM
+      ComponentInfo{android/com.android.server.media.MediaSessionService$NotificationListener} (user -1): android.service.notification.NotificationListenerService$NotificationListenerWrapper@fa7719d SYSTEM
+      ComponentInfo{android/com.android.server.SensitiveContentProtectionManagerService$NotificationListener} (user -1): android.service.notification.NotificationListenerService$NotificationListenerWrapper@b576612 SYSTEM
+      ComponentInfo{android/android.app.ContextImpl} (user 0): android.service.notification.NotificationListenerService$NotificationListenerWrapper@7aa4273 SYSTEM
+      ComponentInfo{android/com.android.server.people.data.DataManager} (user 0): android.service.notification.NotificationListenerService$NotificationListenerWrapper@93c21e3 SYSTEM
+      ComponentInfo{android/android.app.ContextImpl} (user 0): android.service.notification.NotificationListenerService$NotificationListenerWrapper@97fc7e0 SYSTEM
+      ComponentInfo{com.sec.android.app.launcher/com.android.launcher3.notification.NotificationListener} (user 0): android.service.notification.INotificationListener$Stub$Proxy@b36db9e
+      ComponentInfo{com.google.android.ext.services/android.ext.services.notification.Assistant} (user 0): android.service.notification.INotificationListener$Stub$Proxy@2d3d2bf GUEST
+      ComponentInfo{com.truecaller/com.truecaller.notifications.NotificationHandlerService} (user 0): android.service.notification.INotificationListener$Stub$Proxy@281dc40
+      ComponentInfo{com.truecaller/com.truecaller.notifications.NotificationHandlerService} (user 0): android.service.notification.INotificationListener$Stub$Proxy@be67779
+    Snoozed notification listeners (1):
+      User: 0
+        com.samsung.android.smartmirroring/.controller.NotificationService
+        com.google.android.projection.gearhead/com.google.android.gearhead.notifications.SharedNotificationListenerManager$ListenerService (META_DATA_DEFAULT_AUTOBIND=false)
+
+  Trusted Listener Uids:
+    mSystemUIUid=10047
+    mTrustedListenerUids={1000, 10047, 10146}
+    mTrustListenerUpdateHistory=[onServiceAdded : add 1000, onServiceAdded : add 1000, onServiceAdded : add 10047, onServiceAdded : add 1000, onServiceAdded : add 1000, onServiceAdded : add 1000, onServiceAdded : add 1000, onServiceAdded : add 1000, onServiceRemovedLocked : remove 10299, onServiceAdded : add 10146, onServiceAdded : add 10221, setPackageOrComponentEnabled : add 10146, onServiceRemovedLocked : remove 10221, onServiceRemovedLocked : remove 10314, onServiceRemovedLocked : remove 10314, onServiceRemovedLocked : remove 10314, onServiceRemovedLocked : remove 10314, onServiceRemovedLocked : remove 10314]
+    mListenerHints: 0
+    mListenersDisablingEffects: ()
+
+--- alarms involving testloop ---
+      [tag=*alarm*:com.amazon.identity.action.SYNC_DIRTY_DATA T=1 F=0 AC=false H=PI:ff6afbf OW=2026-07-26 20:10:51.841 WL=11235 elapsed=633579860 rtc=2026-07-26 20:10:36.861]
+      [tag=*alarm*:com.amazon.identity.action.SYNC_DIRTY_DATA T=1 F=0 AC=false H=PI:ff6afbf OW=2026-07-26 20:10:52.849 WL=11248 elapsed=633580854 rtc=2026-07-26 20:10:37.856]
+      [tag=*alarm*:com.amazon.identity.action.SYNC_DIRTY_DATA T=1 F=0 AC=false H=PI:7d9b1b2 OW=2026-07-26 20:58:42.457 WL=11247 elapsed=636450460 rtc=2026-07-26 20:58:27.461]
+      [tag=*alarm*:com.amazon.identity.action.SYNC_DIRTY_DATA T=1 F=0 AC=false H=PI:7d9b1b2 OW=2026-07-26 20:58:42.684 WL=11249 elapsed=636450684 rtc=2026-07-26 20:58:27.685]
+    u0a412:
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:f3cb18e OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=551919455 rtc=2026-07-25 21:29:34.579]
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:11861cf OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=552300815 rtc=2026-07-25 21:35:55.939]
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:11861cf OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=552309012 rtc=2026-07-25 21:36:04.136]
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:d5f97d OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=552407436 rtc=2026-07-25 21:37:42.560]
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:d5f97d OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=552416200 rtc=2026-07-25 21:37:51.324]
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:adf4164 OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=552490658 rtc=2026-07-25 21:39:05.782]
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:adf4164 OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=552498611 rtc=2026-07-25 21:39:13.735]
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:fdc7c51 OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=552618126 rtc=2026-07-25 21:41:13.250]
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:60eae30 OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=552706181 rtc=2026-07-25 21:42:41.305]
+      [tag=*walarm*:com.testloop.app.action.EVENING_REMINDER T=0 F=32 AC=false H=PI:bb82dc5 OW=2026-07-26 20:00:00.000 WL=3600000 elapsed=553232369 rtc=2026-07-25 21:51:27.493]
+  
+  Delivery history: 
+    1000:
+      [tag=*alarm*:*job.delay* origWhen=634679752 H=L:35e4a2d elapsed=634679755 rtc=2026-07-26 20:28:56.756]
+      [tag=*alarm*:TIME_TICK origWhen=634682999 H=L:e0c988a elapsed=634683002 rtc=2026-07-26 20:29:00.003]
+      [tag=*alarm*:TIME_TICK origWhen=634742999 H=L:e0c988a elapsed=634743002 rtc=2026-07-26 20:30:00.004]
+      [tag=*alarm*:TIME_TICK origWhen=634802999 H=L:e0c988a elapsed=634803003 rtc=2026-07-26 20:31:00.004]
+      [tag=*alarm*:*job.delay* origWhen=634857850 H=L:35e4a2d elapsed=634857851 rtc=2026-07-26 20:31:54.852]
+      [tag=*alarm*:TIME_TICK origWhen=634862999 H=L:e0c988a elapsed=634863001 rtc=2026-07-26 20:32:00.002]
+      [tag=*alarm*:*job.flexibility_check* origWhen=634864726 H=L:780dc10 elapsed=634864730 rtc=2026-07-26 20:32:01.731]
+      [tag=*walarm*:*job.deadline* origWhen=634867878 H=L:a89d854 elapsed=634867882 rtc=2026-07-26 20:32:04.883]
+      [tag=*alarm*:TIME_TICK origWhen=634922999 H=L:e0c988a elapsed=634923004 rtc=2026-07-26 20:33:00.005]
+      [tag=*alarm*:*CountQuotaTracker.cleanup* origWhen=634952154 H=L:53c2f3 elapsed=634977879 rtc=2026-07-26 20:33:54.880]
+      [tag=*alarm*:*job.delay* origWhen=634977873 H=L:35e4a2d elapsed=634977880 rtc=2026-07-26 20:33:54.881]
+      [tag=*alarm*:TIME_TICK origWhen=634982998 H=L:e0c988a elapsed=634983004 rtc=2026-07-26 20:34:00.005]
+      [tag=*alarm*:TIME_TICK origWhen=635042999 H=L:e0c988a elapsed=635043004 rtc=2026-07-26 20:35:00.005]
+      [tag=*alarm*:PowerStats origWhen=634980964 H=L:5d1f597 elapsed=635064029 rtc=2026-07-26 20:35:21.030]
+      [tag=*walarm*:*job.deadline* origWhen=635009914 H=L:a89d854 elapsed=635064029 rtc=2026-07-26 20:35:21.031]
+      [tag=*alarm*:TIME_TICK origWhen=635102999 H=L:e0c988a elapsed=635103003 rtc=2026-07-26 20:36:00.004]
+      [tag=*alarm*:TIME_TICK origWhen=635162999 H=L:e0c988a elapsed=635163002 rtc=2026-07-26 20:37:00.003]

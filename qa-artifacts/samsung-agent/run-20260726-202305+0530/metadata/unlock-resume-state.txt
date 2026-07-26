@@ -1,0 +1,56 @@
+host_timestamp=2026-07-26T20:28:05+05:30
+utc_timestamp=2026-07-26T14:58:05+00:00
+device_timestamp=2026-07-26T20:28:05+0530
+--- window ---
+  mCurrentFocus=Window{226e2da u0 NotificationShade}
+    mShowingDream=false mDreamingLockscreen=false
+--- current activity ---
+  * Task{da1398c #2257 type=standard A=10414:com.testloop.app U=0 visible=true visibleRequested=true mode=fullscreen translucent=false sz=1}
+    mLastPausedActivity: ActivityRecord{185786047 u0 com.testloop.app/.MainActivity t2257}
+    topResumedActivity=ActivityRecord{185786047 u0 com.testloop.app/.MainActivity t2257}
+    * Hist  #0: ActivityRecord{185786047 u0 com.testloop.app/.MainActivity t2257}
+      packageName=com.testloop.app processName=com.testloop.app
+      app=ProcessRecord{fb5398e 11249:com.testloop.app/u0a414}
+      Intent { flg=0x10000000 xflg=0x5 cmp=com.testloop.app/.MainActivity }
+      rootOfTask=true task=Task{da1398c #2257 type=standard A=10414:com.testloop.app}
+      taskAffinity=10414:com.testloop.app
+      mActivityComponent=com.testloop.app/.MainActivity
+      baseDir=/data/app/~~qo8q3ADTyIQM_S-QfED6Tg==/com.testloop.app-SFhxowR9nv7a2jXJJeBEUA==/base.apk
+      dataDir=/data/user/0/com.testloop.app
+      windows=[Window{19c125e u0 com.testloop.app/com.testloop.app.MainActivity}]
+    Resumed: ActivityRecord{185786047 u0 com.testloop.app/.MainActivity t2257}
+  ResumedActivity: ActivityRecord{185786047 u0 com.testloop.app/.MainActivity t2257}
+  topDisplayFocusedRootTask=Task{da1398c #2257 type=standard A=10414:com.testloop.app}
+  deepestLastOrientationSource=ActivityRecord{185786047 u0 com.testloop.app/.MainActivity t2257}
+  mImeLayeringTarget=Window{19c125e u0 com.testloop.app/com.testloop.app.MainActivity}
+  mImeInputTarget=Window{19c125e u0 com.testloop.app/com.testloop.app.MainActivity}
+  mImeControlTarget=Window{19c125e u0 com.testloop.app/com.testloop.app.MainActivity}
+  mCurrentFocus=Window{226e2da u0 NotificationShade}
+  mFocusedApp=ActivityRecord{185786047 u0 com.testloop.app/.MainActivity t2257}
+  mObscuringWindow=Window{19c125e u0 com.testloop.app/com.testloop.app.MainActivity}
+      mPreferredTopFocusableRootTask=Task{da1398c #2257 type=standard A=10414:com.testloop.app}
+      mLastFocusedRootTask=Task{da1398c #2257 type=standard A=10414:com.testloop.app}
+      * Task{da1398c #2257 type=standard A=10414:com.testloop.app U=0 visible=true visibleRequested=true mode=fullscreen translucent=false sz=1}
+        * ActivityRecord{185786047 u0 com.testloop.app/.MainActivity t2257}
+    mTopFullscreenOpaqueWindowState=Window{19c125e u0 com.testloop.app/com.testloop.app.MainActivity}
+    mSystemBarColorApps={ActivityRecord{185786047 u0 com.testloop.app/.MainActivity t2257}}
+    mNavBarColorWindowCandidate=Window{19c125e u0 com.testloop.app/com.testloop.app.MainActivity}
+    mNavBarBackgroundWindowCandidate=Window{19c125e u0 com.testloop.app/com.testloop.app.MainActivity}
+      Window{19c125e u0 com.testloop.app/com.testloop.app.MainActivity}
+        source=ActivityRecord{178806041 u0 com.testloop.app/.MainActivity t2097} SCREEN_ORIENTATION_UNSPECIFIED
+        source=ActivityRecord{178806041 u0 com.testloop.app/.MainActivity t2097} SCREEN_ORIENTATION_UNSPECIFIED
+      Window{19c125e u0 com.testloop.app/com.testloop.app.MainActivity}:
+        mFakeControlTarget=Window{19c125e u0 com.testloop.app/com.testloop.app.MainActivity}
+        mFakeControlTarget=Window{19c125e u0 com.testloop.app/com.testloop.app.MainActivity}
+        mControlTarget=Window{19c125e u0 com.testloop.app/com.testloop.app.MainActivity}
+    mFakeStatusControlTarget=Window{19c125e u0 com.testloop.app/com.testloop.app.MainActivity}
+    mFakeNavControlTarget=Window{19c125e u0 com.testloop.app/com.testloop.app.MainActivity}
+        (fullscreen) Task{da1398c #2257 type=standard A=10414:com.testloop.app}
+  VisibleActivityProcess:[ ProcessRecord{fb5398e 11249:com.testloop.app/u0a414}]
+--- screen power ---
+  mWakefulness=Awake
+  mWakefulnessChanging=false
+  mHoldingWakeLockSuspendBlocker=true
+  mHoldingDisplaySuspendBlocker=true
+Display Power: com.android.server.power.PowerManagerService$3@900b8c4
+mWakefulness=1

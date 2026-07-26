@@ -1,0 +1,100 @@
+host_timestamp=2026-07-26T20:29:20+05:30
+--- ui text ---
+Today
+Good evening, selva · Sunday, 26 July
+Notifications
+Welcome to TestLoop
+Let’s get your first test moving.
+Add your app to find testers, or discover an app you can test for someone else. You can do either first.
+Add my app
+Find an app to test
+How TestLoop works
+My apps
+Add and monitor the apps you want testers for.
+Discover
+Explore apps available for testing, join a group, and get your app tested in return.
+Today
+My apps
+Discover
+Profile
+--- filtered log tail ---
+07-26 20:28:47.705  4579  4579 I HBD     : c [AiWriter] setContact : com.testloop.app
+07-26 20:28:47.705  4579  4579 I HBD     : a [AiWriter] setContact : com.testloop.app
+07-26 20:28:47.707  1286  3842 D InsetsSourceProvider: updateControlForTarget: control=InsetsSourceControl: {3 mType=ime mSurfacePosition=Point(0, 100) mInsetsHint=Insets{left=0, top=0, right=0, bottom=1027}}, target=Window{8d69aa u0 com.testloop.app/com.testloop.app.MainActivity}, from=com.android.server.wm.ImeInsetsSourceProvider.updateControlForTarget:23 com.android.server.wm.InsetsStateController.onControlTargetChanged:82 com.android.server.wm.DisplayContent.updateImeControlTarget:48 com.android.server.wm.DisplayContent.updateImeInputAndControlTarget:273 com.android.server.wm.WindowManagerService$LocalService.updateImeTargetWindow:81 
+07-26 20:28:47.730   928   928 I SurfaceFlinger: [LayerHierarchy{RequestedLayerState{ImeContainer#15 parentId=46257 relativeParentId=46257 z=3} 1 children}] reparent to LayerHierarchy{RequestedLayerState{ActivityRecord{129183043 u0 com.testloop.app/.MainActivity t2259}#46257 parentId=46256} 4 children}
+07-26 20:28:47.739  1286  3842 I WindowManager: Relayout Window{3172825 u0 Splash Screen com.testloop.app}: viewVisibility=8 req=1080x2340 ty=3 d0
+07-26 20:28:47.755  1286  3842 D WindowManager: updateSystemBarAttributes: displayId=0, focusedCanBeNavColorWin=false, win=Window{8d69aa u0 com.testloop.app/com.testloop.app.MainActivity}, navColorWin=Window{8d69aa u0 com.testloop.app/com.testloop.app.MainActivity}, caller=com.android.server.wm.DisplayPolicy.finishPostLayoutPolicyLw:17 com.android.server.wm.RootWindowContainer.applySurfaceChangesTransaction$1:188 com.android.server.wm.RootWindowContainer.performSurfacePlacement:59 
+07-26 20:28:47.768   928   928 I SurfaceFlinger: RequestedLayer [Splash Screen com.testloop.app$_1920#46259] hidden!! flag  from(0) --> to(1)
+07-26 20:28:47.769  1920  1920 D NavigationBar: onSystemBarAttributesChanged() -  displayId:0, appearance:0, packageName: com.testloop.app, navbarColorManagedByIme:false
+07-26 20:28:47.769  1920  1920 D SamsungLightBarControlHelper: updateNavigationBar (WHITE button) isLightOpaque:false, hasLightNavigationBarFlag:false, packageName:com.testloop.app, DirectReplying:false, NavBarColorMangedByIme:false, ForceDarkForScrim:false, ForceLightForScrim:false, QsCustomizing:false, QsExpanded:false
+07-26 20:28:47.782   928   928 D SurfaceFlinger:        CLIENT |           48314087112716 | 00002102 | RGBA_8888    |    0.0    0.0 1080.0 2340.0 |    9   19 1071 2321 | com.testloop.app/com.testloop.app.MainActivity$_11249#46263 (1)
+07-26 20:28:47.782  1286  1404 D WindowManager: Starting window removed Window{3172825 u0 Splash Screen com.testloop.app}
+07-26 20:28:47.783  1286  1404 I WindowManager: Cancelling animation restarting=false, leash=Surface(name=Surface(name=8d69aa com.testloop.app/com.testloop.app.MainActivity#46262)/@0xf9f9d05 - animation-leash of starting_reveal#46268)/@0x7f27f8b
+07-26 20:28:47.783  1286  1404 I WindowManager: Reparenting to original parent: Surface(name=ActivityRecord{129183043 u0 com.testloop.app/.MainActivity t2259}#46257)/@0xfab915a, destroy=false, surface=Surface(name=8d69aa com.testloop.app/com.testloop.app.MainActivity#46262)/@0xf9f9d05
+07-26 20:28:47.786  1286  1404 V WindowManager: Remove Window{3172825 u0 Splash Screen com.testloop.app}: mSurfaceControl=Surface(name=Splash Screen com.testloop.app$_1920#46259)/@0x161d5b0 mAnimatingExit=false mRemoveOnExit=false mHasSurface=true surfaceShowing=false animating=false app-animation=false callers=com.android.server.wm.Session.remove:15 android.view.IWindowSession$Stub.onTransact:813 com.android.server.wm.Session.onTransact:1 android.os.Binder.execTransactInternal:1514 android.os.Binder.execTransact:1454 <bottom of call stack> 
+07-26 20:28:47.790  1286  1404 D WindowManager: updateSystemBarAttributes: displayId=0, focusedCanBeNavColorWin=false, win=Window{8d69aa u0 com.testloop.app/com.testloop.app.MainActivity}, navColorWin=Window{8d69aa u0 com.testloop.app/com.testloop.app.MainActivity}, caller=com.android.server.wm.DisplayPolicy.finishPostLayoutPolicyLw:17 com.android.server.wm.RootWindowContainer.applySurfaceChangesTransaction$1:188 com.android.server.wm.RootWindowContainer.performSurfacePlacement:59 
+07-26 20:28:47.816   928   928 I SurfaceFlinger: [LayerHierarchy{RequestedLayerState{ImeContainer#15 parentId=46257 relativeParentId=46262 z=1} 1 children}] RelativeParent to LayerHierarchy{RequestedLayerState{8d69aa com.testloop.app/com.testloop.app.MainActivity#46262 parentId=46257} 2 children}
+07-26 20:28:47.817   928   928 I SurfaceFlinger: [LayerHierarchy{RequestedLayerState{Surface(name=8d69aa com.testloop.app/com.testloop.app.MainActivity#46262)/@0xf9f9d05 - animation-leash of starting_reveal#46268} 1 children}] reparent to OffscreenRoot
+07-26 20:28:47.817   928   928 I SurfaceFlinger: [LayerHierarchy{RequestedLayerState{Surface(name=8d69aa com.testloop.app/com.testloop.app.MainActivity#46262)/@0xf9f9d05 - animation-leash of starting_reveal#46268} 1 children}] RelativeParent to null
+07-26 20:28:47.817   928   928 I SurfaceFlinger: [LayerHierarchy{RequestedLayerState{3172825 Splash Screen com.testloop.app#46258 z=2147483647} 1 children}] reparent to OffscreenRoot
+07-26 20:28:47.817   928   928 I SurfaceFlinger: [LayerHierarchy{RequestedLayerState{3172825 Splash Screen com.testloop.app#46258 z=2147483647} 1 children}] RelativeParent to null
+07-26 20:28:47.817   928   928 I SurfaceFlinger: [LayerHierarchy{RequestedLayerState{Splash Screen com.testloop.app$_1920#46259} no children}] reparent to OffscreenRoot
+07-26 20:28:47.817   928   928 I SurfaceFlinger: [LayerHierarchy{RequestedLayerState{Splash Screen com.testloop.app$_1920#46259} no children}] RelativeParent to null
+07-26 20:28:47.817   928   928 I SurfaceFlinger: [LayerHierarchy{RequestedLayerState{8d69aa com.testloop.app/com.testloop.app.MainActivity#46262 parentId=46257} 2 children}] reparent to LayerHierarchy{RequestedLayerState{ActivityRecord{129183043 u0 com.testloop.app/.MainActivity t2259}#46257 parentId=46256} 3 children}
+07-26 20:28:47.821   928   928 I SurfaceFlinger: id=46268 Removed Surface(name=8d69aa com.testloop.app/com.testloop.app.MainActivity#46262)/@0xf9f9d05 - animation-leash of starting_reveal#46268 (147)
+07-26 20:28:47.828   928   928 I SurfaceFlinger: destroyed Surface(name=8d69aa com.testloop.app/com.testloop.app.MainActivity#46262)/@0xf9f9d05 - animation-leash of starting_reveal#46268
+07-26 20:28:47.831   928   928 I SurfaceFlinger: id=46268 Destroyed Surface(name=8d69aa com.testloop.app/com.testloop.app.MainActivity#46262)/@0xf9f9d05 - animation-leash of starting_reveal#46268
+07-26 20:28:47.921  1286  4261 V WindowManager:    ChangeInfo{7cdfe97 container=Task{7a75c3e #2259 type=standard A=10414:com.testloop.app} flags=0x10}
+07-26 20:28:47.921  1286  4261 V WindowManager:    ChangeInfo{6119884 container=ActivityRecord{129183043 u0 com.testloop.app/.MainActivity t2259} flags=0x0}
+07-26 20:28:47.922   928   988 I SurfaceFlinger: id=46259 Removed Splash Screen com.testloop.app$_1920#46259 (146)
+07-26 20:28:47.923   928   928 I SurfaceFlinger: id=46258 Removed 3172825 Splash Screen com.testloop.app#46258 (146)
+07-26 20:28:47.924  1286  4261 D ChangeTransitionController:    ChangeInfo{7cdfe97 container=Task{7a75c3e #2259 type=standard A=10414:com.testloop.app} flags=0x10}
+07-26 20:28:47.924  1286  4261 D ChangeTransitionController:    ChangeInfo{6119884 container=ActivityRecord{129183043 u0 com.testloop.app/.MainActivity t2259} flags=0x0}
+07-26 20:28:47.932   928   928 D SurfaceFlinger:        DEVICE |           48314087112716 | 00002102 | RGBA_8888    |    0.0    0.0 1080.0 2340.0 |    0    0 1080 2340 | com.testloop.app/com.testloop.app.MainActivity$_11249#46263 (1)
+07-26 20:28:47.933   928   928 I SurfaceFlinger: destroyed 3172825 Splash Screen com.testloop.app#46258
+07-26 20:28:47.933   928   928 I SurfaceFlinger: destroyed Splash Screen com.testloop.app$_1920#46259
+07-26 20:28:47.935   928   928 I SurfaceFlinger: id=46258 Destroyed 3172825 Splash Screen com.testloop.app#46258
+07-26 20:28:47.935   928   928 I SurfaceFlinger: id=46259 Destroyed Splash Screen com.testloop.app$_1920#46259
+07-26 20:28:47.959  1286  1313 D SGM:FgCheckThread: getForegroundApp(), foregroundPkgName=com.testloop.app
+07-26 20:28:47.959  1286  1313 D SGM:FgCheckThread: noteStopComponent(), received pkgName: com.sec.android.app.launcher, focusedPkgName: com.testloop.app, userId: 0
+07-26 20:28:47.962  1286  1311 D SGM:GameManager: identifyForegroundApp. com.testloop.app, mCurrentUserId: 0, callerUserId: 0
+07-26 20:28:47.963  1286  1311 D SGM:GameManager: identifyForegroundApp. com.testloop.app, mCurrentUserId: 0, callerUserId: 0
+07-26 20:28:47.988  4579  9453 I HBD     : b [SKE_SPECIFIC] specific model[com.testloop.app] loaded, 258010769 ns
+07-26 20:28:48.093  1286  1545 D MdnieScenarioControlService:  packageName : com.testloop.app    className : com.testloop.app.MainActivity
+07-26 20:28:48.208  1286  1313 D SGM:GameManager: identifyForegroundApp. com.testloop.app, mCurrentUserId: 0, callerUserId: 0
+07-26 20:28:48.267   928   928 I SurfaceFlinger: com.testloop.app/com.testloop.app.MainActivity$_11249#46263 Max (can't resolve refresh rate)
+07-26 20:28:48.367   928   928 I SurfaceFlinger: com.testloop.app/com.testloop.app.MainActivity$_11249#46263 Max (can't resolve refresh rate)
+07-26 20:28:48.617   928   928 I SurfaceFlinger: com.testloop.app/com.testloop.app.MainActivity$_11249#46263 Max (can't resolve refresh rate)
+07-26 20:28:49.721   928  2440 I SurfaceFlinger: Capture layer list: 	 com.testloop.app/com.testloop.app.MainActivity$_11249#46263(preserveDisplayColors:0)
+07-26 20:28:50.132 14308 14308 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+07-26 20:28:50.143 14308 14308 I AndroidRuntime: Using default boot image
+07-26 20:28:50.143 14308 14308 I AndroidRuntime: Leaving lock profiling enabled
+07-26 20:28:50.144 14308 14308 D AndroidRuntime: addProductProperty not brand or 7
+07-26 20:28:50.255 14308 14308 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+07-26 20:28:51.347 14308 14308 D AndroidRuntime: Shutting down VM
+07-26 20:28:51.614   928   928 I SurfaceFlinger: com.testloop.app/com.testloop.app.MainActivity$_11249#46263 Max (can't resolve refresh rate)
+07-26 20:28:52.068   928   928 I SurfaceFlinger: com.testloop.app/com.testloop.app.MainActivity$_11249#46263 Max (can't resolve refresh rate)
+07-26 20:28:52.309   928   928 I SurfaceFlinger: com.testloop.app/com.testloop.app.MainActivity$_11249#46263 Max (can't resolve refresh rate)
+07-26 20:28:52.348  1920  1920 I {OngoingActivityDataHelper}: setBaseActivityComponentName:ComponentInfo{com.testloop.app/com.testloop.app.MainActivity}
+07-26 20:28:53.197  1286  3010 D FreecessHandler: skipping freeze com.testloop.app(10414) result : 12
+07-26 20:28:59.204  1286  3010 D FreecessHandler: skipping freeze com.testloop.app(10414) result : 12
+07-26 20:29:05.212  1286  3010 D FreecessHandler: skipping freeze com.testloop.app(10414) result : 12
+07-26 20:29:11.221  1286  3010 D FreecessHandler: skipping freeze com.testloop.app(10414) result : 12
+07-26 20:29:12.988   928   928 I SurfaceFlinger: [com.testloop.app/com.testloop.app.MainActivity$_11249#46263] setFrameRateCategory: HighHint
+07-26 20:29:13.623   928   928 I SurfaceFlinger: com.testloop.app/com.testloop.app.MainActivity$_11249#46263 voted ExplicitCategory with category: HighHint
+07-26 20:29:13.694   928   928 I SurfaceFlinger: com.testloop.app/com.testloop.app.MainActivity$_11249#46263 voted ExplicitCategory with category: HighHint
+07-26 20:29:13.947   928   928 I SurfaceFlinger: com.testloop.app/com.testloop.app.MainActivity$_11249#46263 voted ExplicitCategory with category: HighHint
+07-26 20:29:15.221   928   928 I SurfaceFlinger: com.testloop.app/com.testloop.app.MainActivity$_11249#46263 voted ExplicitCategory with category: HighHint
+07-26 20:29:15.468   928   928 I SurfaceFlinger: com.testloop.app/com.testloop.app.MainActivity$_11249#46263 voted ExplicitCategory with category: HighHint
+07-26 20:29:16.011   928   928 I SurfaceFlinger: [com.testloop.app/com.testloop.app.MainActivity$_11249#46263] setFrameRateCategory: NoPreference
+07-26 20:29:17.176   928   988 I SurfaceFlinger: Capture layer list: 	 com.testloop.app/com.testloop.app.MainActivity$_11249#46263(preserveDisplayColors:0)
+07-26 20:29:17.224  1286  3010 D FreecessHandler: skipping freeze com.testloop.app(10414) result : 12
+07-26 20:29:17.569 14382 14382 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+07-26 20:29:17.574 14382 14382 I AndroidRuntime: Using default boot image
+07-26 20:29:17.574 14382 14382 I AndroidRuntime: Leaving lock profiling enabled
+07-26 20:29:17.575 14382 14382 D AndroidRuntime: addProductProperty not brand or 7
+07-26 20:29:17.703 14382 14382 D AndroidRuntime: Calling main entry com.android.commands.uiautomator.Launcher
+07-26 20:29:18.831 14382 14382 I AccessibilityNodeInfoDumper: Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bae5; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(340, 2011 - 466, 2127); boundsInWindow: Rect(340, 2011 - 466, 2127); packageName: com.testloop.app; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; granularScrollingSupported: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+07-26 20:29:18.842 14382 14382 I AccessibilityNodeInfoDumper: Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bbfc; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(615, 2011 - 741, 2127); boundsInWindow: Rect(615, 2011 - 741, 2127); packageName: com.testloop.app; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; granularScrollingSupported: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+07-26 20:29:18.853 14382 14382 I AccessibilityNodeInfoDumper: Skipping invisible child: android.view.accessibility.AccessibilityNodeInfo@bd13; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(890, 2011 - 1016, 2137); boundsInWindow: Rect(890, 2011 - 1016, 2137); packageName: com.testloop.app; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; granularScrollingSupported: false; importantForAccessibility: false; visible: false; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+07-26 20:29:18.862 14382 14382 D AndroidRuntime: Shutting down VM

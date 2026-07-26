@@ -1,0 +1,10 @@
+Samsung TestLoop QA compact/resume snapshot
+- Target: serial RZCY51TRYMT only; Samsung SM-M356B, Android 16/API 36, 1080x2340, density override 420.
+- Initial transient: device was locked at start; user later unlocked. Current lock re-check passed at 2026-07-26T20:32:34+05:30: mDreamingLockscreen=false, TestLoop MainActivity foreground.
+- APK/package: /Users/srinathsmac/Documents/Android testing/app/build/outputs/apk/debug/app-debug.apk; com.testloop.app v13/0.1.5.
+- AppOps/permissions: GET_USAGE_STATS allow; POST_NOTIFICATIONS denied/ignore; notification importance NONE.
+- Dependencies: CRED/GPay/WhatsApp/Amazon installed; Agoda/Zomato absent; Chrome/Maps installed; Samsung browser absent.
+- Mutations so far: completed onboarding/tracking setup for preserved user @selva by tapping Finish setup. No listing/commitment/message/backend test data created. Add App entries were local form data only; backed out before publish/submission.
+- UI cases completed: onboarding Usage Access detected enabled -> Finish setup; Today empty first-run; My apps empty; Discover empty; Profile visible; Add App step 1 empty/invalid/valid-format validation; Add App step 2 invalid Google Groups validation; back stack from Add App returned to My apps; Google Play testing guide reached; official guide CTA tapped twice/after scroll but focus stayed in TestLoop.
+- Suspected/confirmed defects: official Google support guide URL blocked by PlayUrlPolicy source and on-device stays in-app; guide bottom CTA overlaps nav bar before scroll; guide title/header can intrude into status bar after scroll; account delete appears static/source-only; UsageStats empty false negative source-only.
+- Remaining before final: complete safe-area and visual usability pass; collect final font/display settings and logcat; write structured final report.

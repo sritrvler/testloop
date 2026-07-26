@@ -1,0 +1,152 @@
+host_timestamp=2026-07-26T20:25:26+05:30
+--- sdk tools ---
+--- output metadata ---
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.testloop.app",
+  "variantName": "debug",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 13,
+      "versionName": "0.1.5",
+      "outputFile": "app-debug.apk"
+    }
+  ],
+  "elementType": "File",
+  "minSdkVersionForDexing": 26
+}--- app build gradle relevant ---
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    kotlin("plugin.serialization")
+}
+
+android {
+    namespace = "com.testloop.app"
+    compileSdk = 35
+
+    val uploadKeystorePath = providers.gradleProperty("testloopKeystoreFile").orNull
+    val uploadKeystorePassword = providers.gradleProperty("testloopKeystorePassword").orNull
+    val uploadKeyPassword = providers.gradleProperty("testloopKeyPassword").orNull
+    if (uploadKeystorePath != null && uploadKeystorePassword != null && uploadKeyPassword != null) {
+        signingConfigs {
+            create("internalUpload") {
+                storeFile = file(uploadKeystorePath)
+                storePassword = uploadKeystorePassword
+                keyAlias = "testloop-upload"
+                keyPassword = uploadKeyPassword
+            }
+        }
+        buildTypes.getByName("release") {
+            signingConfig = signingConfigs.getByName("internalUpload")
+        }
+    }
+
+    defaultConfig {
+        applicationId = "com.testloop.app"
+        minSdk = 26
+        targetSdk = 35
+        versionCode = 13
+        versionName = "0.1.5"
+        buildConfigField("String", "SUPABASE_URL", "\"https://ndmamltbrhpehjzcwkwv.supabase.co\"")
+        buildConfigField("String", "SUPABASE_ANON_KEY", "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kbWFtbHRicmhwZWhqemN3a3d2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ3NzkyNjgsImV4cCI6MjEwMDM1NTI2OH0.3sK3zKL9kFCLd8oR6ZQWiEiDvY8egy-gwu7lh0mUI2o\"")
+    }
+
+    buildFeatures { compose = true; buildConfig = true }
+    packaging { resources.excludes += "/META-INF/{AL2.0,LGPL2.1}" }
+}
+
+configurations.configureEach {
+    resolutionStrategy.force("androidx.browser:browser:1.8.0")
+}
+
+// Android Studio's bundled JDK is used for local and CI builds.
+kotlin { jvmToolchain(21) }
+
+dependencies {
+    testImplementation(kotlin("test"))
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.browser)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(platform(libs.supabase.bom))
+    implementation(libs.supabase.auth)
+    implementation(libs.supabase.postgrest)
+    implementation(libs.supabase.realtime)
+    implementation(libs.ktor.client.android)
+    implementation(libs.tink.android)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+}
+--- manifest relevant ---
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+
+    <!--
+        Android 11+ filters PackageManager results unless the queried app is
+        visible. TestLoop checks only the explicitly committed app, and every
+        Play app a member can commit to is expected to expose a launcher
+        activity. Without this query, an installed app such as
+        com.flipkart.android can be reported as absent and never activate the
+        tester commitment.
+    -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/testloop_launcher"
+        android:label="TestLoop"
+        android:roundIcon="@mipmap/testloop_launcher"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.TestLoop">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="testloop" android:host="auth-callback" />
+            </intent-filter>
+        </activity>
+        <receiver
+            android:name=".notifications.EveningReminderReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.testloop.app.action.EVENING_REMINDER" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

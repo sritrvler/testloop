@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -189,6 +190,7 @@ fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, chatRepo: ChatRe
             replace(
                 when {
                     account?.username.isNullOrBlank() -> AppScreen.Username
+                    account?.trackingSetupComplete == true -> AppScreen.Main()
                     else -> AppScreen.Tracking
                 }
             )
@@ -354,7 +356,7 @@ fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, chatRepo: ChatRe
             onSend = { text -> chatRepo.sendMessage(text) },
             onClearError = chatRepo::clearError
         )
-        is AppScreen.OwnDetail -> OwnAppDetailScreen(current.appId, current.attentionOnly, ownedApps, campaigns, commitments, discoverApps, onBack = ::back, onPair = { navigate(AppScreen.PairDetail(it)) }, onReminder = { id, person -> scope.launch { repo.sendReminder(id).onSuccess { snack("Reminder sent to @$person. They'll see it today") }.onFailure { snack(userFriendlyError(it, "We couldn't send the reminder. Check your connection and try again.")) } } }, onSwitch = { replace(AppScreen.OwnDetail(it)) }, onDelist = { id -> repo.delistOwnedApp(id).onSuccess { replace(AppScreen.Main(MainDestination.APPS)); snack("Your app has been removed from Discover") }.onFailure { snack(userFriendlyError(it, "We couldn't remove this app from Discover. Check your connection and try again.")) } }, onMarkPublished = { id -> repo.markOwnedAppPublished(id).onSuccess { snack("Your app status was saved. TestLoop cannot verify Google Play approval.") }.onFailure { snack(userFriendlyError(it, "We couldn't update your Google Play status. Check your connection and try again.")) } }, onUpdateTesterCount = { id, count -> repo.updateCampaignTesterCount(id, count).onSuccess { snack("Tester target updated to $count. Discover and progress are now up to date.") }.onFailure { snack(userFriendlyError(it, "We couldn't update the tester target. Check your connection and try again.")) } }, onConfirmClosedTesting = { id -> scope.launch { repo.confirmClosedTesting(id).onSuccess { snack("Closed testing confirmation saved. Daily tasks are now available.") }.onFailure { snack(userFriendlyError(it, "We couldn't save the closed-testing confirmation. Check your connection and try again.")) } } }, onRiskDecision = { id, decision, commitmentId -> scope.launch { repo.chooseCampaignRiskDecision(id, decision, commitmentId).onSuccess { snack(if (decision == CampaignRiskDecision.RESTART || decision == CampaignRiskDecision.REOPEN) "Replacement slot opened in Discover. The timer is unchanged until you confirm the restart." else "Campaign decision saved. The current timer is unchanged.") }.onFailure { snack(userFriendlyError(it, "We couldn't save the campaign decision. Check your connection and try again.")) } } }, onFinalRestart = { id -> scope.launch { repo.finalizeCampaignRestart(id).onSuccess { snack("Restart confirmed. Testers now have a new Day 1 and end date.") }.onFailure { snack(userFriendlyError(it, "We couldn't restart the campaign yet. Check that the replacement tester is installed.")) } } })
+        is AppScreen.OwnDetail -> OwnAppDetailScreen(current.appId, current.attentionOnly, ownedApps, campaigns, commitments, discoverApps, onBack = ::back, onPair = { navigate(AppScreen.PairDetail(it)) }, onReminder = { id, person -> repo.sendReminder(id).onSuccess { snack("Check-in sent to @$person") }.onFailure { snack(userFriendlyError(it, "We couldn't send the check-in. Check your connection and try again.")) } }, onSwitch = { replace(AppScreen.OwnDetail(it)) }, onDelist = { id -> repo.delistOwnedApp(id).onSuccess { replace(AppScreen.Main(MainDestination.APPS)); snack("Your app has been removed from Discover") }.onFailure { snack(userFriendlyError(it, "We couldn't remove this app from Discover. Check your connection and try again.")) } }, onMarkPublished = { id -> repo.markOwnedAppPublished(id).onSuccess { snack("Your app status was saved. TestLoop cannot verify Google Play approval.") }.onFailure { snack(userFriendlyError(it, "We couldn't update your Google Play status. Check your connection and try again.")) } }, onUpdateTesterCount = { id, count -> repo.updateCampaignTesterCount(id, count).onSuccess { snack("Tester target updated to $count. Discover and progress are now up to date.") }.onFailure { snack(userFriendlyError(it, "We couldn't update the tester target. Check your connection and try again.")) } }, onConfirmClosedTesting = { id -> scope.launch { repo.confirmClosedTesting(id).onSuccess { snack("Closed testing confirmation saved. Daily tasks are now available.") }.onFailure { snack(userFriendlyError(it, "We couldn't save the closed-testing confirmation. Check your connection and try again.")) } } }, onRiskDecision = { id, decision, commitmentId -> scope.launch { repo.chooseCampaignRiskDecision(id, decision, commitmentId).onSuccess { snack(if (decision == CampaignRiskDecision.RESTART || decision == CampaignRiskDecision.REOPEN) "Replacement slot opened in Discover. The timer is unchanged until you confirm the restart." else "Campaign decision saved. The current timer is unchanged.") }.onFailure { snack(userFriendlyError(it, "We couldn't save the campaign decision. Check your connection and try again.")) } } }, onFinalRestart = { id -> scope.launch { repo.finalizeCampaignRestart(id).onSuccess { snack("Restart confirmed. Testers now have a new Day 1 and end date.") }.onFailure { snack(userFriendlyError(it, "We couldn't restart the campaign yet. Check that the replacement tester is installed.")) } } })
         AppScreen.Obligations -> ObligationsScreen(commitments, ownedApps, campaigns, discoverApps, onBack = ::back, onPair = { navigate(AppScreen.PairDetail(it)) })
         AppScreen.Notifications -> NotificationsRedesign(notifications, onBack = ::back, onOpenPair = { navigate(AppScreen.PairDetail(it)) })
         AppScreen.AddApp -> AddAppFlow(onBack = ::back, onPublished = { app, campaign ->
@@ -384,7 +386,7 @@ private fun dailyProgressFor(pair: ReciprocalCommitment, discoverApps: List<Publ
 
 @Composable
 private fun MainShell(destination: MainDestination, username: String, usageAccessGranted: Boolean, dataLoaded: Boolean, ownedApps: List<OwnedApp>, campaigns: List<com.testloop.app.domain.Campaign>, discoverApps: List<PublicApp>, commitments: List<ReciprocalCommitment>, bookmarks: List<AppBookmark>, notifications: List<AppNotification>, snackbars: SnackbarHostState, onDestination: (MainDestination) -> Unit, onNotification: () -> Unit, onFeedback: () -> Unit, onTestingGuide: () -> Unit, onPair: (String) -> Unit, onPrimaryAction: (String) -> Unit, onOwnApp: (String, Boolean) -> Unit, onDiscover: (String) -> Unit, onBookmark: suspend (String) -> Result<Unit>, onRemoveBookmark: suspend (String) -> Result<Unit>, onAddApp: () -> Unit, onObligations: () -> Unit) {
-    Scaffold(containerColor = MaterialTheme.colorScheme.background, snackbarHost = { SnackbarHost(snackbars) }, bottomBar = { BottomNavigation(destination, onDestination) }) { padding ->
+    Scaffold(contentWindowInsets = WindowInsets(0, 0, 0, 0), containerColor = MaterialTheme.colorScheme.background, snackbarHost = { SnackbarHost(snackbars) }, bottomBar = { BottomNavigation(destination, onDestination) }) { padding ->
         // The top app bars apply their own status-bar inset. Keep only room for
         // the bottom navigation so the main content does not get a duplicate top gap.
         // Scaffold calculates the bottom inset from the navigation bar and the
@@ -414,13 +416,16 @@ private fun BottomNavigation(selected: MainDestination, onSelect: (MainDestinati
 @Composable
 fun TestLoopTopBar(title: String, subtitle: String? = null, action: String? = null, onAction: (() -> Unit)? = null, unreadCount: Int = 0, onNotifications: (() -> Unit)? = null, onBack: (() -> Unit)? = null, actionContent: @Composable RowScope.() -> Unit = {}) {
     TopAppBar(
-        title = { Column { Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.semantics { heading() }); if (subtitle != null) Text(subtitle, style = MaterialTheme.typography.bodySmall, color = Ink500, maxLines = 2) } },
+        title = { Column {
+            Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.semantics { heading() })
+            if (subtitle != null) Text(subtitle, style = MaterialTheme.typography.bodySmall, color = Ink500, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+        } },
         navigationIcon = { if (onBack != null) IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, "Back") } },
         actions = {
             if (action != null && onAction != null) Text(action, modifier = Modifier.padding(horizontal = 8.dp).clip(RoundedCornerShape(10.dp)).clickable(onClick = onAction).padding(8.dp), color = Brand600, style = MaterialTheme.typography.labelLarge)
             actionContent()
             if (onNotifications != null) IconButton(onClick = onNotifications) { BadgedBox(badge = { if (unreadCount > 0) Badge() }) { Icon(Icons.Default.Notifications, "Notifications") } }
-        }, colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
+        }, expandedHeight = 56.dp, colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
     )
 }
 

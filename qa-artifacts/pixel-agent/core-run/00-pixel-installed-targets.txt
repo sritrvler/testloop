@@ -1,0 +1,65 @@
+timestamp_utc=2026-07-26T15:21:13Z
+package:cards.uni.app.credit
+package:com.agoda.mobile.consumer
+package:com.android.credentialmanager
+package:com.android.vending
+package:com.application.zomato
+package:com.application.zomato.district
+package:com.creditcard.onecard
+package:com.flipkart.android
+package:com.flipkart.shopsy
+package:com.google.android.apps.credentialmanager
+package:com.google.android.apps.maps
+package:com.phonepe.app
+package:com.whatsapp
+package:in.amazon.mShop.android.shopping
+--- in.amazon.mShop.android.shopping
+priority=0 preferredOrder=0 match=0x0 specificIndex=-1 isDefault=false
+android/com.android.internal.app.ResolverActivity
+package:/data/app/~~FYFAkaAxSXDDBzP9uZxIug==/in.amazon.mShop.android.shopping-FGd6lEQUsVPPe7KgT7N7QQ==/base.apk
+package:/data/app/~~FYFAkaAxSXDDBzP9uZxIug==/in.amazon.mShop.android.shopping-FGd6lEQUsVPPe7KgT7N7QQ==/split_config.arm64_v8a.apk
+package:/data/app/~~FYFAkaAxSXDDBzP9uZxIug==/in.amazon.mShop.android.shopping-FGd6lEQUsVPPe7KgT7N7QQ==/split_config.xxhdpi.apk
+--- com.whatsapp
+priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=false
+com.whatsapp/.Main
+package:/data/app/~~L1Nz_vR04Nk_lbD_oWlHwg==/com.whatsapp-YxXLo4JxISnPCTmTccd7Xw==/base.apk
+package:/data/app/~~L1Nz_vR04Nk_lbD_oWlHwg==/com.whatsapp-YxXLo4JxISnPCTmTccd7Xw==/split_config.arm64_v8a.apk
+package:/data/app/~~L1Nz_vR04Nk_lbD_oWlHwg==/com.whatsapp-YxXLo4JxISnPCTmTccd7Xw==/split_config.xxhdpi.apk
+package:/data/app/~~L1Nz_vR04Nk_lbD_oWlHwg==/com.whatsapp-YxXLo4JxISnPCTmTccd7Xw==/split_i18n_bn.apk
+package:/data/app/~~L1Nz_vR04Nk_lbD_oWlHwg==/com.whatsapp-YxXLo4JxISnPCTmTccd7Xw==/split_i18n_en.apk
+package:/data/app/~~L1Nz_vR04Nk_lbD_oWlHwg==/com.whatsapp-YxXLo4JxISnPCTmTccd7Xw==/split_i18n_gu.apk
+package:/data/app/~~L1Nz_vR04Nk_lbD_oWlHwg==/com.whatsapp-YxXLo4JxISnPCTmTccd7Xw==/split_i18n_hi.apk
+package:/data/app/~~L1Nz_vR04Nk_lbD_oWlHwg==/com.whatsapp-YxXLo4JxISnPCTmTccd7Xw==/split_i18n_kn.apk
+package:/data/app/~~L1Nz_vR04Nk_lbD_oWlHwg==/com.whatsapp-YxXLo4JxISnPCTmTccd7Xw==/split_i18n_ml.apk
+package:/data/app/~~L1Nz_vR04Nk_lbD_oWlHwg==/com.whatsapp-YxXLo4JxISnPCTmTccd7Xw==/split_i18n_mr.apk
+package:/data/app/~~L1Nz_vR04Nk_lbD_oWlHwg==/com.whatsapp-YxXLo4JxISnPCTmTccd7Xw==/split_i18n_pa.apk
+package:/data/app/~~L1Nz_vR04Nk_lbD_oWlHwg==/com.whatsapp-YxXLo4JxISnPCTmTccd7Xw==/split_i18n_ta.apk
+package:/data/app/~~L1Nz_vR04Nk_lbD_oWlHwg==/com.whatsapp-YxXLo4JxISnPCTmTccd7Xw==/split_i18n_te.apk
+package:/data/app/~~L1Nz_vR04Nk_lbD_oWlHwg==/com.whatsapp-YxXLo4JxISnPCTmTccd7Xw==/split_i18n_ur.apk
+--- com.google.android.apps.nbu.paisa.user
+priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=false
+com.google.android.apps.nbu.paisa.user/com.google.nbu.paisa.flutter.gpay.app.LauncherActivity
+package:/data/app/~~wgFb4KhTpqjLabWWd71ecQ==/com.google.android.apps.nbu.paisa.user-ps474O-RCaque4idcOApzw==/base.apk
+package:/data/app/~~wgFb4KhTpqjLabWWd71ecQ==/com.google.android.apps.nbu.paisa.user-ps474O-RCaque4idcOApzw==/split_config.arm64_v8a.apk
+package:/data/app/~~wgFb4KhTpqjLabWWd71ecQ==/com.google.android.apps.nbu.paisa.user-ps474O-RCaque4idcOApzw==/split_config.xxhdpi.apk
+--- com.agoda.mobile.consumer
+priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=true
+com.agoda.mobile.consumer/.screens.splash.AppLauncherActivity
+package:/data/app/~~lTtg4y0ZCwx3smUKWxT8hQ==/com.agoda.mobile.consumer-JHyDKNeqtcNba8kJojY3qg==/base.apk
+package:/data/app/~~lTtg4y0ZCwx3smUKWxT8hQ==/com.agoda.mobile.consumer-JHyDKNeqtcNba8kJojY3qg==/split_config.arm64_v8a.apk
+package:/data/app/~~lTtg4y0ZCwx3smUKWxT8hQ==/com.agoda.mobile.consumer-JHyDKNeqtcNba8kJojY3qg==/split_config.xxhdpi.apk
+--- com.application.zomato
+priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=false
+com.application.zomato/.default
+package:/data/app/~~q9-XRrW0DvX86MH5goqTuQ==/com.application.zomato-AZsYPrQazoMC7yZ4kLhCiA==/base.apk
+package:/data/app/~~q9-XRrW0DvX86MH5goqTuQ==/com.application.zomato-AZsYPrQazoMC7yZ4kLhCiA==/split_config.arm64_v8a.apk
+--- com.dreamplug.androidapp
+priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=false
+com.dreamplug.androidapp/.CredFlutterActivity
+package:/data/app/~~eLYyEaRSmxUwTDGL9h5cJw==/com.dreamplug.androidapp-YeFxZUNZE_0r3c7iyaG-0Q==/base.apk
+package:/data/app/~~eLYyEaRSmxUwTDGL9h5cJw==/com.dreamplug.androidapp-YeFxZUNZE_0r3c7iyaG-0Q==/split_config.arm64_v8a.apk
+package:/data/app/~~eLYyEaRSmxUwTDGL9h5cJw==/com.dreamplug.androidapp-YeFxZUNZE_0r3c7iyaG-0Q==/split_config.xxhdpi.apk
+package:/data/app/~~eLYyEaRSmxUwTDGL9h5cJw==/com.dreamplug.androidapp-YeFxZUNZE_0r3c7iyaG-0Q==/split_taprupaycore.apk
+package:/data/app/~~eLYyEaRSmxUwTDGL9h5cJw==/com.dreamplug.androidapp-YeFxZUNZE_0r3c7iyaG-0Q==/split_taprupaycore.config.xxhdpi.apk
+package:/data/app/~~eLYyEaRSmxUwTDGL9h5cJw==/com.dreamplug.androidapp-YeFxZUNZE_0r3c7iyaG-0Q==/split_tapvisacore.apk
+package:/data/app/~~eLYyEaRSmxUwTDGL9h5cJw==/com.dreamplug.androidapp-YeFxZUNZE_0r3c7iyaG-0Q==/split_tapvisacore.config.xxhdpi.apk

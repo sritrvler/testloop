@@ -1,0 +1,384 @@
+timestamp_utc=2026-07-26T15:21:58Z
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-15-import io.github.jan.supabase.realtime.Realtime
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-16-import io.github.jan.supabase.postgrest.from
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt:17:import kotlinx.serialization.SerialName
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-18-import kotlinx.serialization.Serializable
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-19-import kotlinx.coroutines.flow.MutableStateFlow
+--
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-60-            onSessionSuccess = {
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-61-                _authError.value = null
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt:62:                _account.value = supabase.auth.currentUserOrNull()?.toAccountWithoutProfile()
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-63-            },
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-64-            onError = { error ->
+--
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-97-            // Save the profile first. This prevents Auth metadata from being updated when
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-98-            // the username is rejected by the unique index.
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt:99:            supabase.from("profiles").update(ProfileUpdate(username = clean)) {
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-100-                filter { eq("id", user.id) }
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-101-            }
+--
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-116-    override suspend fun completeTrackingSetup(): Result<Unit> = runCatching {
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-117-        val user = supabase.auth.currentUserOrNull() ?: error("Please sign in again")
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt:118:        supabase.from("profiles").update(ProfileUpdate(trackingSetupComplete = true)) {
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-119-            filter { eq("id", user.id) }
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-120-        }
+--
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-130-
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-131-private suspend fun UserInfo.toAccount(supabase: io.github.jan.supabase.SupabaseClient): Account {
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt:132:    val basic = toAccountWithoutProfile()
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-133-    val profile = runCatching {
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt:134:        supabase.from("profiles").select { filter { eq("id", id) } }.decodeList<ProfileRow>().firstOrNull()
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-135-    }.getOrNull()
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-136-    return basic.copy(username = profile?.username ?: basic.username, trackingSetupComplete = profile?.trackingSetupComplete == true)
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-137-}
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-138-
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt:139:private fun UserInfo.toAccountWithoutProfile(): Account {
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-140-    val username = userMetadata?.get("username")?.toString()?.trim('"').orEmpty()
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-141-    return Account(id = id, username = username, email = email.orEmpty())
+--
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-149-    }
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-150-
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt:151:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt:152:private data class ProfileRow(
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-153-    val username: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt:154:    @SerialName("tracking_setup_complete") val trackingSetupComplete: Boolean = false
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-155-)
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-156-
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt:157:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt:158:private data class ProfileUpdate(
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-159-    val username: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt:160:    @SerialName("tracking_setup_complete") val trackingSetupComplete: Boolean? = null
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt-161-)
+--
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-24-import kotlinx.coroutines.flow.StateFlow
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-25-import kotlinx.coroutines.flow.asStateFlow
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:26:import kotlinx.serialization.SerialName
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-27-import kotlinx.serialization.Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-28-import io.github.jan.supabase.postgrest.from
+--
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-77-        // The database migration grants the helper permission; this fallback
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-78-        // keeps My apps usable while Discover is temporarily unavailable.
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:79:        val listings = supabase.from("public_app_listings").select().decodeList<PublicListingRow>()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-80-        var commitmentRows = supabase.from("reciprocal_commitments").select().decodeList<CommitmentRow>()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:81:        val profileRows = supabase.from("profiles").select().decodeList<TesterProfileRow>()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-82-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-83-        // Map only commitments that belong to this signed-in user, either as
+--
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-177-        val userId = requireUserId()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-178-        val inserted = supabase.from("owned_apps").insert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:179:            OwnedAppInsert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-180-                ownerId = userId,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-181-                title = app.title.trim(),
+--
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-192-        ) { select() }.decodeSingle<OwnedAppRow>()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-193-        supabase.from("campaigns").insert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:194:            CampaignInsert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-195-                ownedAppId = inserted.id,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-196-                requestedTesters = campaign.requestedTesters,
+--
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-285-        val listingRow = supabase.from("public_app_listings").select {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-286-            filter { eq("id", listing.id) }
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:287:        }.decodeSingle<PublicListingRow>()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-288-        val inserted = supabase.from("reciprocal_commitments").insert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:289:            CommitmentInsert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-290-                campaignId = listingRow.campaignId,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-291-                testerId = userId,
+--
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-335-        val listingRows = supabase.from("public_app_listings").select {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-336-            filter { eq("campaign_id", row.campaignId) }
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:337:        }.decodeList<PublicListingRow>()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-338-        reportInstallStatusInternal(row, listingRows, userId)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-339-        // Only enable the existing automatic refresh loop after the initial
+--
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-362-        val appTitle = _ownedApps.value.firstOrNull { it.id == targetAppId }?.title ?: "your test app"
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-363-        supabase.from("reminders").insert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:364:            ReminderInsert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-365-                commitmentId = commitmentId,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-366-                senderId = userId,
+--
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-385-    }
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-386-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:387:    private suspend fun reportInstallStatusInternal(commitment: CommitmentRow, listings: List<PublicListingRow>, userId: String) {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-388-        val sourceListing = listings.firstOrNull { it.campaignId == commitment.campaignId } ?: run {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-389-            return
+--
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-398-        val installed = installReporter.isInstalled(listing.packageName)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-399-        supabase.from("commitment_install_states").upsert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:400:            InstallStateUpsert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-401-                commitmentId = commitment.id,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-402-                reporterId = userId,
+--
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-424-}
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-425-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:426:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:427:private data class OwnedAppRow(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-428-    val id: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:429:    @SerialName("owner_id") val ownerId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-430-    val title: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:431:    @SerialName("package_name") val packageName: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:432:    @SerialName("install_url") val installUrl: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:433:    @SerialName("opt_in_url") val optInUrl: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:434:    @SerialName("group_url") val groupUrl: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:435:    @SerialName("messaging_id") val messagingId: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:436:    @SerialName("icon_seed") val iconSeed: String = "",
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-437-    val details: String = "",
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-438-    val category: String = "Productivity",
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:439:    @SerialName("play_store_published_at") val playStorePublishedAt: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-440-    val lifecycle: String = "published"
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-441-) {
+--
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-443-}
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-444-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:445:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:446:private data class OwnedAppInsert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:447:    @SerialName("owner_id") val ownerId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-448-    val title: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:449:    @SerialName("package_name") val packageName: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:450:    @SerialName("install_url") val installUrl: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:451:    @SerialName("opt_in_url") val optInUrl: String?,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:452:    @SerialName("group_url") val groupUrl: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:453:    @SerialName("messaging_id") val messagingId: String?,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:454:    @SerialName("icon_seed") val iconSeed: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-455-    val details: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-456-    val category: String,
+--
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-458-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-459-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:460:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-461-private data class OwnedAppLifecycleUpdate(val lifecycle: String)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-462-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:463:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-464-private data class OwnedAppPublicationUpdate(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:465:    @SerialName("play_store_published_at") val playStorePublishedAt: String
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-466-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-467-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:468:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-469-private data class UsageAccessStatusParams(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:470:    @SerialName("has_access") val hasAccess: Boolean
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-471-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-472-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:473:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:474:private data class UsageAccessStatusRow(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:475:    @SerialName("usage_access_revoked_at") val revokedAt: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:476:    @SerialName("usage_access_deadline") val deadlineAt: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:477:    @SerialName("listing_deactivated") val listingDeactivated: Boolean = false
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-478-) {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-479-    fun toDomain() = UsageAccessStatus(revokedAt?.let(Instant::parse), deadlineAt?.let(Instant::parse), listingDeactivated)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-480-}
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-481-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:482:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:483:private data class CampaignRow(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-484-    val id: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:485:    @SerialName("owned_app_id") val ownedAppId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:486:    @SerialName("requested_testers") val requestedTesters: Int,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-487-    val instructions: String = "",
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:488:    @SerialName("started_on") val startedOn: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-489-    val lifecycle: String = "active",
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:490:    @SerialName("target_days") val targetDays: Int = 14,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:491:    @SerialName("testing_started_at") val testingStartedAt: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:492:    @SerialName("testing_completed_at") val testingCompletedAt: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:493:    @SerialName("progress_reset_at") val progressResetAt: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:494:    @SerialName("closed_test_confirmed_at") val closedTestConfirmedAt: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:495:    @SerialName("risk_decision") val riskDecision: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:496:    @SerialName("replacement_open") val replacementOpen: Boolean = false,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:497:    @SerialName("replacement_joined_at") val replacementJoinedAt: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:498:    @SerialName("restart_confirmed_at") val restartConfirmedAt: String? = null
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-499-) {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-500-    fun toCampaign(activeTesterCount: Int = 0) = Campaign(id, ownedAppId, requestedTesters, activeTesterCount, parseDate(startedOn), isActive = lifecycle == "active", instructions = instructions, targetDays = targetDays, activeTesterCount = activeTesterCount, testingStartedAt = testingStartedAt?.let(Instant::parse), testingCompletedAt = testingCompletedAt?.let(Instant::parse), progressResetAt = progressResetAt?.let(Instant::parse), closedTestConfirmedAt = closedTestConfirmedAt?.let(Instant::parse), riskDecision = riskDecision.toRiskDecision(), replacementOpen = replacementOpen, replacementJoinedAt = replacementJoinedAt?.let(Instant::parse), restartConfirmedAt = restartConfirmedAt?.let(Instant::parse))
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-501-}
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-502-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:503:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:504:private data class CampaignInsert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:505:    @SerialName("owned_app_id") val ownedAppId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:506:    @SerialName("requested_testers") val requestedTesters: Int,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-507-    val instructions: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-508-    val lifecycle: String = "active"
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-509-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-510-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:511:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-512-private data class CampaignTesterCountUpdate(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:513:    @SerialName("requested_testers") val requestedTesters: Int
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-514-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-515-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:516:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-517-private data class CampaignActionParams(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:518:    @SerialName("target_campaign_id") val targetCampaignId: String
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-519-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-520-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:521:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-522-private data class CampaignRiskDecisionParams(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:523:    @SerialName("target_campaign_id") val targetCampaignId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-524-    val decision: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:525:    @SerialName("affected_commitment_id") val affectedCommitmentId: String? = null
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-526-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-527-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:528:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:529:private data class CampaignActionRow(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-530-    val id: String
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-531-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-532-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:533:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-534-private data class CampaignLifecycleUpdate(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-535-    val lifecycle: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:536:    @SerialName("closed_at") val closedAt: String
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-537-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-538-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:539:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:540:private data class PublicListingRow(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-541-    val id: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-542-    val title: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:543:    @SerialName("package_name") val packageName: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:544:    @SerialName("owner_id") val ownerId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:545:    @SerialName("owner_username") val ownerUsername: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:546:    @SerialName("install_url") val installUrl: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:547:    @SerialName("opt_in_url") val optInUrl: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:548:    @SerialName("group_url") val groupUrl: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:549:    @SerialName("campaign_id") val campaignId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:550:    @SerialName("requested_testers") val requestedTesters: Int,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:551:    @SerialName("joined_tester_count") val joinedTesterCount: Int,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:552:    @SerialName("slots_remaining") val slotsRemaining: Int = requestedTesters,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-553-    val instructions: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-554-    val details: String = "",
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-555-    val category: String = "Productivity",
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:556:    @SerialName("started_on") val startedOn: String = "",
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:557:    @SerialName("created_at") val createdAt: String = "",
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:558:    @SerialName("target_days") val targetDays: Int = 14,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:559:    @SerialName("testing_started_at") val testingStartedAt: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:560:    @SerialName("testing_completed_at") val testingCompletedAt: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:561:    @SerialName("progress_reset_at") val progressResetAt: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:562:    @SerialName("play_store_published_at") val releaseApprovedAt: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:563:    @SerialName("closed_test_confirmed_at") val closedTestConfirmedAt: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:564:    @SerialName("risk_decision") val riskDecision: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:565:    @SerialName("replacement_open") val replacementOpen: Boolean = false,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:566:    @SerialName("replacement_joined_at") val replacementJoinedAt: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:567:    @SerialName("restart_confirmed_at") val restartConfirmedAt: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:568:    @SerialName("messaging_id") val messagingId: String? = null
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-569-) {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-570-    fun toPublicApp() = PublicApp(id, title, packageName, ownerId, ownerUsername, installUrl, optInUrl, requestedTesters, joinedTesterCount, instructions, details, category, postedLabel(createdAt), title, campaignId, targetDays, joinedTesterCount, testingStartedAt?.let(Instant::parse), testingCompletedAt?.let(Instant::parse), progressResetAt?.let(Instant::parse), releaseApprovedAt?.let(Instant::parse), groupUrl.orEmpty(), (requestedTesters - slotsRemaining).coerceAtLeast(0), messagingId.orEmpty(), closedTestConfirmedAt?.let(Instant::parse), riskDecision.toRiskDecision(), replacementOpen, replacementJoinedAt?.let(Instant::parse), restartConfirmedAt?.let(Instant::parse))
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-571-}
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-572-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:573:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:574:private data class CommitmentRow(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-575-    val id: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:576:    @SerialName("campaign_id") val campaignId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:577:    @SerialName("tester_id") val testerId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:578:    @SerialName("current_user_owned_app_id") val currentUserOwnedAppId: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:579:    @SerialName("target_days") val targetDays: Int = 14,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-580-    val lifecycle: String = "pending_setup",
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:581:    @SerialName("joined_at") val joinedAt: String
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-582-) {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:583:    fun toCommitment(listings: List<PublicListingRow>, ownApps: List<OwnedApp>, profiles: List<TesterProfileRow>, summaries: List<InstallStateRow>, openRows: List<DailyOpenRow>, userId: String, reminders: List<ReminderRow> = emptyList()): ReciprocalCommitment {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-584-        val listing = listings.firstOrNull { it.campaignId == campaignId }
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-585-        val ownedCampaignApp = ownApps.firstOrNull { it.campaignId == campaignId }
+--
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-604-}
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-605-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:606:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:607:private data class TesterProfileRow(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-608-    val id: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-609-    val username: String = ""
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-610-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-611-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:612:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:613:private data class CommitmentInsert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:614:    @SerialName("campaign_id") val campaignId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:615:    @SerialName("tester_id") val testerId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:616:    @SerialName("current_user_owned_app_id") val currentUserOwnedAppId: String?,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:617:    @SerialName("target_days") val targetDays: Int,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-618-    val lifecycle: String
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-619-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-620-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:621:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-622-private data class LeaveCommitmentParams(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:623:    @SerialName("target_commitment_id") val targetCommitmentId: String
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-624-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-625-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:626:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:627:private data class LeaveCommitmentRow(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:628:    @SerialName("commitment_id") val commitmentId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-629-    val lifecycle: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:630:    @SerialName("left_at") val leftAt: String
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-631-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-632-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:633:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:634:private data class InstallStateRow(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:635:    @SerialName("commitment_id") val commitmentId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:636:    @SerialName("reporter_id") val reporterId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:637:    @SerialName("target_owned_app_id") val targetOwnedAppId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-638-    val status: String
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-639-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-640-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:641:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:642:private data class InstallStateUpsert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:643:    @SerialName("commitment_id") val commitmentId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:644:    @SerialName("reporter_id") val reporterId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:645:    @SerialName("target_owned_app_id") val targetOwnedAppId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-646-    val status: String
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-647-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-648-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:649:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:650:private data class BookmarkRow(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:651:    @SerialName("owned_app_id") val ownedAppId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:652:    @SerialName("created_at") val createdAt: String
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-653-) {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-654-    fun toBookmark() = AppBookmark(ownedAppId, runCatching { Instant.parse(createdAt) }.getOrDefault(Instant.now()))
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-655-}
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-656-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:657:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-658-private data class BookmarkInsert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:659:    @SerialName("member_id") val memberId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:660:    @SerialName("owned_app_id") val ownedAppId: String
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-661-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-662-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:663:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:664:private data class DailyOpenRow(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:665:    @SerialName("commitment_id") val commitmentId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:666:    @SerialName("reporter_id") val reporterId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:667:    @SerialName("target_owned_app_id") val targetOwnedAppId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:668:    @SerialName("activity_date") val activityDate: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-669-    val opened: Boolean
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-670-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-671-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:672:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-673-private data class DailyOpenUpsert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:674:    @SerialName("commitment_id") val commitmentId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:675:    @SerialName("reporter_id") val reporterId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:676:    @SerialName("target_owned_app_id") val targetOwnedAppId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:677:    @SerialName("activity_date") val activityDate: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-678-    val opened: Boolean
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-679-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-680-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:681:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:682:private data class ReminderInsert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:683:    @SerialName("commitment_id") val commitmentId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:684:    @SerialName("sender_id") val senderId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:685:    @SerialName("recipient_id") val recipientId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:686:    @SerialName("target_owned_app_id") val targetOwnedAppId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-687-    val message: String
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-688-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-689-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:690:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:691:private data class ReminderRow(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:692:    @SerialName("commitment_id") val commitmentId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:693:    @SerialName("sender_id") val senderId: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:694:    @SerialName("reminder_date") val reminderDate: String
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-695-)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-696-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:697:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:698:private data class NotificationRow(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-699-    val id: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-700-    val kind: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-701-    val title: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-702-    val message: String,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:703:    @SerialName("read_at") val readAt: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:704:    @SerialName("commitment_id") val commitmentId: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:705:    @SerialName("owned_app_id") val ownedAppId: String? = null,
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:706:    @SerialName("created_at") val createdAt: String = ""
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-707-) {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-708-    fun toNotification() = AppNotification(id, kind.toNotificationKind(), title, message, relativeTime(createdAt), readAt == null, commitmentId, ownedAppId)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-709-}
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-710-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:711:@Serializable
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:712:private data class NotificationReadUpdate(@SerialName("read_at") val readAt: String)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-713-
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt-714-private fun List<InstallStateRow>.signalFor(commitmentId: String, reporterId: String, targetAppId: String?, openRows: List<DailyOpenRow>): DirectionSignal {

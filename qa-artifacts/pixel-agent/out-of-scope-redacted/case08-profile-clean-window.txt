@@ -1,0 +1,2 @@
+  mCurrentFocus=Window{db77f96 u0 NotificationShade}
+  mFocusedApp=ActivityRecord{9871990 u0 com.testloop.app/.MainActivity t1602}

@@ -67,6 +67,7 @@ import kotlinx.coroutines.launch
 
 private const val MIN_INSTRUCTIONS_LENGTH = 8
 private const val MAX_INSTRUCTIONS_LENGTH = 500
+private const val MAX_APP_NAME_LENGTH = 30
 private const val MIN_TESTERS = 1
 private const val MAX_TESTERS = 100
 
@@ -275,7 +276,7 @@ fun AddAppFlow(onBack: () -> Unit, onPublished: suspend (OwnedApp, Campaign) -> 
                         "Invalid format. Example: https://play.google.com/store/apps/details?id=com.example.app"
                     } else null
                     Text("App identity", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-                    Field(title, { title = it }, "App display name")
+                    Field(title, { title = it.take(MAX_APP_NAME_LENGTH) }, "App display name", "${title.length}/$MAX_APP_NAME_LENGTH characters · Google Play app titles are limited to 30 characters")
                     Field(installUrl, { installUrl = it; packageName = PlayLinkValidator.packageFromInstallLink(it).orEmpty() }, "Play install link", error = installLinkError)
                     Field(packageName, {}, "Package ID", "Extracted automatically from the Play install link", readOnly = true)
                     InlineNotice(if (packageName.isBlank()) "Paste a valid Google Play install link to detect the package ID." else "Package ID detected: $packageName")
@@ -317,7 +318,7 @@ fun AddAppFlow(onBack: () -> Unit, onPublished: suspend (OwnedApp, Campaign) -> 
                     GroupSurface { Column(Modifier.padding(16.dp)) { Text("Preview", style = MaterialTheme.typography.labelLarge, color = Brand600); Text(title.ifBlank { "Your app" }, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold); Text("${testerCount.ifBlank { "0" }} tester target", color = Ink500) } }
                 }
             }
-            Spacer(Modifier.weight(1f)); val canContinue = when (step) { 1 -> title.length > 1 && PlayLinkValidator.isInstallLink(installUrl, packageName) && packageName.contains('.'); 2 -> PlayLinkValidator.isGroupLink(groupUrl) && (optInUrl.isBlank() || PlayLinkValidator.isTestingLink(optInUrl, packageName)) && testerCount.toIntOrNull()?.let { it in MIN_TESTERS..MAX_TESTERS } == true; else -> instructions.length in MIN_INSTRUCTIONS_LENGTH..MAX_INSTRUCTIONS_LENGTH }
+            Spacer(Modifier.weight(1f)); val canContinue = when (step) { 1 -> title.trim().length in 2..MAX_APP_NAME_LENGTH && PlayLinkValidator.isInstallLink(installUrl, packageName) && packageName.contains('.'); 2 -> PlayLinkValidator.isGroupLink(groupUrl) && (optInUrl.isBlank() || PlayLinkValidator.isTestingLink(optInUrl, packageName)) && testerCount.toIntOrNull()?.let { it in MIN_TESTERS..MAX_TESTERS } == true; else -> instructions.length in MIN_INSTRUCTIONS_LENGTH..MAX_INSTRUCTIONS_LENGTH }
             if (step == 3) publishError?.let { InlineNotice(it, isError = true) }
             Button(onClick = {
                 if (step < 3) step++ else {
@@ -354,7 +355,7 @@ private fun Field(value: String, onChange: (String) -> Unit, label: String, supp
 }
 
 @Composable
-fun NotificationsRedesign(notifications: List<AppNotification>, onBack: () -> Unit, onOpenPair: (String) -> Unit) { Column(Modifier.fillMaxSize().navigationBarsPadding()) { TestLoopTopBar("Notifications", onBack = onBack); LazyColumn(contentPadding = PaddingValues(Gutter), verticalArrangement = Arrangement.spacedBy(16.dp)) { listOf("Needs action" to notifications.filter { it.isUnread }, "Updates" to notifications.filter { !it.isUnread }).forEach { (label, entries) -> if (entries.isNotEmpty()) { item { SectionHeader(label) }; item { GroupSurface { entries.forEachIndexed { index, notification -> NotificationRow(notification, onOpenPair); if (index != entries.lastIndex) RowDivider() } } } } } } } }
+fun NotificationsRedesign(notifications: List<AppNotification>, onBack: () -> Unit, onOpenPair: (String) -> Unit) { Column(Modifier.fillMaxSize().navigationBarsPadding()) { TestLoopTopBar("Notifications", onBack = onBack); LazyColumn(Modifier.fillMaxWidth().weight(1f), contentPadding = PaddingValues(start = Gutter, top = 8.dp, end = Gutter, bottom = Gutter + ScreenBottomReserve), verticalArrangement = Arrangement.spacedBy(16.dp)) { listOf("Needs action" to notifications.filter { it.isUnread }, "Updates" to notifications.filter { !it.isUnread }).forEach { (label, entries) -> if (entries.isNotEmpty()) { item { SectionHeader(label) }; item { GroupSurface { entries.forEachIndexed { index, notification -> NotificationRow(notification, onOpenPair); if (index != entries.lastIndex) RowDivider() } } } } } } } }
 
 @Composable
 private fun NotificationRow(notification: AppNotification, onOpenPair: (String) -> Unit) { Row(Modifier.fillMaxWidth().clickable { notification.commitmentId?.let(onOpenPair) }.padding(16.dp), verticalAlignment = Alignment.Top) { Icon(Icons.Default.Notifications, null, tint = Brand600); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(notification.title, fontWeight = FontWeight.SemiBold); Text(notification.message, style = MaterialTheme.typography.bodySmall, color = Ink500); Text(notification.relativeTime, style = MaterialTheme.typography.labelSmall, color = Ink500, modifier = Modifier.padding(top = 5.dp)) }; if (notification.isUnread) androidx.compose.material3.Badge() } }
@@ -362,8 +363,9 @@ private fun NotificationRow(notification: AppNotification, onOpenPair: (String) 
 @Composable
 fun ProfileRedesign(padding: PaddingValues, username: String, usageAccessGranted: Boolean, onNotifications: () -> Unit, onFeedback: () -> Unit, onTestingGuide: () -> Unit, unread: Int) {
     val helpTitle = "Help and report a problem"
-    LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(Gutter), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { TestLoopTopBar("Profile", unreadCount = unread, onNotifications = onNotifications) }
+    Column(Modifier.fillMaxSize().padding(padding)) {
+        TestLoopTopBar("Profile", unreadCount = unread, onNotifications = onNotifications)
+        LazyColumn(Modifier.fillMaxWidth().weight(1f), contentPadding = PaddingValues(start = Gutter, top = 8.dp, end = Gutter, bottom = Gutter + ScreenBottomReserve), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MemberAvatar(username)
@@ -406,13 +408,15 @@ fun ProfileRedesign(padding: PaddingValues, username: String, usageAccessGranted
             }
         }
         item { Text("Delete account", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelLarge, modifier = Modifier.padding(12.dp)) }
+        }
     }
 }
 
 @Composable
 fun GooglePlayTestingGuide(padding: PaddingValues, onBack: () -> Unit, onOpenOfficialGuide: () -> Unit) {
-    LazyColumn(Modifier.fillMaxSize().navigationBarsPadding().padding(padding), contentPadding = PaddingValues(Gutter), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { TestLoopTopBar("Google Play testing guide", "A simple path to production access", onBack = onBack) }
+    Column(Modifier.fillMaxSize().navigationBarsPadding().padding(padding)) {
+        TestLoopTopBar("Google Play testing guide", "A simple path to production access", onBack = onBack)
+        LazyColumn(Modifier.fillMaxWidth().weight(1f), contentPadding = PaddingValues(start = Gutter, top = 8.dp, end = Gutter, bottom = Gutter + ScreenBottomReserve), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item {
             GroupSurface { Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text("Before you start", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
@@ -432,6 +436,7 @@ fun GooglePlayTestingGuide(padding: PaddingValues, onBack: () -> Unit, onOpenOff
         item { Button(onClick = onOpenOfficialGuide, modifier = Modifier.fillMaxWidth()) {
             Icon(Icons.Default.OpenInNew, contentDescription = null); Spacer(Modifier.width(8.dp)); Text("Read Google’s official requirements")
         } }
+        }
     }
 }
 

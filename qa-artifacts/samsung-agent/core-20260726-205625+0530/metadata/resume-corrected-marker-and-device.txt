@@ -1,0 +1,75 @@
+host_timestamp=2026-07-26T21:04:22+05:30
+--- marker content ---
+# Core fixtures manifest
+
+Created by Pixel fixture lead on 2026-07-26 for core production-readiness QA.
+
+## Correction note
+
+The initial fixture direction incorrectly treated Pixel as the primary listing device. Per urgent user correction, Samsung is primary and Pixel is the comparison device. The incompatible rows below were not deleted; they were reversibly corrected by closing their campaigns and archiving their owned app rows.
+
+Archived/closed incompatible rows:
+
+| Reason | Owned app ID | Campaign ID | Package | Previous owner |
+|---|---|---|---|---|
+| Pixel-owned CRED should be Samsung UI-created | `21cd7628-91b0-4d3f-b311-45eb271efb0a` | `ddf1622c-6ada-4aa5-8d82-8796b230089d` | `com.dreamplug.androidapp` | sri |
+| Pixel-owned GPay should be Samsung UI-created | `4a8f6f0e-97f5-454b-b070-3276b6574e0b` | `7e0cbb1b-4463-4a6c-a3c2-9a509ed37186` | `com.google.android.apps.nbu.paisa.user` | sri |
+| Pixel-owned Agoda should be Samsung-owned SQL fixture | `c5f2aecb-924b-43f1-9ea6-9a7729819aef` | `4261bc09-f1c3-408b-8827-196c8e111e3d` | `com.agoda.mobile.consumer` | sri |
+| Pixel-owned Zomato should be Samsung-owned SQL fixture | `f54dddd9-6f87-4d4f-8314-651170ca13b5` | `786c1cd0-9ec0-4937-9efe-d82fc3702e66` | `com.application.zomato` | sri |
+| Extra synthetic fixture no longer in corrected matrix | `006762fa-97ab-4b7c-add0-66d7c246b420` | `cd0ab63f-bc82-4386-ac26-5dc294386be1` | `com.testloop.qa.absentpixel` | selva |
+
+Evidence: `09-correction-inventory-before.txt`, `09-reversible-correction-archive-incompatible.sql`, `09-reversible-correction-result.txt`.
+
+## Device scope
+
+- Pixel: `58261FDCR006X9` (primary execution device)
+- Samsung: `RZCY51TRYMT` (read-only package/stay-awake matrix captured; Samsung-side UI execution should be handled by Samsung owner/agent)
+- Chat tables/UI are out of scope.
+
+## Preserved profiles
+
+- Pixel/current owner: `sri` — `f1ec135f-ddfb-4794-8c2e-3b02d584f81c`
+- Second profile: `selva` — `12650c42-0c83-45d3-a1ee-1f4ec636ccf8`
+
+## UI-created Pixel-owned listings — archived after correction
+
+| Purpose | Owner | Owned app ID | Campaign ID | Package | Notes |
+|---|---|---|---|---|---|
+| Pixel owner listing | sri | `21cd7628-91b0-4d3f-b311-45eb271efb0a` | `ddf1622c-6ada-4aa5-8d82-8796b230089d` | `com.dreamplug.androidapp` | Title was entered by adb as `QA%20Core%20CRED`; cleanup should archive/delete this row and campaign. |
+| Pixel owner listing | sri | `4a8f6f0e-97f5-454b-b070-3276b6574e0b` | `7e0cbb1b-4463-4a6c-a3c2-9a509ed37186` | `com.google.android.apps.nbu.paisa.user` | UI-created Google Pay listing. |
+
+## SQL-created fixture listings
+
+| Purpose | Owner | Owned app ID | Campaign ID | Package | Device dependency |
+|---|---|---|---|---|---|
+| Pixel discover/join installed target | selva | `c6dc1e13-5ea6-4c15-ab23-4bbcbfd46367` | `c4dbc91a-3df9-4c6b-970e-d4bae0e0eb52` | `in.amazon.mShop.android.shopping` | Installed on Pixel and Samsung. |
+| Pixel discover/join installed target | selva | `4addb148-9abe-4987-a380-27bc7cd7f133` | `dc44d084-9bfe-4bd8-bac0-a2be22d89e2b` | `com.whatsapp` | Installed on Pixel and Samsung; chat behavior out of scope. |
+| Corrected Samsung-owned fixture | selva | `447c46bb-d6f1-443b-8c5a-3e088cb8fd2b` | `1876908d-7215-46b5-b148-fe777093bd78` | `com.agoda.mobile.consumer` | Installed on Pixel, missing on Samsung. |
+| Corrected Samsung-owned fixture | selva | `2c17f7c9-ce0b-40e6-b516-99e107446142` | `0cef3046-73d4-4ebc-8d08-40659f41e378` | `com.application.zomato` | Installed on Pixel, missing on Samsung. |
+| Archived incorrect Agoda fixture | sri | `c5f2aecb-924b-43f1-9ea6-9a7729819aef` | `4261bc09-f1c3-408b-8827-196c8e111e3d` | `com.agoda.mobile.consumer` | Archived; corrected Samsung-owned row must be used instead. |
+| Archived incorrect Zomato fixture | sri | `f54dddd9-6f87-4d4f-8314-651170ca13b5` | `786c1cd0-9ec0-4937-9efe-d82fc3702e66` | `com.application.zomato` | Archived; corrected Samsung-owned row must be used instead. |
+| Archived extra synthetic fixture | selva | `006762fa-97ab-4b7c-add0-66d7c246b420` | `cd0ab63f-bc82-4386-ac26-5dc294386be1` | `com.testloop.qa.absentpixel` | Archived; no longer in corrected matrix. |
+
+## Cleanup scope
+
+Archive/delete only the rows listed above plus any commitments, install/open states, reminders, notifications, and bookmarks referencing these owned app IDs or campaign IDs. Do not delete preserved profiles or chat tables.
+
+## Evidence
+
+- Pixel package matrix: `00-pixel-installed-targets.txt`
+- Samsung read-only package matrix: `07-samsung-readonly-package-matrix.txt`
+- Initial linked counts: `03-linked-counts.txt`
+- UI listing evidence: `05-*`, `06-*`
+- SQL fixture evidence: `08-create-core-fixtures-result.txt`, `08-fixture-package-query-after-empty-result.txt`, `08b-create-missing-fixture-campaigns-result.txt`
+--- samsung preflight ---
+device_timestamp=2026-07-26T21:04:21+0530
+  mCurrentFocus=Window{cbac65c u0 com.sec.android.app.launcher/com.sec.android.app.launcher.activities.LauncherActivity}
+    mShowingDream=false mDreamingLockscreen=false
+  mWakefulness=Awake
+  mWakefulnessChanging=false
+  mIsPowered=true
+  mPlugType=2
+  mStayOn=true
+  mStayOnWhilePluggedInSetting=15
+  mIsPowered=true
+mWakefulness=1

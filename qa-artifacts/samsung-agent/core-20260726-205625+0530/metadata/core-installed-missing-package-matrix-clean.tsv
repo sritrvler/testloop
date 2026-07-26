@@ -1,0 +1,8 @@
+host_timestamp=2026-07-26T21:00:14+05:30
+package|expected_bucket|installed|base_path|launcher_component
+com.dreamplug.androidapp|installed-target|yes|package:/data/app/~~P51MfogU7iF2H44MgjcHHA==/com.dreamplug.androidapp-eLFSNLeojX2n804lmP1oLg==/base.apk|com.dreamplug.androidapp/.CredFlutterActivity
+com.google.android.apps.nbu.paisa.user|installed-target|yes|package:/data/app/~~KdctIDM9-h-LT5tFaie9-w==/com.google.android.apps.nbu.paisa.user-K_mkRAeL8hstVCWOFk8sBw==/base.apk|com.google.android.apps.nbu.paisa.user/com.google.nbu.paisa.flutter.gpay.app.LauncherActivity
+in.amazon.mShop.android.shopping|installed-target|yes|package:/data/app/~~EkN9OQ0lONfr2cSkA5ImQg==/in.amazon.mShop.android.shopping-SEtSlr-Zvcd6aEVO1jWHOQ==/base.apk|android/com.android.internal.app.ResolverActivity
+com.whatsapp|installed-target|yes|package:/data/app/~~IjSuT-ycHJvoF2jJPsMu4g==/com.whatsapp-O_W2etQ_SdGftP6AvGt0Uw==/base.apk|com.whatsapp/.Main
+com.agoda.mobile.consumer|missing-target|no|n/a|No activity found
+com.application.zomato|missing-target|no|n/a|No activity found

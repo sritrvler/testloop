@@ -1,0 +1,222 @@
+host_timestamp=2026-07-26T20:26:01+05:30
+app/src/main/AndroidManifest.xml:8:        android:name="android.permission.PACKAGE_USAGE_STATS"
+app/src/main/AndroidManifest.xml:14:        Play app a member can commit to is expected to expose a launcher
+app/src/main/AndroidManifest.xml:28:        android:icon="@mipmap/testloop_launcher"
+app/src/main/AndroidManifest.xml:30:        android:roundIcon="@mipmap/testloop_launcher"
+app/src/main/AndroidManifest.xml:36:            android:launchMode="singleTask">
+app/src/main/AndroidManifest.xml:49:            android:name=".notifications.EveningReminderReceiver"
+app/src/main/java/com/testloop/app/MainActivity.kt:16:import kotlinx.coroutines.launch
+app/src/main/java/com/testloop/app/MainActivity.kt:21:import com.testloop.app.tracking.AndroidUsageAccessReporter
+app/src/main/java/com/testloop/app/MainActivity.kt:30:    private val usageAccessReporter by lazy { AndroidUsageAccessReporter(applicationContext) }
+app/src/main/java/com/testloop/app/MainActivity.kt:31:    private val eveningReminderScheduler by lazy { com.testloop.app.notifications.EveningReminderScheduler(applicationContext) }
+app/src/main/java/com/testloop/app/MainActivity.kt:32:    private var notificationPermissionAsked = false
+app/src/main/java/com/testloop/app/MainActivity.kt:40:        // signed-in user is not routed through the usage gate on cold launch.
+app/src/main/java/com/testloop/app/MainActivity.kt:42:        lifecycleScope.launch {
+app/src/main/java/com/testloop/app/MainActivity.kt:66:            !notificationPermissionAsked &&
+app/src/main/java/com/testloop/app/MainActivity.kt:69:            notificationPermissionAsked = true
+app/src/main/java/com/testloop/app/MainActivity.kt:70:            requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+app/src/main/java/com/testloop/app/MainActivity.kt:82:            lifecycleScope.launch {
+app/src/main/java/com/testloop/app/MainActivity.kt:88:    override fun onNewIntent(intent: Intent) {
+app/src/main/java/com/testloop/app/MainActivity.kt:89:        super.onNewIntent(intent)
+app/src/main/java/com/testloop/app/MainActivity.kt:90:        setIntent(intent)
+app/src/main/java/com/testloop/app/MainActivity.kt:91:        lifecycleScope.launch { auth.handleDeepLink(intent) }
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:10: * Boundary for an explicit, user-initiated attempt to launch one commitment package.
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:11: * A production Android implementation must handle absent, disabled, or non-launchable packages.
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:14:    fun launch(packageName: String): LaunchResult
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:29: * This uses an explicit launcher intent and does not query or scan the device's app inventory.
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:32:    override fun launch(packageName: String): LaunchResult {
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:36:        // Do not rebuild a launcher intent with setPackage(). Some Android 15+
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:37:        // launchers (including Flipkart on the Pixel 10) expose a launcher
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:39:        // helper returns the exact explicit component the launcher uses.
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:40:        val intent = context.packageManager.getLaunchIntentForPackage(target)
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:54:        context.packageManager.getApplicationInfo(packageName, PackageManager.ApplicationInfoFlags.of(0))
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:71:            // This launcher is created with applicationContext, so Android
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:74:            customTabsIntent.launchUrl(context, Uri.parse(url))
+app/src/main/java/com/testloop/app/platform/ExternalAppLauncher.kt:85:            Intent(Intent.ACTION_VIEW, Uri.parse(url))
+app/src/main/java/com/testloop/app/notifications/EveningReminderScheduler.kt:1:package com.testloop.app.notifications
+app/src/main/java/com/testloop/app/notifications/EveningReminderScheduler.kt:13:/** Schedules one low-pressure local reminder at 8 PM in the tester's timezone. */
+app/src/main/java/com/testloop/app/notifications/EveningReminderScheduler.kt:32:        alarmManager.cancel(alarmIntent())
+app/src/main/java/com/testloop/app/notifications/EveningReminderScheduler.kt:39:        alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, alarmIntent())
+app/src/main/java/com/testloop/app/notifications/EveningReminderScheduler.kt:42:    private fun alarmIntent(): PendingIntent = PendingIntent.getBroadcast(
+app/src/main/java/com/testloop/app/notifications/EveningReminderScheduler.kt:45:        Intent(appContext, EveningReminderReceiver::class.java).setAction(ACTION_EVENING_REMINDER),
+app/src/main/java/com/testloop/app/notifications/EveningReminderScheduler.kt:55:        const val PREFERENCES = "evening_reminder"
+app/src/main/java/com/testloop/app/notifications/EveningReminderScheduler.kt:86:    private const val CHANNEL_ID = "testing_reminders"
+app/src/main/java/com/testloop/app/notifications/EveningReminderScheduler.kt:98:                    "Testing reminders",
+app/src/main/java/com/testloop/app/notifications/EveningReminderScheduler.kt:101:                    description = "Helpful reminders to open TestLoop and update testing status"
+app/src/main/java/com/testloop/app/notifications/EveningReminderScheduler.kt:105:        val launchIntent = context.packageManager.getLaunchIntentForPackage(context.packageName)
+app/src/main/java/com/testloop/app/notifications/EveningReminderScheduler.kt:107:        val contentIntent = launchIntent?.let {
+app/src/main/java/com/testloop/app/notifications/EveningReminderScheduler.kt:115:        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+app/src/main/java/com/testloop/app/notifications/EveningReminderScheduler.kt:122:            .apply { if (contentIntent != null) setContentIntent(contentIntent) }
+app/src/main/java/com/testloop/app/notifications/EveningReminderScheduler.kt:124:        NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification)
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:27:import androidx.compose.material.icons.filled.DeleteForever
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:81:import kotlinx.coroutines.launch
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:239:        scope.launch {
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:318:                            scope.launch {
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:547:                Icon(Icons.Default.DeleteForever, "Delist ${app.title}", tint = MaterialTheme.colorScheme.error)
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:552:                    scope.launch { onMarkPublished(app.id); markingPublished = false }
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:583:        title = { Text(if (delisting) "Removing from Discover…" else "Delist ${app.title}?") },
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:589:                    Text("Closing the test campaign and removing this app from Discover. Please wait.")
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:592:                Text("This closes the test campaign and removes ${app.title} from Discover. This action cannot be undone.")
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:598:                scope.launch { onDelist(app.id).onSuccess { confirmDelist = false }.also { delisting = false } }
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:614:                Text("Leaves the campaign at risk without changing the timer or opening Discover.", style = MaterialTheme.typography.bodySmall, color = Ink500)
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:623:                        Text("Open a replacement slot in Discover")
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:626:                Text("Releasing a selected commitment opens one replacement slot in Discover. The restart still needs a separate final confirmation after the required count returns.", style = MaterialTheme.typography.bodySmall, color = Ink500)
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:637:                Text("Change how many testers you need for this live listing. The update will appear in Discover and in every tester’s progress immediately.", color = Ink500)
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:663:                    scope.launch {
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:707:                    Text("The released commitment is hidden from Discover until you choose what to do.", color = Ink500)
+app/src/main/java/com/testloop/app/ui/CommitmentScreens.kt:716:                if (campaign.replacementOpen) Text("Discover shows one replacement slot open for this campaign.", style = MaterialTheme.typography.bodySmall, color = Brand600)
+app/src/main/java/com/testloop/app/data/SupabaseChatRepository.kt:20:import kotlinx.coroutines.launch
+app/src/main/java/com/testloop/app/data/SupabaseChatRepository.kt:41:    private val _isLoading = MutableStateFlow(false)
+app/src/main/java/com/testloop/app/data/SupabaseChatRepository.kt:42:    override val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+app/src/main/java/com/testloop/app/data/SupabaseChatRepository.kt:58:        _isLoading.value = true
+app/src/main/java/com/testloop/app/data/SupabaseChatRepository.kt:74:        .also { _isLoading.value = false }
+app/src/main/java/com/testloop/app/data/SupabaseChatRepository.kt:150:        realtimeJob = realtimeScope.launch {
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:50:    override suspend fun deleteAccount(): Result<Unit> { _account.value = null; return Result.success(Unit) }
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:87:    private val _discoverApps = MutableStateFlow(listOf(ownPreview(focus, 12, 8, "Preview how Focus Flow appears to testers."), ownPreview(pantry, 12, 12, "Preview how Pantry Pal appears to testers."), budgetBee, trailNotes, recipeRoute))
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:88:    override val discoverApps: StateFlow<List<PublicApp>> = _discoverApps.asStateFlow()
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:92:        _discoverApps.value = _discoverApps.value.map { listing ->
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:110:        _discoverApps.value = _discoverApps.value.map { listing ->
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:128:    private val _notifications = MutableStateFlow(listOf(
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:130:        AppNotification("n-reminder", NotificationKind.REMINDER, "alex_dev sent a test reminder", "Open Budget Bee when you can to keep today's commitment on track.", "1 h ago", true, "pair-alex"),
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:134:    override val notifications: StateFlow<List<AppNotification>> = _notifications.asStateFlow()
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:223:            _notifications.value += AppNotification("n-replacement-$campaignId", NotificationKind.RECIPROCAL, "Replacement tester needed", "The owner released your commitment for a replacement tester. Your previous commitment is no longer active.", "Just now", true, affectedCommitmentId)
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:239:        _notifications.value += AppNotification("n-restarted-$campaignId", NotificationKind.RECIPROCAL, "Testing restarted at Day 1", "The owner confirmed a restart. Your new Day 1 begins today; the new end date is ${today.plusDays(campaign.targetDays.toLong() - 1)}.", "Just now", true, ownedAppId = campaign.ownedAppId)
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:249:        val publicApp = _discoverApps.value.find { it.id == publicAppId } ?: return Result.failure(IllegalArgumentException("Campaign not found"))
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:263:        if (_discoverApps.value.none { it.id == publicAppId }) return Result.failure(IllegalArgumentException("App not found"))
+app/src/main/java/com/testloop/app/data/DemoRepositories.kt:334:    override suspend fun markNotificationsRead() { _notifications.value = _notifications.value.map { it.copy(isUnread = false) } }
+app/src/main/java/com/testloop/app/domain/Models.kt:170:fun PublicApp.isDiscoverableForJoin(): Boolean =
+app/src/main/java/com/testloop/app/domain/Models.kt:174:fun PublicApp.discoverStateLabel(): String = if (replacementOpen && slotsRemaining > 0) {
+app/src/main/java/com/testloop/app/data/Repositories.kt:23:    suspend fun deleteAccount(): Result<Unit>
+app/src/main/java/com/testloop/app/data/Repositories.kt:30:    val discoverApps: StateFlow<List<PublicApp>>
+app/src/main/java/com/testloop/app/data/Repositories.kt:32:    val notifications: StateFlow<List<AppNotification>>
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:19:import com.testloop.app.tracking.AndroidUsageAccessReporter
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:42:    private val usageReporter = AndroidUsageAccessReporter(context)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:49:    private val _discoverApps = MutableStateFlow<List<PublicApp>>(emptyList())
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:50:    override val discoverApps: StateFlow<List<PublicApp>> = _discoverApps.asStateFlow()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:53:    private val _notifications = MutableStateFlow<List<AppNotification>>(emptyList())
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:54:    override val notifications: StateFlow<List<AppNotification>> = _notifications.asStateFlow()
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:78:        // keeps My apps usable while Discover is temporarily unavailable.
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:105:        // resolve the app name and both Play links. Discover filters joined
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:108:        // Discover can render an exact preview. The UI gates them as preview
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:110:        _discoverApps.value = listings.map { it.toPublicApp() }
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:148:        val reminderRows = updatedVisibleCommitmentRows.flatMap { commitment ->
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:150:                supabase.from("reminders").select { filter { eq("commitment_id", commitment.id) } }
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:155:            row.toCommitment(listings, _ownedApps.value, profileRows, installRows, openRows, userId, reminderRows)
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:167:        _notifications.value = supabase.from("notifications").select {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:280:        val listing = _discoverApps.value.firstOrNull { it.id == publicAppId }
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:321:        supabase.from("app_bookmarks").delete {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:361:        val targetAppId = pair.currentUserOwnAppId ?: error("One-way commitments do not support reciprocal reminders")
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:363:        supabase.from("reminders").insert(
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:377:        _notifications.value.filter { it.isUnread }.forEach { notification ->
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:379:                supabase.from("notifications").update(NotificationReadUpdate(readAt = Instant.now().toString())) {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:380:                    filter { eq("id", notification.id); eq("recipient_id", userId) }
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:384:        _notifications.value = _notifications.value.map { it.copy(isUnread = false) }
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:410:            supabase.from("app_bookmarks").delete {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:583:    fun toCommitment(listings: List<PublicListingRow>, ownApps: List<OwnedApp>, profiles: List<TesterProfileRow>, summaries: List<InstallStateRow>, openRows: List<DailyOpenRow>, userId: String, reminders: List<ReminderRow> = emptyList()): ReciprocalCommitment {
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:600:            youCanSendReminder = reminders.none { it.commitmentId == id && it.senderId == userId && it.reminderDate == LocalDate.now(ZoneOffset.UTC).toString() },
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:694:    @SerialName("reminder_date") val reminderDate: String
+app/src/main/java/com/testloop/app/data/SupabaseTestLoopRepository.kt:763:    "reminder" -> NotificationKind.REMINDER
+app/src/main/java/com/testloop/app/data/SupabaseAuthRepository.kt:124:    override suspend fun deleteAccount(): Result<Unit> = runCatching {
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:55:import com.testloop.app.domain.discoverStateLabel
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:57:import com.testloop.app.domain.isDiscoverableForJoin
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:64:import kotlinx.coroutines.launch
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:67:fun MyAppsScreen(padding: PaddingValues, ownedApps: List<OwnedApp>, campaigns: List<Campaign>, commitments: List<ReciprocalCommitment>, onOwnApp: (String, Boolean) -> Unit, onAdd: () -> Unit, onDiscover: () -> Unit, onNotifications: () -> Unit, unread: Int) {
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:70:        if (ownedApps.isEmpty()) item { PortfolioEmpty(onAdd, onDiscover) }
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:114:private fun PortfolioEmpty(onAdd: () -> Unit, onDiscover: () -> Unit) {
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:124:        OutlinedButton(onClick = onDiscover, modifier = Modifier.fillMaxWidth().height(48.dp)) { Text("Find an app to test") }
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:129:fun DiscoverRedesign(padding: PaddingValues, apps: List<PublicApp>, ownedAppIds: Set<String>, commitments: List<ReciprocalCommitment>, bookmarks: List<AppBookmark>, onOpen: (String) -> Unit, onBookmark: suspend (String) -> Result<Unit>, onRemoveBookmark: suspend (String) -> Result<Unit>, onAddApp: () -> Unit, onNotifications: () -> Unit, unread: Int) {
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:134:    // launches and make a newly reopened listing appear to have vanished.
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:146:        .filter { it.id in ownedAppIds || it.isDiscoverableForJoin() }
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:156:        item { TestLoopTopBar("Discover", "Explore apps, join their test groups, and get your app tested in return", unreadCount = unread, onNotifications = onNotifications, actionContent = {
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:172:        if (filtered.isEmpty()) item { DiscoverEmptyState(apps.isNotEmpty(), onAddApp) }
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:179:                            DiscoverRow(app, isOwnerPreview = true, bookmark = null, onOpen = onOpen, onBookmark = {}, onRemoveBookmark = {})
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:190:                            DiscoverRow(app, isOwnerPreview = false, bookmark = bookmarkedById[app.id], onOpen = onOpen, onBookmark = { id -> optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to true); scope.launch { onBookmark(id).onFailure { optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to false) } } }, onRemoveBookmark = { id -> optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to false); scope.launch { onRemoveBookmark(id).onFailure { optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to true) } } })
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:201:private fun DiscoverEmptyState(hasAnyApps: Boolean, onAddApp: () -> Unit) {
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:203:        AppMonogram("Discover")
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:205:        Text(if (hasAnyApps) "No matching apps" else "No apps to discover yet", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:216:private fun DiscoverRow(app: PublicApp, isOwnerPreview: Boolean, bookmark: AppBookmark?, onOpen: (String) -> Unit, onBookmark: (String) -> Unit, onRemoveBookmark: (String) -> Unit) {
+app/src/main/java/com/testloop/app/ui/PortfolioAndDiscover.kt:218:        AppMonogram(app.title); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(app.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold); Text("@${app.ownerUsername} · ${app.postedLabel}", style = MaterialTheme.typography.labelMedium, color = Ink500); Spacer(Modifier.height(5.dp)); Text(app.instructions, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall, color = Ink500); Spacer(Modifier.height(7.dp)); Text(if (isOwnerPreview && app.replacementOpen && app.slotsRemaining > 0) "Replacement slot open · Your listing" else if (isOwnerPreview) "Preview only · Your app" else app.discoverStateLabel(), style = MaterialTheme.typography.labelMedium, color = Brand600) }
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:106:fun TodayRedesign(padding: PaddingValues, username: String, dataLoaded: Boolean, commitments: List<ReciprocalCommitment>, ownedApps: List<OwnedApp>, campaigns: List<Campaign>, publicApps: List<PublicApp>, onPair: (String) -> Unit, onPrimaryAction: (String) -> Unit, onOwnApp: (String, Boolean) -> Unit, onNotifications: () -> Unit, unread: Int, onObligations: () -> Unit, onAddApp: () -> Unit, onDiscover: () -> Unit) {
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:138:            item { LoadingTodayState() }
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:140:            item { FirstRunToday(onAddApp = onAddApp, onDiscover = onDiscover) }
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:142:            item { ReadyToPairToday(onDiscover = onDiscover, onAddApp = onAddApp) }
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:148:            item { if (incoming.isEmpty()) EmptyIncomingHint(onDiscover) else GroupSurface { incoming.forEachIndexed { index, pair -> PartnerStatusRow(pair, ownedApps, targetProgress(pair, publicApps, ownedApps, campaigns), today, onOwnApp, onPair); if (index != incoming.lastIndex) RowDivider() } } }
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:156:private fun LoadingTodayState() {
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:160:        Text("Loading your testing plan…", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:170:        Text("Everyone testing your apps is on track for today. No reminders are needed.", color = Ink500)
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:208:private fun FirstRunToday(onAddApp: () -> Unit, onDiscover: () -> Unit) {
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:215:            Text("Add your app to find testers, or discover an app you can test for someone else. You can do either first.", color = Ink500, style = MaterialTheme.typography.bodyLarge)
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:221:            OutlinedButton(onClick = onDiscover, modifier = Modifier.fillMaxWidth().height(50.dp)) {
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:230:private fun ReadyToPairToday(onDiscover: () -> Unit, onAddApp: () -> Unit) {
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:236:        Button(onClick = onDiscover, modifier = Modifier.fillMaxWidth().height(50.dp)) { Text("Find an app to test") }
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:249:        GuideRow(Icons.Default.Explore, "Discover", "Explore apps available for testing, join a group, and get your app tested in return.")
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:263:private fun EmptyObligationHint(onDiscover: () -> Unit) {
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:267:        Text("Your daily test list will appear here after you join an app in Discover.", color = Ink500)
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:269:        FilledTonalButton(onClick = onDiscover) { Text("Explore apps") }
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:370:private fun EmptyIncomingHint(onDiscover: () -> Unit) {
+app/src/main/java/com/testloop/app/ui/OnboardingAndToday.kt:376:        FilledTonalButton(onClick = onDiscover) { Text("Find an app to test") }
+app/src/main/java/com/testloop/app/ui/ChatScreens.kt:51:import kotlinx.coroutines.launch
+app/src/main/java/com/testloop/app/ui/ChatScreens.kt:57:    isLoading: Boolean,
+app/src/main/java/com/testloop/app/ui/ChatScreens.kt:89:                IconButton(onClick = { scope.launch { onRefresh() } }) {
+app/src/main/java/com/testloop/app/ui/ChatScreens.kt:108:        if (isLoading && messages.isEmpty()) {
+app/src/main/java/com/testloop/app/ui/ChatScreens.kt:143:                        scope.launch {
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:92:import kotlinx.coroutines.launch
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:96:private enum class MainDestination(val label: String) { TODAY("Today"), APPS("My apps"), DISCOVER("Discover"), PROFILE("Profile") }
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:121:    val discoverApps by repo.discoverApps.collectAsState()
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:123:    val notifications by repo.notifications.collectAsState()
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:128:    val chatLoading by chatRepo.isLoading.collectAsState()
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:132:            (discoverApps.any { app -> app.id == it.appBeingTestedByCurrentUserId } ||
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:142:        dailyProgressFor(it, discoverApps, ownedApps, campaigns)?.dailyTaskUnlocked() == true &&
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:147:        discoverApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }?.title
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:159:    fun snack(text: String) = scope.launch { snackbars.showSnackbar(text) }
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:229:        scope.launch {
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:231:            val publicApp = pair?.let { selected -> discoverApps.firstOrNull { it.id == selected.appBeingTestedByCurrentUserId } }
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:238:                return@launch
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:247:                return@launch
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:250:            val result = externalAppLauncher.launch(targetPackageName)
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:255:                LaunchResult.NotLaunchable -> "$targetTitle is installed but Android can't launch it. Open the commitment to review the app link."
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:271:                scope.launch {
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:284:                scope.launch {
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:295:                scope.launch {
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:302:        is AppScreen.Main -> MainShell(current.destination, account?.username.orEmpty(), liveUsageAccessGranted, dataLoaded, ownedApps, campaigns, discoverApps, commitments, bookmarks, notifications, snackbars,
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:309:            }, onTestingGuide = { navigate(AppScreen.GooglePlayTestingGuide) }, onPair = { navigate(AppScreen.PairDetail(it)) }, onPrimaryAction = ::performPrimaryAction, onOwnApp = { id, attention -> navigate(AppScreen.OwnDetail(id, attention)) }, onDiscover = { navigate(AppScreen.PublicDetail(it)) }, onBookmark = { id -> repo.bookmarkApp(id).onFailure { snack(userFriendlyError(it, "We couldn't save this bookmark. Check your connection and try again.")) } }, onRemoveBookmark = { id -> repo.removeBookmark(id).onFailure { snack(userFriendlyError(it, "We couldn't remove this bookmark. Check your connection and try again.")) } }, onAddApp = { navigate(AppScreen.AddApp) }, onObligations = { navigate(AppScreen.Obligations) })
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:311:            discoverApps.firstOrNull { it.id == current.appId }, ownedApps, ownedAppIdsInUse,
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:321:            CommitmentReadyScreen(readyCommitment, discoverApps, ownedApps, isBookmarked = readyCommitment?.let { pair -> bookmarks.any { it.appId == pair.appBeingTestedByCurrentUserId } } == true, onBack = ::back, onOpenLink = { url ->
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:333:        is AppScreen.PairDetail -> PairDetailScreen(commitments.firstOrNull { it.commitmentId == current.commitmentId }, ownedApps, campaigns, discoverApps, onBack = ::back, onOpen = ::performPrimaryAction, onOpenLink = { url ->
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:339:        }, onReminder = { id, person -> scope.launch { repo.sendReminder(id).onSuccess { snack("Helpful check-in sent to @$person") }.onFailure { snack(userFriendlyError(it, "We couldn’t send the check-in. Check your connection and try again.")) } } }, onLeave = { id -> scope.launch {
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:350:            isLoading = chatLoading,
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:357:        is AppScreen.OwnDetail -> OwnAppDetailScreen(current.appId, current.attentionOnly, ownedApps, campaigns, commitments, discoverApps, onBack = ::back, onPair = { navigate(AppScreen.PairDetail(it)) }, onReminder = { id, person -> scope.launch { repo.sendReminder(id).onSuccess { snack("Reminder sent to @$person. They'll see it today") }.onFailure { snack(userFriendlyError(it, "We couldn't send the reminder. Check your connection and try again.")) } } }, onSwitch = { replace(AppScreen.OwnDetail(it)) }, onDelist = { id -> repo.delistOwnedApp(id).onSuccess { replace(AppScreen.Main(MainDestination.APPS)); snack("Your app has been removed from Discover") }.onFailure { snack(userFriendlyError(it, "We couldn't remove this app from Discover. Check your connection and try again.")) } }, onMarkPublished = { id -> repo.markOwnedAppPublished(id).onSuccess { snack("Your app status was saved. TestLoop cannot verify Google Play approval.") }.onFailure { snack(userFriendlyError(it, "We couldn't update your Google Play status. Check your connection and try again.")) } }, onUpdateTesterCount = { id, count -> repo.updateCampaignTesterCount(id, count).onSuccess { snack("Tester target updated to $count. Discover and progress are now up to date.") }.onFailure { snack(userFriendlyError(it, "We couldn't update the tester target. Check your connection and try again.")) } }, onConfirmClosedTesting = { id -> scope.launch { repo.confirmClosedTesting(id).onSuccess { snack("Closed testing confirmation saved. Daily tasks are now available.") }.onFailure { snack(userFriendlyError(it, "We couldn't save the closed-testing confirmation. Check your connection and try again.")) } } }, onRiskDecision = { id, decision, commitmentId -> scope.launch { repo.chooseCampaignRiskDecision(id, decision, commitmentId).onSuccess { snack(if (decision == CampaignRiskDecision.RESTART || decision == CampaignRiskDecision.REOPEN) "Replacement slot opened in Discover. The timer is unchanged until you confirm the restart." else "Campaign decision saved. The current timer is unchanged.") }.onFailure { snack(userFriendlyError(it, "We couldn't save the campaign decision. Check your connection and try again.")) } } }, onFinalRestart = { id -> scope.launch { repo.finalizeCampaignRestart(id).onSuccess { snack("Restart confirmed. Testers now have a new Day 1 and end date.") }.onFailure { snack(userFriendlyError(it, "We couldn't restart the campaign yet. Check that the replacement tester is installed.")) } } })
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:358:        AppScreen.Obligations -> ObligationsScreen(commitments, ownedApps, campaigns, discoverApps, onBack = ::back, onPair = { navigate(AppScreen.PairDetail(it)) })
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:359:        AppScreen.Notifications -> NotificationsRedesign(notifications, onBack = ::back, onOpenPair = { navigate(AppScreen.PairDetail(it)) })
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:363:                snack("Your app has been successfully published! Testers can now discover ${app.title} 🎉")
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:377:private fun dailyProgressFor(pair: ReciprocalCommitment, discoverApps: List<PublicApp>, ownedApps: List<OwnedApp>, campaigns: List<com.testloop.app.domain.Campaign>): CampaignProgress? {
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:378:    discoverApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }?.let { return it.progress }
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:386:private fun MainShell(destination: MainDestination, username: String, usageAccessGranted: Boolean, dataLoaded: Boolean, ownedApps: List<OwnedApp>, campaigns: List<com.testloop.app.domain.Campaign>, discoverApps: List<PublicApp>, commitments: List<ReciprocalCommitment>, bookmarks: List<AppBookmark>, notifications: List<AppNotification>, snackbars: SnackbarHostState, onDestination: (MainDestination) -> Unit, onNotification: () -> Unit, onFeedback: () -> Unit, onTestingGuide: () -> Unit, onPair: (String) -> Unit, onPrimaryAction: (String) -> Unit, onOwnApp: (String, Boolean) -> Unit, onDiscover: (String) -> Unit, onBookmark: suspend (String) -> Result<Unit>, onRemoveBookmark: suspend (String) -> Result<Unit>, onAddApp: () -> Unit, onObligations: () -> Unit) {
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:396:            MainDestination.TODAY -> TodayRedesign(contentPadding, username, dataLoaded, commitments, ownedApps, campaigns, discoverApps, onPair, onPrimaryAction, onOwnApp, onNotification, notifications.count { it.isUnread }, onObligations = onObligations, onAddApp = onAddApp, onDiscover = { onDestination(MainDestination.DISCOVER) })
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:397:            MainDestination.APPS -> MyAppsScreen(contentPadding, ownedApps, campaigns, commitments, onOwnApp, onAddApp, onDiscover = { onDestination(MainDestination.DISCOVER) }, onNotifications = onNotification, unread = notifications.count { it.isUnread })
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:398:            MainDestination.DISCOVER -> DiscoverRedesign(contentPadding, discoverApps, ownedApps.mapTo(mutableSetOf()) { it.id }, commitments, bookmarks, onDiscover, onBookmark = onBookmark, onRemoveBookmark = onRemoveBookmark, onAddApp = onAddApp, onNotifications = onNotification, unread = notifications.count { it.isUnread })
+app/src/main/java/com/testloop/app/ui/TestLoopApp.kt:399:            MainDestination.PROFILE -> ProfileRedesign(padding, username, usageAccessGranted, onNotification, onFeedback, onTestingGuide, unread = notifications.count { it.isUnread })
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:25:import androidx.compose.material.icons.filled.DeleteForever
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:66:import kotlinx.coroutines.launch
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:101:                        OutlinedButton(onClick = onBack, modifier = Modifier.fillMaxWidth().height(48.dp)) { Text("Back to Discover") }
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:230:                                scope.launch {
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:316:                    Field(messagingId, { messagingId = it.take(160) }, "Messaging ID (recommended)", "Optional · e.g. Telegram @handle, Discord username, or WhatsApp number. This is visible to testers for direct reports.")
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:328:                    scope.launch {
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:357:fun NotificationsRedesign(notifications: List<AppNotification>, onBack: () -> Unit, onOpenPair: (String) -> Unit) { Column(Modifier.fillMaxSize().navigationBarsPadding()) { TestLoopTopBar("Notifications", onBack = onBack); LazyColumn(contentPadding = PaddingValues(Gutter), verticalArrangement = Arrangement.spacedBy(16.dp)) { listOf("Needs action" to notifications.filter { it.isUnread }, "Updates" to notifications.filter { !it.isUnread }).forEach { (label, entries) -> if (entries.isNotEmpty()) { item { SectionHeader(label) }; item { GroupSurface { entries.forEachIndexed { index, notification -> NotificationRow(notification, onOpenPair); if (index != entries.lastIndex) RowDivider() } } } } } } } }
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:360:private fun NotificationRow(notification: AppNotification, onOpenPair: (String) -> Unit) { Row(Modifier.fillMaxWidth().clickable { notification.commitmentId?.let(onOpenPair) }.padding(16.dp), verticalAlignment = Alignment.Top) { Icon(Icons.Default.Notifications, null, tint = Brand600); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(notification.title, fontWeight = FontWeight.SemiBold); Text(notification.message, style = MaterialTheme.typography.bodySmall, color = Ink500); Text(notification.relativeTime, style = MaterialTheme.typography.labelSmall, color = Ink500, modifier = Modifier.padding(top = 5.dp)) }; if (notification.isUnread) androidx.compose.material3.Badge() } }
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:381:                    "Notifications" to "Manage reminders and quiet hours",
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:408:        item { Text("Delete account", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelLarge, modifier = Modifier.padding(12.dp)) }
+app/src/main/java/com/testloop/app/ui/FlowsAndProfile.kt:433:            Icon(Icons.Default.OpenInNew, contentDescription = null); Spacer(Modifier.width(8.dp)); Text("Read Google’s official requirements")
+app/src/main/java/com/testloop/app/tracking/UsageAccessReporter.kt:4:import android.app.usage.UsageStatsManager
+app/src/main/java/com/testloop/app/tracking/UsageAccessReporter.kt:13:interface UsageAccessReporter {
+app/src/main/java/com/testloop/app/tracking/UsageAccessReporter.kt:23:class AndroidUsageAccessReporter(private val context: Context) : UsageAccessReporter {
+app/src/main/java/com/testloop/app/tracking/UsageAccessReporter.kt:25:    private val usageStats = context.getSystemService(UsageStatsManager::class.java)
+app/src/main/java/com/testloop/app/tracking/UsageAccessReporter.kt:39:            Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+app/src/main/java/com/testloop/app/tracking/UsageAccessReporter.kt:48:        return usageStats.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, start, end)
+app/src/main/java/com/testloop/app/data/ChatRepository.kt:10:    val isLoading: StateFlow<Boolean>
+app/src/main/java/com/testloop/app/tracking/InstallStatusReporter.kt:12:    private val packageManager = context.packageManager
+app/src/main/java/com/testloop/app/tracking/InstallStatusReporter.kt:18:        // Use the same Android-resolved launcher path as the Open action. A
+app/src/main/java/com/testloop/app/tracking/InstallStatusReporter.kt:19:        // package can be installed even when it does not expose a launcher;
+app/src/main/java/com/testloop/app/tracking/InstallStatusReporter.kt:22:        val launchIntent = runCatching { packageManager.getLaunchIntentForPackage(target) }.getOrNull()
+app/src/main/java/com/testloop/app/tracking/InstallStatusReporter.kt:23:        if (launchIntent != null) return true
+app/src/main/java/com/testloop/app/tracking/InstallStatusReporter.kt:26:            packageManager.getApplicationInfo(target, PackageManager.ApplicationInfoFlags.of(0))

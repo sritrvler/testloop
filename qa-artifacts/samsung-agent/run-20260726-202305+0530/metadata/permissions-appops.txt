@@ -1,0 +1,336 @@
+host_timestamp=2026-07-26T20:25:26+05:30
+--- permissions ---
+    requested permissions:
+      android.permission.POST_NOTIFICATIONS
+      com.testloop.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+      android.permission.RECEIVE_BOOT_COMPLETED
+      android.permission.INTERNET
+      android.permission.PACKAGE_USAGE_STATS
+      android.permission.ACCESS_NETWORK_STATE
+    install permissions:
+      runtime permissions:
+        android.permission.POST_NOTIFICATIONS: granted=false, flags=[ USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]
+
+Queries:
+  system apps queryable: false
+  queries via forceQueryable:
+  queries via package name:
+  queries via component:
+    com.nic.mparivahan:
+      com.testloop.app
+    com.samsung.android.bixby.agent:
+      com.testloop.app
+    com.samsung.android.dynamiclock:
+      com.testloop.app
+    com.android.settings.intelligence:
+      com.testloop.app
+    com.google.android.apps.accessibility.voiceaccess:
+      com.testloop.app
+    com.google.android.as:
+      com.testloop.app
+    com.google.android.as.oss:
+      com.testloop.app
+    com.google.android.apps.messaging:
+      com.testloop.app
+    com.facebook.katana:
+      com.testloop.app
+    com.truecaller:
+      com.testloop.app
+    org.cris.aikyam:
+      com.testloop.app
+    com.csam.icici.bank.imobile:
+      com.testloop.app
+    com.iexceed.ib.digitalbankingprod:
+      com.testloop.app
+    com.iexceed.appzillon.ippbMB:
+      com.testloop.app
+    in.startv.hotstar:
+      com.testloop.app
+    com.yahoo.mobile.client.android.mail:
+      com.testloop.app
+    com.eaglefleet.redtaxi:
+      com.testloop.app
+    net.one97.paytm:
+      com.testloop.app
+    com.ryzmedia.tatasky:
+      com.testloop.app
+    com.phonepe.app:
+      com.testloop.app
+    com.whatsapp:
+      com.testloop.app
+    com.samsung.android.mocca:
+      com.testloop.app
+    com.sbi.lotusintouch:
+      com.testloop.app
+    com.instagram.android:
+      com.testloop.app
+    com.axis.mobile:
+      com.testloop.app
+    org.altruist.BajajExperia:
+      com.testloop.app
+    in.mohalla.sharechat:
+      com.testloop.app
+    in.redbus.android:
+      com.testloop.app
+    in.org.npci.upiapp:
+      com.testloop.app
+    in.amazon.mShop.android.shopping:
+      com.testloop.app
+    com.cuvora.carinfo:
+      com.testloop.app
+    com.digilocker.android:
+      com.testloop.app
+    in.gov.uidai.pehchaan:
+      com.testloop.app
+    com.maruti.icp:
+      com.testloop.app
+    in.swiggy.android:
+      com.testloop.app
+    com.testloop.app:
+      com.sbi.authenticator
+      com.nic.mparivahan
+      com.google.android.documentsui
+      com.sec.android.app.samsungapps
+      com.microsoft.skydrive
+      com.sec.android.app.billing
+      com.samsung.android.app.contacts
+      com.samsung.android.themestore
+      com.microsoft.appmanager
+      com.google.audio.hearing.visualization.accessibility.scribe
+      com.google.android.apps.accessibility.voiceaccess
+      com.google.android.projection.gearhead
+      com.google.android.apps.messaging
+      com.google.android.googlequicksearchbox
+      com.google.android.apps.tachyon
+      com.google.android.apps.bard
+      com.clearpath.tracker
+      com.android.chrome
+      com.google.android.youtube
+      com.google.android.apps.maps
+      com.google.android.gm
+      com.mygalaxy
+      com.samsung.ecomm.global.in
+      com.opera.max.oem
+      com.google.android.cellbroadcastreceiver
+      com.facebook.katana
+      com.sec.android.app.popupcalculator
+      com.sec.android.app.clockpackage
+      com.mobile.tmbepassbook
+      com.samsung.android.app.notes
+      com.truecaller
+      com.jio.myjio
+      com.google.android.apps.nbu.paisa.user
+      com.samsung.android.calendar
+      org.cris.aikyam
+      com.csam.icici.bank.imobile
+      com.daamitt.walnut.app
+      com.google.android.apps.photos
+      com.dreamplug.androidapp
+      com.iexceed.ib.digitalbankingprod
+      com.sec.android.app.voicenote
+      com.samsung.android.app.reminder
+      com.openai.chatgpt
+      com.sec.android.app.kidshome
+      com.samsung.android.app.find
+      com.iexceed.appzillon.ippbMB
+      in.startv.hotstar
+      com.yahoo.mobile.client.android.mail
+      com.eduarve.mydollarexpenses
+      com.eaglefleet.redtaxi
+      net.one97.paytm
+      com.whereismytrain.android
+      trai.gov.in.dnd
+      com.google.android.apps.nbu.files
+      com.marutisuzuki.rewards
+      com.indeed.android.jobsearch
+      com.ryzmedia.tatasky
+      com.tnstc
+      com.phonepe.app
+      com.whatsapp
+      com.google.android.apps.docs
+      io.lntinfotech.AIStaxpayer
+      com.spotify.music
+      com.linkedin.android
+      com.sbi.lotusintouch
+      com.instagram.android
+      com.axis.mobile
+      org.altruist.BajajExperia
+      in.mohalla.sharechat
+      com.aadhaar.life
+      com.netflix.mediaclient
+      com.bigbasket.mobileapp
+      com.app.abhibus
+      in.redbus.android
+      in.org.npci.upiapp
+      com.eci.citizen
+      in.amazon.mShop.android.shopping
+      com.cuvora.carinfo
+      com.digilocker.android
+      com.lgeha.nuts
+      in.gov.uidai.pehchaan
+      com.google.android.apps.docs.editors.docs
+      com.maruti.icp
+      in.swiggy.android
+  queryable via interaction:
+    User 0:
+      [com.sec.sve,com.sec.bcservice,com.sec.android.app.hwmoduletest,com.sec.factory.camera,com.samsung.android.knox.attestation,com.samsung.android.app.dressroom,com.sec.android.app.quicktool,com.samsung.android.wifi.ai,com.samsung.android.bbc.bbcagent,com.samsung.android.aircommandmanager,com.sec.android.app.RilPhoneNumberService,com.sec.usbsettings,com.samsung.SMT,com.sec.android.soagent,com.android.localtransport,com.samsung.logwriter,com.android.location.fused,com.samsung.android.svcagent,com.samsung.android.providers.factory,com.samsung.android.lool,com.samsung.android.provider.filterprovider,com.android.dynsystem,com.samsung.android.brightnessbackupservice,com.samsung.android.globalpostprocmgr,com.sec.android.app.parser,com.sec.imsservice,com.android.keychain,com.samsung.android.vtcamerasettings,com.sec.mhs.smarttethering,com.samsung.slsi.telephony.silentlogging,com.samsung.android.motionphoto.app,com.samsung.aasaservice,com.sec.android.app.SecSetupWizard,com.wssyncmldm,com.sec.android.app.factorykeystring,com.samsung.android.knox.mpos,com.sec.android.app.wlantest,com.android.server.telecom,com.samsung.android.bixby.wakeup,com.samsung.android.forest,com.samsung.android.hdmapp,com.sec.modem.settings,com.sec.epdg,com.samsung.oda.service,com.samsung.android.mdecservice,com.samsung.android.fmm,com.sec.android.emergencylauncher,com.sec.android.smartfpsadjuster,com.samsung.android.knox.zt.framework,com.android.settings,com.samsung.android.cameraxservice,com.samsung.android.smartswitchassistant,com.samsung.android.photoremasterservice,com.samsung.android.emergency,com.sec.android.CcInfo,com.sec.automation,com.samsung.android.biometrics.app.setting,com.samsung.sec.android.teegris.tui_service,com.sec.facatfunction,com.sec.imslogger,com.sec.android.sdhms,com.sec.android.app.personalization,com.samsung.android.da.daagent,com.samsung.android.stickercenter,com.sec.app.RilErrorNotifier,com.samsung.android.app.omcagent,com.samsung.accessibility,com.samsung.android.themecenter,com.skms.android.agent,com.android.inputdevices,com.sec.android.iaft,com.samsung.android.messageguardsync,com.sec.android.diagmonagent,com.samsung.android.vexfwk.service,com.sec.android.app.servicemodeapp,com.samsung.discover.sep,com.samsung.android.knox.pushmanager,com.samsung.discover,android,com.android.providers.settings,com.samsung.android.dqagent,com.samsung.android.smartface,com.samsung.gpuwatchapp]:
+        com.testloop.app
+      com.samsung.android.honeyboard:
+        com.testloop.app
+      [com.google.android.gsf,com.google.android.gms]:
+        com.testloop.app
+  queryable via uses-library:
+
+Dexopt state:
+  [com.testloop.app]
+    path: /data/app/~~qo8q3ADTyIQM_S-QfED6Tg==/com.testloop.app-SFhxowR9nv7a2jXJJeBEUA==/base.apk
+      arm64: [status=run-from-apk] [reason=unknown] [primary-abi]
+        [location is error]
+
+SPEG state:
+  Event #0: 23-07-2026 17:13:15.665 Failure com.testloop.app took 2559 ms
+
+Profile utilization state:
+  Current state:
+    Version: 2.1.2
+    Start reason: boot-no-update
+    Start time: not started
+    Finish time: not finished
+    PU_StatusWatcher:
+      Initial thermal status: 0
+      Thermal status: 0
+      Screen off: false
+      Low battery: true
+    PU_DexoptTrigger:
+      Dexopt concurrency: 4
+      Dexopting: false
+    PU_Storage:
+      Stored apps:
+        com.sec.android.gallery3d 38
+        com.samsung.android.dialer 49
+        com.jio.myjio 51
+        com.android.vending 58
+        com.dreamplug.androidapp 66
+        com.google.android.apps.nbu.paisa.user 68
+        in.amazon.mShop.android.shopping 71
+        com.sbi.lotusintouch 77
+        com.sec.android.app.voicenote 81
+        com.android.settings 89
+        com.samsung.android.app.contacts 90
+        com.samsung.android.app.reminder 90
+        com.csam.icici.bank.imobile 96
+        com.sec.android.easyMover 119
+        com.samsung.android.app.find 150
+    Stored PU state:
+      Service:
+        Version: 2.1.2
+        Start reason: boot-after-mainline-update
+        Start time: Sat Jul 04 20:53:34 GMT+05:30 2026 ts=1783178614330
+        Finish time: Sat Jul 04 21:18:00 GMT+05:30 2026 ts=1783180080289
+        Took time 1465sec
+      Watcher:
+        Initial thermal status: 1
+        Thermal status: 0
+        Screen off: true
+        Low battery: false
+      Metrics:
+        Predicted and launched apps: 2
+        Predicted apps: 15
+        Launched apps: 2
+        Best f1Score: 0.6666667, prefixCount: 4, precision: 0.5, recall: 1.0
+      Trigger:
+        Dexopt concurrency: 4
+        Dexopting: false
+        Hot apps list:
+          com.sec.android.gallery3d, w=38, s=OPTIMIZED, optTimeMs=1783178734487, cancelCount=0, dexopt=SKIPPED, [primaryDex=true, reason=boot-after-mainline-update, dex2oatTimeMs=0, filter=speed-profile]
+          com.samsung.android.dialer, w=49, s=OPTIMIZED, optTimeMs=1783178734487, cancelCount=0, dexopt=SKIPPED, [primaryDex=true, reason=boot-after-mainline-update, dex2oatTimeMs=0, filter=speed-profile]
+          com.jio.myjio, w=51, s=OPTIMIZED, optTimeMs=1783180078107, cancelCount=1, dexopt=PERFORMED, [primaryDex=true, reason=profile-utilization, dex2oatTimeMs=76542, filter=speed-profile], [primaryDex=false, reason=vdex, dex2oatTimeMs=0, filter=verify], [primaryDex=false, reason=profile-utilization, dex2oatTimeMs=352, filter=verify]
+          com.android.vending, w=58, s=OPTIMIZED, optTimeMs=1783180072333, cancelCount=1, dexopt=PERFORMED, [primaryDex=true, reason=profile-utilization, dex2oatTimeMs=69740, filter=speed-profile], [primaryDex=false, reason=profile-utilization, dex2oatTimeMs=432, filter=verify], [primaryDex=false, reason=profile-utilization, dex2oatTimeMs=314, filter=verify], [primaryDex=false, reason=profile-utilization, dex2oatTimeMs=455, filter=verify]
+          com.dreamplug.androidapp, w=66, s=OPTIMIZED, optTimeMs=1783178745819, cancelCount=0, dexopt=PERFORMED, [primaryDex=true, reason=profile-utilization, dex2oatTimeMs=9886, filter=speed-profile], [primaryDex=true, reason=vdex, dex2oatTimeMs=0, filter=verify]
+          com.google.android.apps.nbu.paisa.user, w=68, s=OPTIMIZED, optTimeMs=1783178736910, cancelCount=0, dexopt=PERFORMED, [primaryDex=true, reason=profile-utilization, dex2oatTimeMs=2139, filter=speed-profile]
+          in.amazon.mShop.android.shopping, w=71, s=OPTIMIZED, optTimeMs=1783180042474, cancelCount=1, dexopt=PERFORMED, [primaryDex=true, reason=profile-utilization, dex2oatTimeMs=41292, filter=speed-profile]
+          com.sbi.lotusintouch, w=77, s=OPTIMIZED, optTimeMs=1783180017551, cancelCount=1, dexopt=PERFORMED, [primaryDex=true, reason=profile-utilization, dex2oatTimeMs=16380, filter=speed-profile]
+          com.sec.android.app.voicenote, w=81, s=OPTIMIZED, optTimeMs=1783180041721, cancelCount=0, dexopt=PERFORMED, [primaryDex=true, reason=profile-utilization, dex2oatTimeMs=24007, filter=speed-profile]
+          com.android.settings, w=89, s=OPTIMIZED, optTimeMs=1783180055691, cancelCount=0, dexopt=PERFORMED, [primaryDex=true, reason=profile-utilization, dex2oatTimeMs=13802, filter=speed-profile]
+          com.samsung.android.app.contacts, w=90, s=OPTIMIZED, optTimeMs=1783180056222, cancelCount=0, dexopt=PERFORMED, [primaryDex=true, reason=profile-utilization, dex2oatTimeMs=13625, filter=speed-profile]
+          com.samsung.android.app.reminder, w=90, s=OPTIMIZED, optTimeMs=1783180070368, cancelCount=0, dexopt=PERFORMED, [primaryDex=true, reason=profile-utilization, dex2oatTimeMs=14516, filter=speed-profile]
+          com.csam.icici.bank.imobile, w=96, s=OPTIMIZED, optTimeMs=1783180080286, cancelCount=0, dexopt=PERFORMED, [primaryDex=true, reason=profile-utilization, dex2oatTimeMs=23885, filter=speed-profile]
+          com.sec.android.easyMover, w=119, s=OPTIMIZED, optTimeMs=1783180078880, cancelCount=0, dexopt=PERFORMED, [primaryDex=true, reason=profile-utilization, dex2oatTimeMs=8394, filter=speed-profile]
+          com.samsung.android.app.find, w=150, s=OPTIMIZED, optTimeMs=1783180077935, cancelCount=0, dexopt=PERFORMED, [primaryDex=true, reason=profile-utilization, dex2oatTimeMs=5480, filter=speed-profile]
+    Stored SCPM state:
+      packages-9a07:
+        [                                            ]
+      disable-2bb4:
+        [                                            ]
+
+Monetization app list:
+com.truecaller
+com.mmi.maps
+com.snapchat.android
+
+Monetization apps launched list:
+com.truecaller
+com.phonepe.app
+
+GalaxyStore badge feature state: true
+
+GalaxyStore monetized apps: 
+
+HeimdAllFS state:
+  [com.testloop.app]
+    path: /data/app/~~qo8q3ADTyIQM_S-QfED6Tg==/com.testloop.app-SFhxowR9nv7a2jXJJeBEUA==/base.apk
+    Compressed? False
+  [ Summary ]
+    # of packages: 1 / # of packages in DATA: 1 (1)
+    Compressed apks info - sum of orig size: 5974 / sum of compr size : 5974
+  [Lfo status]
+--- appops ---
+Uid mode: COARSE_LOCATION: ignore
+FINE_LOCATION: ignore
+READ_CONTACTS: ignore
+WRITE_CONTACTS: ignore
+READ_CALL_LOG: ignore
+WRITE_CALL_LOG: ignore
+READ_CALENDAR: ignore
+WRITE_CALENDAR: ignore
+POST_NOTIFICATION: ignore
+CALL_PHONE: ignore
+READ_SMS: ignore
+RECEIVE_SMS: ignore
+RECEIVE_MMS: ignore
+RECEIVE_WAP_PUSH: ignore
+SEND_SMS: ignore
+CAMERA: ignore
+RECORD_AUDIO: ignore
+READ_PHONE_STATE: ignore
+ADD_VOICEMAIL: ignore
+USE_SIP: ignore
+PROCESS_OUTGOING_CALLS: ignore
+BODY_SENSORS: ignore
+READ_CELL_BROADCASTS: ignore
+READ_EXTERNAL_STORAGE: ignore
+WRITE_EXTERNAL_STORAGE: ignore
+GET_ACCOUNTS: ignore
+READ_PHONE_NUMBERS: ignore
+ANSWER_PHONE_CALLS: ignore
+ACCEPT_HANDOVER: ignore
+BLUETOOTH_SCAN: ignore
+ACTIVITY_RECOGNITION: ignore
+READ_MEDIA_AUDIO: ignore
+READ_MEDIA_VIDEO: ignore
+READ_MEDIA_IMAGES: ignore
+ACCESS_MEDIA_LOCATION: ignore
+BLUETOOTH_CONNECT: ignore
+UWB_RANGING: ignore
+BLUETOOTH_ADVERTISE: ignore
+NEARBY_WIFI_DEVICES: ignore
+READ_MEDIA_VISUAL_USER_SELECTED: ignore
+READ_HEART_RATE: ignore
+READ_SKIN_TEMPERATURE: ignore
+RANGING: ignore
+READ_OXYGEN_SATURATION: ignore
+GET_USAGE_STATS: allow; time=+6h41m33s392ms ago
+--- usage access packages containing testloop ---
+com.testloop.app
+--- notification listener/zen/policy quick state ---
+Invalid listener - must be a ComponentName

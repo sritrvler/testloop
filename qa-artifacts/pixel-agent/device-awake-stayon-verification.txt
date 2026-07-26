@@ -1,0 +1,17 @@
+timestamp_utc=2026-07-26T15:09:54Z
+serial=58261FDCR006X9
+command_context=user reported adb shell svc power stayon true over USB
+stay_on_while_plugged_in=15
+  mWakefulness=Awake
+  mWakefulnessChanging=false
+  mIsPowered=true
+  mStayOn=true
+  mWakeUpWhenPluggedOrUnpluggedConfig=true
+  mWakeUpWhenPluggedOrUnpluggedInTheaterModeConfig=false
+  mStayOnWhilePluggedInSetting=15
+  mLastChangedStrReason=Plugged in
+  mIsPowered=true
+mWakefulness=1
+Wakefulness Session Observer:
+  Wakefulness Session Power Group powerGroupId: 0
+    current wakefulness: 1

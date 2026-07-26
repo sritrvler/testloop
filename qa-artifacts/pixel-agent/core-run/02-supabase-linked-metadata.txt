@@ -1,0 +1,73 @@
+timestamp_utc=2026-07-26T15:21:58Z
+supabase/.temp/cli-latest
+supabase/.temp/gotrue-version
+supabase/.temp/linked-project.json
+supabase/.temp/pooler-url
+supabase/.temp/postgres-version
+supabase/.temp/project-ref
+supabase/.temp/rest-version
+supabase/.temp/storage-migration
+supabase/.temp/storage-version
+supabase/migrations/20260723000000_initial_testloop.sql
+supabase/migrations/20260723010000_install_states.sql
+supabase/migrations/20260723020000_remove_activity_storage.sql
+supabase/migrations/20260723030000_daily_open_states.sql
+supabase/migrations/20260723040000_enrollment_activation.sql
+supabase/migrations/20260723050000_app_bookmarks.sql
+supabase/migrations/20260724120000_listing_text_limits.sql
+supabase/migrations/20260724130000_fix_public_listing_permissions.sql
+supabase/migrations/20260724140000_delist_apps.sql
+supabase/migrations/20260724150000_app_status_and_bookmark_permissions.sql
+supabase/migrations/20260724160000_usage_access_enforcement.sql
+supabase/migrations/20260724170000_fix_activation_for_archived_reciprocal_app.sql
+supabase/migrations/20260724190000_campaign_overlap_progress.sql
+supabase/migrations/20260724200000_grant_campaign_progress_read.sql
+supabase/migrations/20260724210000_release_gate_campaign_progress.sql
+supabase/migrations/20260724220000_require_closed_test_threshold.sql
+supabase/migrations/20260725090000_strict_play_links.sql
+supabase/migrations/20260725100000_testing_group_link_and_optional_opt_in.sql
+supabase/migrations/20260725110000_require_group_for_new_listings.sql
+supabase/migrations/20260725120000_friendlier_testloop_reminders.sql
+supabase/migrations/20260725130000_campaign_target_and_reciprocal_guards.sql
+supabase/migrations/20260725140000_remove_legacy_activity_tracking.sql
+supabase/migrations/20260725150000_restore_activity_tracking.sql
+supabase/migrations/20260725160000_allow_target_to_match_enrollment.sql
+supabase/migrations/20260725170000_usage_access_one_hour_enforcement.sql
+supabase/migrations/20260725180000_fix_group_url_constraint.sql
+supabase/migrations/20260725210000_encrypted_chat.sql
+supabase/migrations/20260725220000_fix_usage_access_function.sql
+supabase/migrations/20260725230000_optional_messaging_id.sql
+supabase/migrations/20260726010000_correct_amazon_india_listing.sql
+supabase/migrations/20260726020000_leave_commitment.sql
+supabase/migrations/20260726030000_fix_leave_commitment_rpc.sql
+supabase/migrations/20260726040000_campaign_owner_confirmation_recovery.sql
+supabase/migrations/20260726050000_fix_public_listing_null_filters.sql
+supabase/migrations/20260726060000_reopen_replacement_path.sql
+supabase/supabase/.temp/gotrue-version
+supabase/supabase/.temp/linked-project.json
+supabase/supabase/.temp/pooler-url
+supabase/supabase/.temp/postgres-version
+supabase/supabase/.temp/project-ref
+supabase/supabase/.temp/rest-version
+supabase/supabase/.temp/storage-migration
+supabase/supabase/.temp/storage-version
+--- temp redacted
+## supabase/.temp/cli-latest
+v2.109.1## supabase/.temp/gotrue-version
+v2.193.1## supabase/.temp/linked-project.json
+{"ref":"[REDACTED]","name":"Testloop","organization_id":"[REDACTED]","organization_slug":"[REDACTED]"}## supabase/.temp/pooler-url
+postgresql://postgres.[REDACTED]@[REDACTED].pooler.supabase.com:5432/postgres## supabase/.temp/postgres-version
+17.6.1.147## supabase/.temp/project-ref
+[REDACTED]## supabase/.temp/rest-version
+v14.5## supabase/.temp/storage-migration
+[REDACTED]## supabase/.temp/storage-version
+v1.67.8--- nested
+supabase/supabase/.temp/postgres-version
+17.6.1.147supabase/supabase/.temp/project-ref
+[REDACTED]/supabase/.temp/rest-version
+v14.5supabase/supabase/.temp/storage-version
+v1.67.15supabase/supabase/.temp/linked-project.json
+{"ref":"[REDACTED]","name":"Testloop","organization_id":"[REDACTED]","organization_slug":"[REDACTED]"}supabase/supabase/.temp/gotrue-version
+v2.193.1supabase/supabase/.temp/pooler-url
+postgresql://postgres.[REDACTED]@[REDACTED].pooler.supabase.com:5432/postgressupabase/supabase/.temp/storage-migration
+[REDACTED]

@@ -1,0 +1,19 @@
+host_timestamp=2026-07-26T20:56:44+05:30
+--- qa artifact roots ---
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/baseline/pixel-after-reset.png
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/baseline/pixel-after3s.png
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/baseline/pixel-launch.png
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/lead-verify/pixel-finish-result.png
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/lead-verify/pixel-finish-result.xml
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/lead-verify/pixel-relaunch-result.png
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/lead-verify/pixel-relaunch-result.xml
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/pixel-agent/case14-add-app-valid-pixel-package-step1-text.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/pixel-agent/case14-add-app-valid-pixel-package-step1.png
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/pixel-agent/case14-add-app-valid-pixel-package-step1.xml
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/pixel-agent/core-run/00-pixel-installed-targets.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/pixel-agent/core-run/04-launch-before-fixtures-amstart.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/pixel-agent/core-run/04-launch-before-fixtures-text.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/pixel-agent/core-run/04-launch-before-fixtures-window.txt
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/pixel-agent/core-run/04-launch-before-fixtures.png
+/Users/srinathsmac/Documents/Android testing/qa-artifacts/pixel-agent/core-run/04-launch-before-fixtures.xml
+--- core-fixtures-ready candidates content ---

@@ -1,0 +1,10 @@
+Samsung core focused run compact snapshot
+- Run: core-20260726-205625+0530, artifact root /Users/srinathsmac/Documents/Android testing/qa-artifacts/samsung-agent/core-20260726-205625+0530
+- Device: Samsung RZCY51TRYMT only; SM-M356B Android 16/API 36, 1080x2340, density override 420, stay-awake over USB active, unlocked, TestLoop foreground. POST_NOTIFICATION ignore, GET_USAGE_STATS allow.
+- User correction: Samsung is primary listing/fixture device. CRED and GPay should be added through Samsung UI. Agoda/Zomato should be Samsung-visible listing records but missing on Samsung and installed on Pixel. Existing Pixel-primary ready marker is not the corrected manifest.
+- Source/schema preflight done: repository write paths, package visibility/launch, install status reporter, UsageStats, reminders, migrations scanned under source/ and supabase/ artifacts.
+- Shared artifacts inspected: /qa-artifacts/pixel-agent/core-run/core-fixtures-ready.md exists but says Pixel primary and Samsung read-only; therefore invalid for corrected Samsung-primary execution. It lists Pixel-owned CRED/GPay and SQL fixtures for Amazon/WhatsApp/Agoda/Zomato/missing-pixel.
+- Supabase read-only final state: 7 owned_apps/campaigns/public listings; 0 reciprocal_commitments, install states, daily open states, reminders, notifications, bookmarks. No Samsung mutations created.
+- Read-only Samsung UI done before correction: Discover showed Pixel-owned CRED/GPay listings, details opened read-only and backed out. No Join tapped.
+- Package matrix: Samsung installed CRED/GPay/Amazon/WhatsApp; absent Agoda/Zomato. Amazon resolve-activity returns ResolverActivity despite package installed.
+- Blocked remaining core flows: Samsung-primary listing creation for CRED/GPay, Samsung missing-app behavior for Agoda/Zomato commitments, cross-device commitment/install/reminder flows, notification permission duplicate/cancel/firing, stale/unknown/URL-package mismatch transitions. Blocker: corrected Samsung-primary fixture manifest not available; existing manifest is explicitly Pixel-primary and conflicts with user correction.

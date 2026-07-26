@@ -1,0 +1,86 @@
+private fun NotificationRow(notification: AppNotification, onOpenPair: (String) -> Unit) { Row(Modifier.fillMaxWidth().clickable { notification.commitmentId?.let(onOpenPair) }.padding(16.dp), verticalAlignment = Alignment.Top) { Icon(Icons.Default.Notifications, null, tint = Brand600); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(notification.title, fontWeight = FontWeight.SemiBold); Text(notification.message, style = MaterialTheme.typography.bodySmall, color = Ink500); Text(notification.relativeTime, style = MaterialTheme.typography.labelSmall, color = Ink500, modifier = Modifier.padding(top = 5.dp)) }; if (notification.isUnread) androidx.compose.material3.Badge() } }
+
+@Composable
+fun ProfileRedesign(padding: PaddingValues, username: String, usageAccessGranted: Boolean, onNotifications: () -> Unit, onFeedback: () -> Unit, onTestingGuide: () -> Unit, unread: Int) {
+    val helpTitle = "Help and report a problem"
+    LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(Gutter), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        item { TestLoopTopBar("Profile", unreadCount = unread, onNotifications = onNotifications) }
+        item {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                MemberAvatar(username)
+                Spacer(Modifier.width(12.dp))
+                Column {
+                    Text("@${username.ifBlank { "you" }}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text("Your Google email stays private", color = Ink500)
+                }
+            }
+        }
+        item {
+            GroupSurface {
+                listOf(
+                    "Install checks" to "First check is manual; later checks refresh automatically",
+                    "Notifications" to "Manage reminders and quiet hours",
+                    "Privacy and data" to "TestLoop checks only committed apps",
+                    "Blocked members" to "No blocked members",
+                    "Google Play testing guide" to "Understand the 12 testers · 14 days requirement",
+                    helpTitle to "Tell us what happened or what you’d like to see",
+                ).forEachIndexed { index, (title, body) ->
+                    val isHelp = title == helpTitle
+                    val isTestingGuide = title == "Google Play testing guide"
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable(enabled = isHelp || isTestingGuide, onClick = if (isTestingGuide) onTestingGuide else onFeedback)
+                            .padding(16.dp)
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Column(Modifier.weight(1f)) {
+                                Text(title, fontWeight = FontWeight.SemiBold)
+                                Text(body, style = MaterialTheme.typography.bodySmall, color = Ink500)
+                            }
+                            if (isHelp) Icon(Icons.Default.ChatBubbleOutline, contentDescription = "Send feedback", tint = Brand600)
+                            if (isTestingGuide) Icon(Icons.Default.ArrowForward, contentDescription = "Open Google Play testing guide", tint = Brand600)
+                        }
+                    }
+                    if (index != 5) RowDivider()
+                }
+            }
+        }
+        item { Text("Delete account", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.labelLarge, modifier = Modifier.padding(12.dp)) }
+    }
+}
+
+@Composable
+fun GooglePlayTestingGuide(padding: PaddingValues, onBack: () -> Unit, onOpenOfficialGuide: () -> Unit) {
+    LazyColumn(Modifier.fillMaxSize().navigationBarsPadding().padding(padding), contentPadding = PaddingValues(Gutter), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        item { TestLoopTopBar("Google Play testing guide", "A simple path to production access", onBack = onBack) }
+        item {
+            GroupSurface { Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text("Before you start", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                GuideBullet("Use the Closed testing track. Internal and Open testing do not count for this requirement.")
+                GuideBullet("Plan for 14–15 testers, not exactly 12. The extra buffer helps if someone opts out or stops participating.")
+                GuideBullet("Ask each tester to accept the invite and opt in using your testing link.")
+            } }
+        }
+        item {
+            GroupSurface { Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text("While you wait", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                GuideBullet("Keep at least 12 testers opted in for 14 consecutive days. If you fall below 12, your progress may reset.")
+                GuideBullet("Check Google Play Console directly under your app to see whether the release has been reviewed and approved. TestLoop cannot confirm Google’s approval.")
+                GuideBullet("Have testers use the app like real users. Collect feedback, fix important issues, and keep notes for the production-access form.")
+            } }
+        }
+        item { Button(onClick = onOpenOfficialGuide, modifier = Modifier.fillMaxWidth()) {
+            Icon(Icons.Default.OpenInNew, contentDescription = null); Spacer(Modifier.width(8.dp)); Text("Read Google’s official requirements")
+        } }
+    }
+}
+
+@Composable
+private fun GuideBullet(text: String) {
+    Row(verticalAlignment = Alignment.Top) {
+        Text("•", color = Brand600, style = MaterialTheme.typography.titleMedium)
+        Spacer(Modifier.width(10.dp))
+        Text(text, style = MaterialTheme.typography.bodyMedium, color = Ink500)
+    }
+}

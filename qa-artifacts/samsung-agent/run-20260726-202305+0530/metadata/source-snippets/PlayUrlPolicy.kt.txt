@@ -1,0 +1,72 @@
+     1	package com.testloop.app.platform
+     2	
+     3	import java.net.URI
+     4	import java.net.URLDecoder
+     5	import java.nio.charset.StandardCharsets
+     6	
+     7	/**
+     8	 * The only URLs TestLoop may open from app listings or commitment flows.
+     9	 * Play links must point to the exact package they describe. Group links must
+    10	 * be canonical Google Groups URLs. Arbitrary web URLs are never accepted.
+    11	 */
+    12	object PlayUrlPolicy {
+    13	    private const val TrustedHost = "play.google.com"
+    14	    private val PACKAGE_NAME = Regex("^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z][A-Za-z0-9_]*)+$")
+    15	
+    16	    fun packageFromInstallLink(raw: String): String? = parse(raw)?.let { parsed ->
+    17	        if (parsed.path != "/store/apps/details" || parsed.query.keys != setOf("id")) return@let null
+    18	        parsed.query["id"]?.singleOrNull()?.takeIf(PACKAGE_NAME::matches)
+    19	    }
+    20	
+    21	    fun isInstallLink(raw: String, packageName: String): Boolean =
+    22	        packageFromInstallLink(raw) == packageName
+    23	
+    24	    fun isTestingLink(raw: String, packageName: String): Boolean =
+    25	        parse(raw)?.let { parsed ->
+    26	            parsed.path == "/apps/testing/$packageName" && parsed.query.isEmpty()
+    27	        } == true && PACKAGE_NAME.matches(packageName)
+    28	
+    29	    fun isGroupLink(raw: String): Boolean =
+    30	        parse(raw)?.let { parsed ->
+    31	            parsed.host == "groups.google.com" && parsed.query.isEmpty() && GROUP_PATH.matches(parsed.path)
+    32	        } == true
+    33	
+    34	    fun isAllowedUrl(raw: String): Boolean =
+    35	        packageFromInstallLink(raw) != null ||
+    36	            isGroupLink(raw) ||
+    37	            parse(raw)?.let { parsed ->
+    38	                parsed.path.removePrefix("/apps/testing/")
+    39	                    .takeIf { parsed.path.startsWith("/apps/testing/") }
+    40	                    ?.takeIf(PACKAGE_NAME::matches)
+    41	                    ?.let { parsed.query.isEmpty() }
+    42	            } == true
+    43	
+    44	    private data class Parsed(val host: String, val path: String, val query: Map<String, List<String>>)
+    45	
+    46	    private val GROUP_PATH = Regex("^/g/[A-Za-z0-9][A-Za-z0-9_-]*$")
+    47	
+    48	    private fun parse(raw: String): Parsed? {
+    49	        val normalized = raw.trim()
+    50	        if (normalized.length !in 1..2_048 || normalized.any(::unsafe)) return null
+    51	        val uri = runCatching { URI(normalized) }.getOrNull() ?: return null
+    52	        if (uri.scheme != "https" || uri.host !in setOf(TrustedHost, "groups.google.com") || uri.rawUserInfo != null || uri.port != -1 || uri.rawFragment != null || uri.rawPath != uri.path) return null
+    53	        val map = linkedMapOf<String, MutableList<String>>()
+    54	        val query = uri.rawQuery ?: ""
+    55	        if (query.isNotEmpty()) query.split('&').forEach { part ->
+    56	            val index = part.indexOf('=')
+    57	            if (index <= 0 || index == part.lastIndex) return null
+    58	            val key = decode(part.substring(0, index)) ?: return null
+    59	            val value = decode(part.substring(index + 1)) ?: return null
+    60	            if (key.isEmpty() || value.isEmpty() || key in map) return null
+    61	            map[key] = mutableListOf(value)
+    62	        }
+    63	        return Parsed(uri.host, uri.path, map)
+    64	    }
+    65	
+    66	    private fun decode(value: String): String? = runCatching {
+    67	        URLDecoder.decode(value, StandardCharsets.UTF_8.name())
+    68	    }.getOrNull()?.takeIf { decoded -> decoded.none(::unsafe) }
+    69	
+    70	    private fun unsafe(character: Char): Boolean =
+    71	        character.isISOControl() || character in '\u202A'..'\u202E' || character in '\u2066'..'\u2069'
+    72	}

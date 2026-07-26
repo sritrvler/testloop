@@ -1,0 +1,15 @@
+timestamp_utc=2026-07-26T15:33:02Z
+Physical size: 1080x2340
+Physical density: 450
+Override density: 420
+stay_on_while_plugged_in=15
+Starting: Intent { flg=0x20000 cmp=com.testloop.app/.MainActivity }
+Warning: Activity not started, intent has been delivered to currently running top-most instance.
+Status: ok
+LaunchState: UNKNOWN (0)
+Activity: com.testloop.app/.MainActivity
+TotalTime: 0
+WaitTime: 9
+Complete
+  mCurrentFocus=Window{8d69aa u0 com.testloop.app/com.testloop.app.MainActivity}
+  mFocusedApp=ActivityRecord{129183043 u0 com.testloop.app/.MainActivity t2259}

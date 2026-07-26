@@ -1,0 +1,4 @@
+case=case01-finish-usage-onboarding
+start_utc=2026-07-26T14:54:46Z
+end_utc=2026-07-26T14:54:58Z
+mutation=pressed Finish setup, expected backend account tracking_setup_complete=true

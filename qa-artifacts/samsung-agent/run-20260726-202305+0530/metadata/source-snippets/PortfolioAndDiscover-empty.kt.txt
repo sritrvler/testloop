@@ -1,0 +1,91 @@
+        Text("Create a listing, choose how many testers you need, and share the Play links in one place.", color = Ink500)
+        Spacer(Modifier.height(16.dp))
+        Button(onClick = onAdd, modifier = Modifier.fillMaxWidth().height(50.dp)) { Text("Add your first app") }
+        Spacer(Modifier.height(8.dp))
+        OutlinedButton(onClick = onDiscover, modifier = Modifier.fillMaxWidth().height(48.dp)) { Text("Find an app to test") }
+    }
+}
+
+@Composable
+fun DiscoverRedesign(padding: PaddingValues, apps: List<PublicApp>, ownedAppIds: Set<String>, commitments: List<ReciprocalCommitment>, bookmarks: List<AppBookmark>, onOpen: (String) -> Unit, onBookmark: suspend (String) -> Result<Unit>, onRemoveBookmark: suspend (String) -> Result<Unit>, onAddApp: () -> Unit, onNotifications: () -> Unit, unread: Int) {
+    var query by remember { mutableStateOf("") }
+    var filter by remember { mutableStateOf("All apps") }
+    var showBookmarksOnly by remember { mutableStateOf(false) }
+    // This is a view filter, not account state. Do not restore it across app
+    // launches and make a newly reopened listing appear to have vanished.
+    var hideMyApps by remember { mutableStateOf(false) }
+    var optimisticBookmarkOverrides by remember { mutableStateOf<Map<String, Boolean>>(emptyMap()) }
+    val scope = rememberCoroutineScope()
+    val joinedAppIds = commitments.filter { it.lifecycle != com.testloop.app.domain.CommitmentLifecycle.PENDING_SETUP }.mapTo(mutableSetOf()) { it.appBeingTestedByCurrentUserId }
+    val actualBookmarkedIds = bookmarks.mapTo(mutableSetOf()) { it.appId }
+    LaunchedEffect(bookmarks) {
+        optimisticBookmarkOverrides = optimisticBookmarkOverrides.filter { (id, desired) -> (id in actualBookmarkedIds) == desired }
+    }
+    fun isBookmarked(id: String): Boolean = optimisticBookmarkOverrides[id] ?: (id in actualBookmarkedIds)
+    val bookmarkedById = apps.mapNotNull { app -> if (isBookmarked(app.id)) app.id to (bookmarks.firstOrNull { it.appId == app.id } ?: AppBookmark(app.id, Instant.now())) else null }.toMap()
+    val filtered = apps
+        .filter { it.id in ownedAppIds || it.isDiscoverableForJoin() }
+        .filter { it.id in ownedAppIds || it.id !in joinedAppIds }
+        .filter { !showBookmarksOnly || it.id in bookmarkedById }
+        .filter { it.title.contains(query, true) || it.ownerUsername.contains(query, true) || it.packageName.contains(query, true) }
+        .filter { it.id in ownedAppIds || showBookmarksOnly || when (filter) { "Open" -> it.slotsRemaining > 0; "Full" -> it.slotsRemaining == 0; else -> true } }
+        .let { if (filter == "Fewest slots") it.sortedBy { app -> app.slotsRemaining } else it }
+        .let { list -> if (hideMyApps) list.filterNot { it.id in ownedAppIds } else list }
+    val ownerPreviews = filtered.filter { it.id in ownedAppIds }
+    val joinableApps = filtered.filterNot { it.id in ownedAppIds }
+    LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(horizontal = Gutter, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        item { TestLoopTopBar("Discover", "Explore apps, join their test groups, and get your app tested in return", unreadCount = unread, onNotifications = onNotifications, actionContent = {
+            IconButton(onClick = { showBookmarksOnly = !showBookmarksOnly }) {
+                Icon(if (showBookmarksOnly) Icons.Default.Bookmark else Icons.Default.BookmarkBorder, if (showBookmarksOnly) "Show all apps" else "Show bookmarked apps", tint = Brand600)
+            }
+        }) }
+        item { OutlinedTextField(query, { query = it }, modifier = Modifier.fillMaxWidth(), label = { Text("Search apps or usernames") }, leadingIcon = { Icon(Icons.Default.Search, null) }, singleLine = true) }
+        item { Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("All apps", "Open", "New", "Fewest slots", "Full").forEach { label -> FilterChip(selected = filter == label && !showBookmarksOnly, onClick = { filter = label; showBookmarksOnly = false }, label = { Text(label) }) } } }
+        item {
+            Row(Modifier.fillMaxWidth().clickable { hideMyApps = !hideMyApps }.padding(vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text("Hide my apps", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
+                    Text(if (hideMyApps) "Showing apps you can join" else "Show your listings as preview cards", style = MaterialTheme.typography.bodySmall, color = Ink500)
+                }
+                Switch(checked = hideMyApps, onCheckedChange = { hideMyApps = it }, modifier = Modifier.semantics { contentDescription = "Hide my apps" })
+            }
+        }
+        if (filtered.isEmpty()) item { DiscoverEmptyState(apps.isNotEmpty(), onAddApp) }
+        else {
+            if (ownerPreviews.isNotEmpty()) {
+                item { SectionHeader("Your listings") }
+                item {
+                    GroupSurface {
+                        ownerPreviews.forEachIndexed { index, app ->
+                            DiscoverRow(app, isOwnerPreview = true, bookmark = null, onOpen = onOpen, onBookmark = {}, onRemoveBookmark = {})
+                            if (index != ownerPreviews.lastIndex) RowDivider()
+                        }
+                    }
+                }
+            }
+            if (joinableApps.isNotEmpty()) {
+                item { SectionHeader("Apps you can test") }
+                item {
+                    GroupSurface {
+                        joinableApps.forEachIndexed { index, app ->
+                            DiscoverRow(app, isOwnerPreview = false, bookmark = bookmarkedById[app.id], onOpen = onOpen, onBookmark = { id -> optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to true); scope.launch { onBookmark(id).onFailure { optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to false) } } }, onRemoveBookmark = { id -> optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to false); scope.launch { onRemoveBookmark(id).onFailure { optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to true) } } })
+                            if (index != joinableApps.lastIndex) RowDivider()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DiscoverEmptyState(hasAnyApps: Boolean, onAddApp: () -> Unit) {
+    Column(Modifier.fillMaxWidth().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        AppMonogram("Discover")
+        Spacer(Modifier.height(14.dp))
+        Text(if (hasAnyApps) "No matching apps" else "No apps to discover yet", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(8.dp))
+        Text(if (hasAnyApps) "Try the app name, package ID, or member username." else "New test groups will appear here. You can start by adding your own app in My apps.", color = Ink500)
+        if (!hasAnyApps) {
+            Spacer(Modifier.height(16.dp))
+            Button(onClick = onAddApp, modifier = Modifier.fillMaxWidth().height(50.dp)) { Text("Add my app") }

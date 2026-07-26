@@ -1,0 +1,13 @@
+host_timestamp=2026-07-26T20:28:52+05:30
+  mCurrentFocus=Window{8d69aa u0 com.testloop.app/com.testloop.app.MainActivity}
+    mShowingDream=false mDreamingLockscreen=false
+--- ui text ---
+Step 2 of 2
+Allow daily open checks
+Enable Android Usage Access so the publisher can see whether you opened the specific app you committed to test today.
+App
+TestLoop records only a daily opened or not opened signal for active commitments.
+It does not upload minutes, raw usage history, or your full app list.
+Android will show its own Usage Access settings. Turn on TestLoop, then return here.
+Usage Access enabled
+Finish setup

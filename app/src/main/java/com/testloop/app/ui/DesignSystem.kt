@@ -50,6 +50,8 @@ import com.testloop.app.ui.theme.Success100
 import com.testloop.app.ui.theme.Success700
 
 internal val Gutter = 20.dp
+/** Extra breathing room below scroll content so the last action clears OEM nav bars. */
+internal val ScreenBottomReserve = 32.dp
 
 @Composable
 fun AppMonogram(title: String, modifier: Modifier = Modifier, small: Boolean = false) {

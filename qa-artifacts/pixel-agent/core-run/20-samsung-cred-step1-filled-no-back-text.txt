@@ -1,0 +1,13 @@
+[desc] Back [43,153][106,216] click=false
+Add app [148,120][372,199] click=false
+Step 1 of 3 [148,199][334,248] click=false
+App identity [53,321][401,410] click=false
+QASaQASamsungCREDmsungCRED2 [53,447][1027,627] click=true
+App display name [95,447][400,496] click=false
+https://play.google.com/store/apps/detailhttps://play.google.com/sts?id=com.dreamplug.androidapp [53,664][1027,1002] click=true
+Play install link [95,664][356,713] click=false
+Invalid format. Example: https://play.google.com/store/apps/details?id=com.example.app [95,855][985,1002] click=false
+Package ID [95,1105][348,1177] click=false
+Extracted automatically from the Play install link [95,1230][932,1279] click=false
+Paste a valid Google Play install link to detect the package ID. [153,1348][995,1446] click=false
+Continue [452,2062][628,2124] click=false

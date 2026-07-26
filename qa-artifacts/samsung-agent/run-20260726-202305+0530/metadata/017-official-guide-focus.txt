@@ -1,0 +1,3 @@
+--- focus after official guide tap ---
+  mCurrentFocus=Window{8d69aa u0 com.testloop.app/com.testloop.app.MainActivity}
+    mShowingDream=false mDreamingLockscreen=false
