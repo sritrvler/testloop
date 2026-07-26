@@ -84,6 +84,7 @@ import com.testloop.app.domain.OwnedApp
 import com.testloop.app.domain.PublicApp
 import com.testloop.app.domain.ReciprocalCommitment
 import com.testloop.app.domain.UsageAccessStatus
+import com.testloop.app.notifications.PendingSetupReminder
 import com.testloop.app.ui.theme.Brand600
 import com.testloop.app.ui.theme.Ink500
 import com.testloop.app.platform.ExternalAppLauncher
@@ -114,7 +115,7 @@ private sealed interface AppScreen {
 }
 
 @Composable
-fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, chatRepo: ChatRepository, externalAppLauncher: ExternalAppLauncher, feedbackUrl: String, usageAccessGranted: Boolean, onOpenUsageAccess: () -> Unit, isUsageAccessGrantedNow: () -> Boolean, onScheduleEveningReminder: (pendingCount: Int, singleAppName: String?) -> Unit, onRequestNotificationPermission: () -> Unit) {
+fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, chatRepo: ChatRepository, externalAppLauncher: ExternalAppLauncher, feedbackUrl: String, usageAccessGranted: Boolean, onOpenUsageAccess: () -> Unit, isUsageAccessGrantedNow: () -> Boolean, onScheduleEveningReminder: (pendingCount: Int, singleAppName: String?) -> Unit, onSyncPendingSetupReminders: (List<PendingSetupReminder>) -> Unit, onRequestNotificationPermission: () -> Unit) {
     val account by auth.account.collectAsState()
     val providerAuthError by auth.authError.collectAsState()
     val ownedApps by repo.ownedApps.collectAsState()
@@ -148,6 +149,13 @@ fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, chatRepo: ChatRe
         discoverApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }?.title
             ?: ownedApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }?.title
     }
+    val pendingSetupReminders = commitments.mapNotNull { pair ->
+        if (pair.lifecycle != CommitmentLifecycle.PENDING_SETUP || pair.setupDeadlineAt == null) return@mapNotNull null
+        val appName = discoverApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }?.title
+            ?: ownedApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }?.title
+            ?: "the app"
+        PendingSetupReminder(pair.commitmentId, appName, pair.setupDeadlineAt)
+    }
     val scope = rememberCoroutineScope()
     val snackbars = remember { SnackbarHostState() }
     var screenHistory by remember { mutableStateOf(listOf<AppScreen>(AppScreen.Welcome)) }
@@ -174,6 +182,11 @@ fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, chatRepo: ChatRe
         val scheduledPendingCount = if (account == null) 0 else pendingTestingCommitments.size
         onScheduleEveningReminder(scheduledPendingCount, if (scheduledPendingCount == 1) singlePendingAppName else null)
         if (scheduledPendingCount > 0) onRequestNotificationPermission()
+    }
+
+    LaunchedEffect(account?.id, pendingSetupReminders) {
+        onSyncPendingSetupReminders(if (account == null) emptyList() else pendingSetupReminders)
+        if (pendingSetupReminders.isNotEmpty()) onRequestNotificationPermission()
     }
 
     LaunchedEffect(usageAccessGranted) {
@@ -308,7 +321,13 @@ fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, chatRepo: ChatRe
                     LaunchResult.Blocked -> snack("This feedback link is not trusted")
                     else -> snack("We couldn't open the feedback form. Try again in a moment.")
                 }
-            }, onTestingGuide = { navigate(AppScreen.GooglePlayTestingGuide) }, onPair = { navigate(AppScreen.PairDetail(it)) }, onPrimaryAction = ::performPrimaryAction, onOwnApp = { id, attention -> navigate(AppScreen.OwnDetail(id, attention)) }, onDiscover = { navigate(AppScreen.PublicDetail(it)) }, onBookmark = { id -> repo.bookmarkApp(id).onFailure { snack(userFriendlyError(it, "We couldn't save this bookmark. Check your connection and try again.")) } }, onRemoveBookmark = { id -> repo.removeBookmark(id).onFailure { snack(userFriendlyError(it, "We couldn't remove this bookmark. Check your connection and try again.")) } }, onAddApp = { navigate(AppScreen.AddApp) }, onObligations = { navigate(AppScreen.Obligations) })
+            }, onTestingGuide = { navigate(AppScreen.GooglePlayTestingGuide) }, onPair = { id ->
+                if (commitments.firstOrNull { it.commitmentId == id }?.lifecycle == CommitmentLifecycle.PENDING_SETUP) {
+                    navigate(AppScreen.CommitmentReady(id))
+                } else {
+                    navigate(AppScreen.PairDetail(id))
+                }
+            }, onPrimaryAction = ::performPrimaryAction, onOwnApp = { id, attention -> navigate(AppScreen.OwnDetail(id, attention)) }, onDiscover = { navigate(AppScreen.PublicDetail(it)) }, onBookmark = { id -> repo.bookmarkApp(id).onFailure { snack(userFriendlyError(it, "We couldn't save this bookmark. Check your connection and try again.")) } }, onRemoveBookmark = { id -> repo.removeBookmark(id).onFailure { snack(userFriendlyError(it, "We couldn't remove this bookmark. Check your connection and try again.")) } }, onAddApp = { navigate(AppScreen.AddApp) }, onObligations = { navigate(AppScreen.Obligations) })
         is AppScreen.PublicDetail -> PublicAppDetail(
             discoverApps.firstOrNull { it.id == current.appId }, ownedApps, ownedAppIdsInUse,
             pendingCommitment = commitments.firstOrNull { it.appBeingTestedByCurrentUserId == current.appId && it.lifecycle == com.testloop.app.domain.CommitmentLifecycle.PENDING_SETUP },
@@ -330,7 +349,7 @@ fun TestLoopApp(auth: AuthRepository, repo: TestLoopRepository, chatRepo: ChatRe
             repo.reportInstallStatus(id).onFailure {
                 snack(userFriendlyError(it, "We couldn't check for the app. Check your connection and try again."))
             }
-        }, onFound = { replace(AppScreen.Main()) }, onBookmark = { id -> repo.bookmarkApp(id).onFailure { snack(userFriendlyError(it, "We couldn't save this bookmark. Check your connection and try again.")) } }, onRemoveBookmark = { id -> repo.removeBookmark(id).onFailure { snack(userFriendlyError(it, "We couldn't remove this bookmark. Check your connection and try again.")) } })
+        }, onFound = { replace(AppScreen.Main()) }, onRefresh = { repo.refresh() }, onBookmark = { id -> repo.bookmarkApp(id).onFailure { snack(userFriendlyError(it, "We couldn't save this bookmark. Check your connection and try again.")) } }, onRemoveBookmark = { id -> repo.removeBookmark(id).onFailure { snack(userFriendlyError(it, "We couldn't remove this bookmark. Check your connection and try again.")) } })
         }
         is AppScreen.PairDetail -> PairDetailScreen(commitments.firstOrNull { it.commitmentId == current.commitmentId }, ownedApps, campaigns, discoverApps, onBack = ::back, onOpen = ::performPrimaryAction, onOpenLink = { url ->
             when (externalAppLauncher.openUrl(url)) {

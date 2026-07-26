@@ -64,6 +64,7 @@ import com.testloop.app.domain.ActivitySignal
 import com.testloop.app.domain.CampaignProgress
 import com.testloop.app.domain.CampaignTestingStatus
 import com.testloop.app.domain.CampaignRiskDecision
+import com.testloop.app.domain.CommitmentEndReason
 import com.testloop.app.domain.statusLabel
 import com.testloop.app.domain.CommitmentLifecycle
 import com.testloop.app.domain.DirectionSignal
@@ -78,6 +79,8 @@ import com.testloop.app.ui.theme.Ink500
 import com.testloop.app.ui.theme.Success100
 import com.testloop.app.ui.theme.Success700
 import java.time.LocalDate
+import java.time.Duration
+import java.time.Instant
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 
@@ -103,7 +106,11 @@ fun PairDetailScreen(pair: ReciprocalCommitment?, ownedApps: List<OwnedApp>, cam
             if (!canActOnCommitment) item {
                 InlineNotice(
                     when (pair.lifecycle) {
-                        CommitmentLifecycle.LEFT -> "You left this commitment. It no longer reserves a tester slot."
+                        CommitmentLifecycle.LEFT -> when (pair.endReason) {
+                            CommitmentEndReason.INSTALL_TIMEOUT -> "The 1-hour installation window expired. This commitment no longer reserves a tester slot."
+                            CommitmentEndReason.OWNER_RELEASE -> "The owner released this commitment. It no longer reserves a tester slot."
+                            else -> "You left this commitment. It no longer reserves a tester slot."
+                        }
                         CommitmentLifecycle.COMPLETED -> "This commitment is complete and no longer accepts actions."
                         else -> "This commitment is no longer active."
                     }
@@ -199,11 +206,15 @@ fun CommitmentLeftScreen(onDone: () -> Unit) {
 }
 
 @Composable
-fun CommitmentReadyScreen(commitment: ReciprocalCommitment?, publicApps: List<PublicApp>, ownedApps: List<OwnedApp>, isBookmarked: Boolean, onBack: () -> Unit, onOpenLink: (String) -> Unit, onCheckInstall: suspend (String) -> Result<Unit>, onFound: () -> Unit, onBookmark: suspend (String) -> Result<Unit>, onRemoveBookmark: suspend (String) -> Result<Unit>) {
+fun CommitmentReadyScreen(commitment: ReciprocalCommitment?, publicApps: List<PublicApp>, ownedApps: List<OwnedApp>, isBookmarked: Boolean, onBack: () -> Unit, onOpenLink: (String) -> Unit, onCheckInstall: suspend (String) -> Result<Unit>, onFound: () -> Unit, onRefresh: suspend () -> Result<Unit>, onBookmark: suspend (String) -> Result<Unit>, onRemoveBookmark: suspend (String) -> Result<Unit>) {
     if (commitment == null) { MissingScreen(onBack); return }
     val app = publicApps.firstOrNull { it.id == commitment.appBeingTestedByCurrentUserId }
     val ownApp = ownedApps.firstOrNull { it.id == commitment.currentUserOwnAppId }
     val appName = app?.title ?: "Test app"
+    if (commitment.lifecycle == CommitmentLifecycle.LEFT && commitment.endReason == CommitmentEndReason.INSTALL_TIMEOUT) {
+        CommitmentExpiredScreen(appName, onBack)
+        return
+    }
     val optInUrl = app?.optInUrl?.trim()?.takeIf { it.isNotEmpty() }
     val installStep = if (optInUrl != null) 3 else 2
     val checkStep = installStep + 1
@@ -212,6 +223,7 @@ fun CommitmentReadyScreen(commitment: ReciprocalCommitment?, publicApps: List<Pu
     var hasChecked by rememberSaveable(commitment.commitmentId) {
         mutableStateOf(commitment.youOweSignal.install != InstallSignal.UNAVAILABLE)
     }
+    var now by remember { mutableStateOf(Instant.now()) }
     val scope = rememberCoroutineScope()
     val installSignal = commitment.youOweSignal.install
     val found = installSignal == InstallSignal.INSTALLED
@@ -219,6 +231,18 @@ fun CommitmentReadyScreen(commitment: ReciprocalCommitment?, publicApps: List<Pu
         checkingInstall -> checkStep
         hasChecked && installSignal == InstallSignal.NOT_INSTALLED -> installStep
         else -> 1
+    }
+
+    val deadline = commitment.setupDeadlineAt
+    val remainingSeconds = deadline?.let { Duration.between(now, it).seconds.coerceAtLeast(0) }
+    LaunchedEffect(commitment.commitmentId, deadline, commitment.lifecycle) {
+        if (commitment.lifecycle != CommitmentLifecycle.PENDING_SETUP || deadline == null) return@LaunchedEffect
+        while (Instant.now().isBefore(deadline)) {
+            now = Instant.now()
+            delay(1000)
+        }
+        now = Instant.now()
+        onRefresh()
     }
 
     LaunchedEffect(commitment.commitmentId, found) {
@@ -246,6 +270,23 @@ fun CommitmentReadyScreen(commitment: ReciprocalCommitment?, publicApps: List<Pu
     Column(Modifier.fillMaxSize().navigationBarsPadding()) {
         TestLoopTopBar("Get ready to test", appName, onBack = onBack)
         LazyColumn(contentPadding = PaddingValues(start = Gutter, top = Gutter, end = Gutter, bottom = Gutter + ScreenBottomReserve), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            if (commitment.lifecycle == CommitmentLifecycle.PENDING_SETUP && remainingSeconds != null) item {
+                GroupSurface {
+                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(
+                            if (remainingSeconds > 0) "Install within ${formatSetupCountdown(remainingSeconds)}" else "Installation window expired",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = if (remainingSeconds > 0) Brand600 else MaterialTheme.colorScheme.error
+                        )
+                        Text(
+                            if (remainingSeconds > 0) "Your tester slot is reserved until the countdown ends. Install the app and return here so TestLoop can confirm it." else "We are updating the commitment and releasing the reserved tester slot.",
+                            color = Ink500,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                }
+            }
             item {
                 Column {
                     Text("Complete these steps", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
@@ -332,6 +373,34 @@ fun CommitmentReadyScreen(commitment: ReciprocalCommitment?, publicApps: List<Pu
             }
             item { InlineNotice("TestLoop checks whether the app is installed on this phone. It does not verify test quality or Google Play approval.") }
         }
+    }
+}
+
+@Composable
+private fun CommitmentExpiredScreen(appName: String, onBack: () -> Unit) {
+    Column(
+        Modifier.fillMaxSize().navigationBarsPadding().padding(Gutter),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(Icons.Default.ErrorOutline, contentDescription = "Installation window expired", tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(52.dp))
+        Spacer(Modifier.height(16.dp))
+        Text("Installation window expired", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(8.dp))
+        Text("The 1-hour window to install $appName ended, so the tester slot was released. You can join again if a slot is available.", color = Ink500, style = MaterialTheme.typography.bodyLarge)
+        Spacer(Modifier.height(20.dp))
+        Button(onClick = onBack, modifier = Modifier.fillMaxWidth().height(52.dp)) { Text("Back") }
+    }
+}
+
+private fun formatSetupCountdown(totalSeconds: Long): String {
+    val hours = totalSeconds / 3600
+    val minutes = (totalSeconds % 3600) / 60
+    val seconds = totalSeconds % 60
+    return if (hours > 0) {
+        "%dh %02dm".format(hours, minutes)
+    } else {
+        "%02d:%02d".format(minutes, seconds)
     }
 }
 

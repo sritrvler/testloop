@@ -106,6 +106,11 @@ fun TrackingSetup(usageAccessGranted: Boolean, onOpenUsageAccess: () -> Unit, on
 fun TodayRedesign(padding: PaddingValues, username: String, dataLoaded: Boolean, commitments: List<ReciprocalCommitment>, ownedApps: List<OwnedApp>, campaigns: List<Campaign>, publicApps: List<PublicApp>, onPair: (String) -> Unit, onPrimaryAction: (String) -> Unit, onOwnApp: (String, Boolean) -> Unit, onNotifications: () -> Unit, unread: Int, onObligations: () -> Unit, onAddApp: () -> Unit, onDiscover: () -> Unit) {
     val today = LocalDate.now()
     // Delisted targets remain historical data, but are not current testing work.
+    val pendingSetup = commitments.filter {
+        it.lifecycle == CommitmentLifecycle.PENDING_SETUP &&
+            (publicApps.any { app -> app.id == it.appBeingTestedByCurrentUserId } ||
+                ownedApps.any { app -> app.id == it.appBeingTestedByCurrentUserId })
+    }
     val active = commitments.filter {
         it.lifecycle == CommitmentLifecycle.ACTIVE &&
             (publicApps.any { app -> app.id == it.appBeingTestedByCurrentUserId } ||
@@ -127,7 +132,7 @@ fun TodayRedesign(padding: PaddingValues, username: String, dataLoaded: Boolean,
     val incomingNeedsAction = incoming.count { pair ->
         targetProgress(pair, publicApps, ownedApps, campaigns).dailyTaskUnlocked() && needsAttention(pair.theyOweSignal)
     }
-    val hasNoActivity = active.isEmpty()
+    val hasNoActivity = active.isEmpty() && pendingSetup.isEmpty()
     val firstRun = hasNoActivity && ownedApps.isEmpty()
     Column(Modifier.fillMaxSize().padding(padding)) {
         TestLoopTopBar("Today", "${timeGreeting()}, ${username.ifBlank { "there" }} · ${today.format(DateTimeFormatter.ofPattern("EEEE, d MMMM"))}", unreadCount = unread, onNotifications = onNotifications)
@@ -142,6 +147,24 @@ fun TodayRedesign(padding: PaddingValues, username: String, dataLoaded: Boolean,
         } else if (hasNoActivity) {
             item { ReadyToPairToday(onDiscover = onDiscover, onAddApp = onAddApp) }
         } else {
+            if (pendingSetup.isNotEmpty()) item {
+                SectionHeader("Finish setup", "Your tester slot is reserved")
+                GroupSurface {
+                    pendingSetup.forEachIndexed { index, pair ->
+                        val targetTitle = publicApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }?.title
+                            ?: ownedApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }?.title
+                        Row(Modifier.fillMaxWidth().clickable { onPair(pair.commitmentId) }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Column(Modifier.weight(1f)) {
+                                Text(targetTitle ?: "Your reserved test", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                                Spacer(Modifier.height(5.dp))
+                                Text("Install the app and complete the setup steps before the reservation expires.", color = Ink500, style = MaterialTheme.typography.bodySmall)
+                            }
+                            Icon(Icons.Default.ArrowForward, "Continue setup", tint = Brand600)
+                        }
+                        if (index != pendingSetup.lastIndex) RowDivider()
+                    }
+                }
+            }
             item { TodaySummaryCard(tasksRemaining, unlockedTasks.size) }
             item { SectionHeader("Your tasks today", if (tasksRemaining == 0) "Nothing else for you to do" else "$tasksRemaining app${if (tasksRemaining == 1) "" else "s"} still need you", action = "All obligations", onAction = onObligations) }
             item { if (pendingTasks.isEmpty()) EmptyTodayState() else GroupSurface { pendingTasks.forEachIndexed { index, pair -> DailyTaskRow(pair, targetAppTitle(pair, publicApps, ownedApps), targetProgress(pair, publicApps, ownedApps, campaigns), today, onPair, onPrimaryAction); if (index != pendingTasks.lastIndex) RowDivider() } } }

@@ -1,12 +1,14 @@
 package com.testloop.app.data
 
 import android.content.Context
+import android.util.Log
 import com.testloop.app.domain.Account
 import com.testloop.app.domain.AppBookmark
 import com.testloop.app.domain.ActivitySignal
 import com.testloop.app.domain.AppNotification
 import com.testloop.app.domain.Campaign
 import com.testloop.app.domain.CampaignRiskDecision
+import com.testloop.app.domain.CommitmentEndReason
 import com.testloop.app.domain.CommitmentLifecycle
 import com.testloop.app.domain.DirectionSignal
 import com.testloop.app.domain.InstallSignal
@@ -57,10 +59,14 @@ class SupabaseTestLoopRepository(
     private val _usageAccess = MutableStateFlow(UsageAccessStatus())
     override val usageAccess: StateFlow<UsageAccessStatus> = _usageAccess.asStateFlow()
 
-    override suspend fun refresh(): Result<Unit> = refreshInternal()
+    override suspend fun refresh(): Result<Unit> = refreshInternal().onFailure {
+        Log.e("TestLoopRefresh", "Refresh failed", it)
+    }
 
     private suspend fun refreshInternal(): Result<Unit> = runCatching {
         val userId = requireUserId()
+        runCatching { supabase.postgrest.rpc("expire_pending_commitments") }
+            .onFailure { Log.w("TestLoopRefresh", "Could not expire pending commitments; continuing refresh", it) }
         val ownRows = supabase.from("owned_apps").select {
             filter { eq("owner_id", userId) }
         }.decodeList<OwnedAppRow>()
@@ -118,7 +124,11 @@ class SupabaseTestLoopRepository(
         }
         _campaigns.value = campaignRows.map { campaign ->
             val campaignCommitments = updatedVisibleCommitmentRows.filter { it.campaignId == campaign.id }
-            val reserved = campaignCommitments.count { it.lifecycle == "pending_setup" || it.lifecycle == "active" }
+            val now = Instant.now()
+            val reserved = campaignCommitments.count {
+                it.lifecycle == "active" ||
+                    (it.lifecycle == "pending_setup" && it.setupExpiresAt?.let { deadline -> runCatching { Instant.parse(deadline).isAfter(now) }.getOrDefault(false) } == true)
+            }
             val active = campaignCommitments
                 .filter { it.lifecycle == "active" }
                 .filter { commitment ->
@@ -159,11 +169,23 @@ class SupabaseTestLoopRepository(
             .values
             .map { duplicates ->
                 duplicates.maxWithOrNull(
-                    compareBy<ReciprocalCommitment> { if (it.lifecycle == CommitmentLifecycle.ACTIVE) 1 else 0 }
+                    compareBy<ReciprocalCommitment> {
+                        when (it.lifecycle) {
+                            CommitmentLifecycle.ACTIVE -> 3
+                            CommitmentLifecycle.PENDING_SETUP -> 2
+                            CommitmentLifecycle.COMPLETED -> 1
+                            CommitmentLifecycle.LEFT -> 0
+                        }
+                    }
                         .thenBy { installRank(it.youOweSignal.install) }
                         .thenBy { activityRank(it.youOweSignal.activity) }
                 ) ?: duplicates.first()
             }
+        Log.i(
+            "TestLoopRefresh",
+            "Loaded ${_discoverApps.value.size} listings and ${_commitments.value.size} commitments: " +
+                _commitments.value.joinToString { "${it.lifecycle}:${it.appBeingTestedByCurrentUserId}" }
+        )
         _notifications.value = supabase.from("notifications").select {
             filter { eq("recipient_id", userId) }
         }.decodeList<NotificationRow>().map { it.toNotification() }
@@ -275,30 +297,61 @@ class SupabaseTestLoopRepository(
     }
 
     override suspend fun joinCampaign(publicAppId: String, ownAppId: String?): Result<ReciprocalCommitment> = runCatching {
-        val userId = requireUserId()
-        val offeredAppId = ownAppId?.takeIf { id -> _ownedApps.value.any { it.id == id } }
-        val listing = _discoverApps.value.firstOrNull { it.id == publicAppId }
-            ?: error("That listing is no longer available")
-        if (listing.ownerId == userId) {
-            error("You cannot join your own app.")
-        }
-        val listingRow = supabase.from("public_app_listings").select {
-            filter { eq("id", listing.id) }
-        }.decodeSingle<PublicListingRow>()
-        val inserted = supabase.from("reciprocal_commitments").insert(
-            CommitmentInsert(
-                campaignId = listingRow.campaignId,
-                testerId = userId,
-                currentUserOwnedAppId = offeredAppId,
-                targetDays = 14,
-                lifecycle = "pending_setup"
+        try {
+            val userId = requireUserId()
+            runCatching { supabase.postgrest.rpc("expire_pending_commitments") }
+                .onFailure { Log.w("TestLoopJoin", "Could not expire pending commitments; continuing join", it) }
+            val offeredAppId = ownAppId?.takeIf { id -> _ownedApps.value.any { it.id == id } }
+            val listing = _discoverApps.value.firstOrNull { it.id == publicAppId }
+                ?: error("That listing is no longer available")
+            if (listing.ownerId == userId) {
+                error("You cannot join your own app.")
+            }
+            val listingRow = supabase.from("public_app_listings").select {
+                filter { eq("id", listing.id) }
+            }.decodeSingle<PublicListingRow>()
+            val inserted = supabase.from("reciprocal_commitments").insert(
+                CommitmentInsert(
+                    campaignId = listingRow.campaignId,
+                    testerId = userId,
+                    currentUserOwnedAppId = offeredAppId,
+                    targetDays = 14,
+                    lifecycle = "pending_setup"
+                )
+            ) { select() }.decodeSingle<CommitmentRow>()
+
+            // A joined listing can disappear from the public Discover view as
+            // soon as its pending reservation fills the last replacement slot.
+            // Keep the exact row needed by the setup screen in local state.
+            val joinedListing = listingRow.toPublicApp()
+            _discoverApps.value = (_discoverApps.value.filterNot { it.id == joinedListing.id } + joinedListing)
+            val fallbackCommitment = inserted.toCommitment(
+                listOf(listingRow),
+                _ownedApps.value,
+                emptyList(),
+                emptyList(),
+                emptyList(),
+                userId
             )
-        ) { select() }.decodeSingle<CommitmentRow>()
-        // The ready screen performs the first device check explicitly. Once
-        // that check runs, normal refreshes keep checking this commitment.
-        refresh().getOrThrow()
-        _commitments.value.firstOrNull { it.commitmentId == inserted.id }
-            ?: inserted.toCommitment(listOf(listingRow), _ownedApps.value, emptyList(), emptyList(), emptyList(), userId)
+
+            // The insert is the actual join. Do not turn a successful join
+            // into a false failure just because the follow-up refresh failed.
+            // The ready screen can use the inserted row while a later refresh
+            // repairs the rest of the local state.
+            val refreshResult = refresh()
+            if (refreshResult.isFailure) {
+                Log.e("TestLoopJoin", "Join succeeded but refresh failed for $publicAppId", refreshResult.exceptionOrNull())
+                _discoverApps.value = (_discoverApps.value.filterNot { it.id == joinedListing.id } + joinedListing)
+                _commitments.value = (_commitments.value.filterNot { it.commitmentId == inserted.id } + fallbackCommitment)
+                fallbackCommitment
+            } else {
+                _commitments.value.firstOrNull { it.commitmentId == inserted.id }
+                    ?: fallbackCommitment
+            }
+        } catch (error: Throwable) {
+            Log.e("TestLoopJoin", "Join failed for $publicAppId", error)
+            throw error
+        }
     }
 
     override suspend fun bookmarkApp(publicAppId: String): Result<Unit> = runCatching {
@@ -331,7 +384,7 @@ class SupabaseTestLoopRepository(
         val row = supabase.from("reciprocal_commitments").select {
             filter { eq("id", commitmentId); eq("tester_id", userId) }
         }.decodeSingle<CommitmentRow>()
-        require(row.lifecycle in setOf("pending_setup", "active")) { "A left commitment is terminal" }
+        require(row.lifecycle in setOf("pending_setup", "active")) { "This commitment is no longer active" }
         val listingRows = supabase.from("public_app_listings").select {
             filter { eq("campaign_id", row.campaignId) }
         }.decodeList<PublicListingRow>()
@@ -578,7 +631,9 @@ private data class CommitmentRow(
     @SerialName("current_user_owned_app_id") val currentUserOwnedAppId: String? = null,
     @SerialName("target_days") val targetDays: Int = 14,
     val lifecycle: String = "pending_setup",
-    @SerialName("joined_at") val joinedAt: String
+    @SerialName("joined_at") val joinedAt: String,
+    @SerialName("setup_expires_at") val setupExpiresAt: String? = null,
+    @SerialName("end_reason") val endReason: String? = null
 ) {
     fun toCommitment(listings: List<PublicListingRow>, ownApps: List<OwnedApp>, profiles: List<TesterProfileRow>, summaries: List<InstallStateRow>, openRows: List<DailyOpenRow>, userId: String, reminders: List<ReminderRow> = emptyList()): ReciprocalCommitment {
         val listing = listings.firstOrNull { it.campaignId == campaignId }
@@ -598,7 +653,9 @@ private data class CommitmentRow(
             youOweSignal = summaries.signalFor(id, userId, if (isPublisher) currentUserOwnedAppId else listing?.id, openRows),
             theyOweSignal = if (isPublisher) summaries.signalFor(id, testerId, ownerAppId, openRows) else currentUserOwnedAppId?.let { summaries.signalFor(id, listing?.ownerId.orEmpty(), it, openRows) },
             youCanSendReminder = reminders.none { it.commitmentId == id && it.senderId == userId && it.reminderDate == LocalDate.now(ZoneOffset.UTC).toString() },
-            lifecycle = lifecycle.toCommitmentLifecycle()
+            lifecycle = lifecycle.toCommitmentLifecycle(),
+            setupDeadlineAt = setupExpiresAt?.let(Instant::parse),
+            endReason = endReason.toCommitmentEndReason()
         )
     }
 }
@@ -740,6 +797,13 @@ private fun String.toCommitmentLifecycle() = when (this) {
     "completed" -> CommitmentLifecycle.COMPLETED
     "left" -> CommitmentLifecycle.LEFT
     else -> CommitmentLifecycle.PENDING_SETUP
+}
+
+private fun String?.toCommitmentEndReason() = when (this) {
+    "user_left" -> CommitmentEndReason.USER_LEFT
+    "owner_release" -> CommitmentEndReason.OWNER_RELEASE
+    "install_timeout" -> CommitmentEndReason.INSTALL_TIMEOUT
+    else -> null
 }
 
 private fun String?.toRiskDecision() = when (this) {

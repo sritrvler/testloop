@@ -198,6 +198,8 @@ data class DirectionSignal(
 
 enum class CommitmentLifecycle { PENDING_SETUP, ACTIVE, COMPLETED, LEFT }
 
+enum class CommitmentEndReason { USER_LEFT, OWNER_RELEASE, INSTALL_TIMEOUT }
+
 /** LEFT is terminal history, never a current tester or obligation. */
 fun CommitmentLifecycle.isCurrentTester(): Boolean = this == CommitmentLifecycle.ACTIVE
 
@@ -213,7 +215,9 @@ data class ReciprocalCommitment(
     val youOweSignal: DirectionSignal,
     val theyOweSignal: DirectionSignal? = null,
     val youCanSendReminder: Boolean = true,
-    val lifecycle: CommitmentLifecycle = CommitmentLifecycle.ACTIVE
+    val lifecycle: CommitmentLifecycle = CommitmentLifecycle.ACTIVE,
+    val setupDeadlineAt: Instant? = null,
+    val endReason: CommitmentEndReason? = null
 ) {
     val isOneWay: Boolean get() = currentUserOwnAppId == null
     fun elapsedDays(today: LocalDate): Int = (java.time.temporal.ChronoUnit.DAYS.between(joinedOn, today).toInt() + 1).coerceIn(1, targetDays)

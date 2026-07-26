@@ -21,6 +21,8 @@ import com.testloop.app.platform.FeedbackForm
 import com.testloop.app.tracking.AndroidUsageAccessReporter
 import com.testloop.app.ui.TestLoopApp
 import com.testloop.app.ui.theme.TestLoopTheme
+import com.testloop.app.notifications.PendingSetupReminder
+import com.testloop.app.notifications.PendingSetupReminderScheduler
 
 class MainActivity : ComponentActivity() {
     private val auth by lazy { SupabaseAuthRepository() }
@@ -29,6 +31,7 @@ class MainActivity : ComponentActivity() {
     private val externalAppLauncher by lazy { AndroidExternalAppLauncher(applicationContext) }
     private val usageAccessReporter by lazy { AndroidUsageAccessReporter(applicationContext) }
     private val eveningReminderScheduler by lazy { com.testloop.app.notifications.EveningReminderScheduler(applicationContext) }
+    private val pendingSetupReminderScheduler by lazy { PendingSetupReminderScheduler(applicationContext) }
     private var notificationPermissionAsked = false
     private var usageAccessGranted by mutableStateOf(false)
     private val requestNotificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
@@ -54,6 +57,7 @@ class MainActivity : ComponentActivity() {
                         onOpenUsageAccess = { usageAccessReporter.openSettings() },
                         isUsageAccessGrantedNow = { usageAccessReporter.isGranted() },
                         onScheduleEveningReminder = { pendingCount, singleAppName -> eveningReminderScheduler.schedule(pendingCount, singleAppName) },
+                        onSyncPendingSetupReminders = { reminders -> pendingSetupReminderScheduler.sync(reminders) },
                         onRequestNotificationPermission = ::requestNotificationPermissionIfNeeded
                     )
                 }
