@@ -10,6 +10,7 @@ This is the prioritized product checklist for taking the current install-only MV
   - [ ] Both users install each other's committed apps.
   - [ ] Verify installed, not installed, unavailable, reciprocal, and not-testing-back states.
   - [ ] Verify tester slot counts when users join, leave, change commitments, and when a publisher edits the live tester target.
+  - [ ] Verify leaving a commitment shows confirmation, releases the slot immediately, notifies the other participant, and removes active obligations for both sides.
   - [ ] Verify enrolling with an app already offered in another commitment shows the warning and supports choosing another app or volunteering.
   - [ ] Verify legacy duplicate reciprocal rows collapse to one visible task per tester/app direction.
 - [x] Apply and verify the campaign-target and duplicate-offer Supabase migration in the shared database.
@@ -19,7 +20,6 @@ This is the prioritized product checklist for taking the current install-only MV
   - [x] Users cannot modify another user's install state.
   - [x] Users cannot spoof the reporter or target app identifiers.
   - [x] Owners can see the install state for their own committed apps.
-- [ ] Add basic report, block, and moderation controls before opening the beta to strangers.
 - [ ] Define the install-status refresh behavior clearly in the UI so users know when the signal was last checked.
 
 ## P1: Required for Play Store launch
@@ -39,7 +39,7 @@ This is the prioritized product checklist for taking the current install-only MV
 ## P2: Beta polish
 
 - [ ] Improve empty states and error messages based on the two-account test.
-- [ ] Add a clear leave-commitment flow with confirmation and immediate slot updates.
+- [x] Add a clear leave-commitment flow with confirmation and immediate slot updates.
 - [ ] Add rate limits for reminders and listing actions.
 - [ ] Add server-side notification inbox behavior for important commitment changes.
 - [ ] Add FCM push notifications only after the in-app notification model is reliable.
@@ -48,6 +48,7 @@ This is the prioritized product checklist for taking the current install-only MV
 
 ## V2 backlog
 
+- [ ] Add basic report, block, and moderation controls before opening the beta to strangers.
 - [ ] In-app chat.
 - [ ] Tester ratings.
 - [ ] Tester reputation and trust signals.

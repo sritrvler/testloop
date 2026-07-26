@@ -5,6 +5,7 @@ import com.testloop.app.domain.AppBookmark
 import com.testloop.app.domain.ActivitySignal
 import com.testloop.app.domain.AppNotification
 import com.testloop.app.domain.Campaign
+import com.testloop.app.domain.CampaignRiskDecision
 import com.testloop.app.domain.CommitmentLifecycle
 import com.testloop.app.domain.DirectionSignal
 import com.testloop.app.domain.InstallSignal
@@ -50,6 +51,7 @@ class DemoAuthRepository : AuthRepository {
 }
 
 class DemoTestLoopRepository : TestLoopRepository {
+    private val demoUserId = "priya"
     private val today = LocalDate.now()
     private val focus = OwnedApp("own-focus", "Focus Flow", "com.focusflow.timer", "https://play.google.com/store/apps/details?id=com.focusflow.timer", "https://play.google.com/apps/testing/com.focusflow.timer", "focus", "campaign-focus")
     private val pantry = OwnedApp("own-pantry", "Pantry Pal", "io.pal.pantry", "https://play.google.com/store/apps/details?id=io.pal.pantry", "https://play.google.com/apps/testing/io.pal.pantry", "pantry", "campaign-pantry")
@@ -64,7 +66,25 @@ class DemoTestLoopRepository : TestLoopRepository {
     private val budgetBee = PublicApp("public-budget", "Budget Bee", "app.budgetbee.mobile", "alex", "alex_dev", "https://play.google.com/store/apps/details?id=app.budgetbee.mobile", "https://play.google.com/apps/testing/app.budgetbee.mobile", 12, 8, "Create a monthly budget, then edit one category.", "Android 12 or newer is helpful.", "Finance", "Posted today", "budget")
     private val trailNotes = PublicApp("public-trail", "Trail Notes", "app.trailnotes.mobile", "sana", "sana_codes", "https://play.google.com/store/apps/details?id=app.trailnotes.mobile", "https://play.google.com/apps/testing/app.trailnotes.mobile", 8, 3, "Save a short note and test search while offline.", "Offline behaviour is the focus.", "Travel", "Posted yesterday", "trail")
     private val recipeRoute = PublicApp("public-recipe", "Recipe Route", "dev.reciperoute.app", "matt", "mattbuilds", "https://play.google.com/store/apps/details?id=dev.reciperoute.app", "https://play.google.com/apps/testing/dev.reciperoute.app", 10, 7, "Save a recipe and use the shopping list.", "Please try the first-use flow.", "Lifestyle", "Posted 2 hours ago", "recipe")
-    private val _discoverApps = MutableStateFlow(listOf(budgetBee, trailNotes, recipeRoute))
+    private fun ownPreview(app: OwnedApp, requested: Int, joined: Int, instructions: String) = PublicApp(
+        id = app.id,
+        title = app.title,
+        packageName = app.packageName,
+        ownerId = demoUserId,
+        ownerUsername = "priya",
+        installUrl = app.installUrl,
+        optInUrl = app.optInUrl,
+        requestedTesters = requested,
+        joinedTesterCount = joined,
+        instructions = instructions,
+        postedLabel = "Your listing",
+        iconSeed = app.iconSeed,
+        campaignId = app.campaignId,
+        targetDays = 14,
+        activeTesterCount = joined,
+        reservedTesterCount = joined
+    )
+    private val _discoverApps = MutableStateFlow(listOf(ownPreview(focus, 12, 8, "Preview how Focus Flow appears to testers."), ownPreview(pantry, 12, 12, "Preview how Pantry Pal appears to testers."), budgetBee, trailNotes, recipeRoute))
     override val discoverApps: StateFlow<List<PublicApp>> = _discoverApps.asStateFlow()
 
     private val installedOpened = DirectionSignal(InstallSignal.INSTALLED, ActivitySignal.OPENED_TODAY, 12)
@@ -126,19 +146,64 @@ class DemoTestLoopRepository : TestLoopRepository {
         return Result.success(Unit)
     }
 
+    override suspend fun confirmClosedTesting(campaignId: String): Result<Unit> {
+        val campaign = _campaigns.value.firstOrNull { it.id == campaignId }
+            ?: return Result.failure(IllegalArgumentException("Campaign not found"))
+        if (campaign.activeTesterCount < campaign.requestedTesters) {
+            return Result.failure(IllegalStateException("All required tester installs must be detected first"))
+        }
+        val now = Instant.now()
+        _campaigns.value = _campaigns.value.map {
+            if (it.id == campaignId) it.copy(closedTestConfirmedAt = it.closedTestConfirmedAt ?: now, testingStartedAt = it.testingStartedAt ?: now) else it
+        }
+        return Result.success(Unit)
+    }
+
+    override suspend fun chooseCampaignRiskDecision(campaignId: String, decision: CampaignRiskDecision, affectedCommitmentId: String?): Result<Unit> {
+        val campaign = _campaigns.value.firstOrNull { it.id == campaignId }
+            ?: return Result.failure(IllegalArgumentException("Campaign not found"))
+        if (decision == CampaignRiskDecision.RESTART) {
+            val affected = affectedCommitmentId?.let { id -> _commitments.value.firstOrNull { it.commitmentId == id } }
+                ?: return Result.failure(IllegalArgumentException("Choose the tester to replace"))
+            _commitments.value = _commitments.value.map { if (it.commitmentId == affected.commitmentId) it.copy(lifecycle = CommitmentLifecycle.LEFT) else it }
+        }
+        _campaigns.value = _campaigns.value.map {
+            if (it.id == campaignId) it.copy(riskDecision = decision, replacementOpen = decision == CampaignRiskDecision.RESTART) else it
+        }
+        if (decision == CampaignRiskDecision.RESTART) {
+            _notifications.value += AppNotification("n-replacement-$campaignId", NotificationKind.RECIPROCAL, "Replacement tester needed", "The owner released your commitment for a replacement tester. Your previous commitment is no longer active.", "Just now", true, affectedCommitmentId)
+        }
+        return Result.success(Unit)
+    }
+
+    override suspend fun finalizeCampaignRestart(campaignId: String): Result<Unit> {
+        val campaign = _campaigns.value.firstOrNull { it.id == campaignId }
+            ?: return Result.failure(IllegalArgumentException("Campaign not found"))
+        if (campaign.riskDecision != CampaignRiskDecision.RESTART || campaign.activeTesterCount < campaign.requestedTesters) {
+            return Result.failure(IllegalStateException("The replacement count is not restored yet"))
+        }
+        val now = Instant.now()
+        _campaigns.value = _campaigns.value.map {
+            if (it.id == campaignId) it.copy(replacementOpen = false, replacementJoinedAt = now, restartConfirmedAt = now, testingStartedAt = now, testingCompletedAt = null, progressResetAt = now) else it
+        }
+        _notifications.value += AppNotification("n-restarted-$campaignId", NotificationKind.RECIPROCAL, "Testing restarted at Day 1", "The owner confirmed a restart. Your new Day 1 begins today; the new end date is ${today.plusDays(campaign.targetDays.toLong() - 1)}.", "Just now", true, ownedAppId = campaign.ownedAppId)
+        return Result.success(Unit)
+    }
+
     override suspend fun syncUsageAccess(hasAccess: Boolean): Result<Unit> {
-        _usageAccess.value = if (hasAccess) UsageAccessStatus() else UsageAccessStatus(revokedAt = Instant.now(), deadlineAt = Instant.now().plusSeconds(6 * 60 * 60))
+        _usageAccess.value = if (hasAccess) UsageAccessStatus() else UsageAccessStatus(revokedAt = Instant.now(), deadlineAt = Instant.now().plusSeconds(60 * 60))
         return Result.success(Unit)
     }
 
     override suspend fun joinCampaign(publicAppId: String, ownAppId: String?): Result<ReciprocalCommitment> {
         val publicApp = _discoverApps.value.find { it.id == publicAppId } ?: return Result.failure(IllegalArgumentException("Campaign not found"))
+        if (publicApp.ownerId == demoUserId) return Result.failure(IllegalArgumentException("You cannot join your own app."))
         if (_commitments.value.any { it.appBeingTestedByCurrentUserId == publicAppId }) return Result.failure(IllegalStateException("Already joined"))
         if (ownAppId != null && _commitments.value.any {
                 it.currentUserOwnAppId == ownAppId &&
                     it.lifecycle in setOf(CommitmentLifecycle.PENDING_SETUP, CommitmentLifecycle.ACTIVE)
             }) return Result.failure(IllegalStateException("That app is already being offered in another active commitment"))
-        val pair = ReciprocalCommitment("pair-$publicAppId", publicAppId, ownAppId, publicApp.ownerId, publicApp.ownerUsername, today, youOweSignal = DirectionSignal(InstallSignal.NOT_INSTALLED, ActivitySignal.UNAVAILABLE), theyOweSignal = ownAppId?.let { DirectionSignal(InstallSignal.NOT_INSTALLED, ActivitySignal.UNAVAILABLE) }, lifecycle = CommitmentLifecycle.PENDING_SETUP)
+        val pair = ReciprocalCommitment("pair-$publicAppId", publicAppId, ownAppId, publicApp.ownerId, publicApp.ownerUsername, today, youOweSignal = DirectionSignal(InstallSignal.UNAVAILABLE, ActivitySignal.UNAVAILABLE), theyOweSignal = ownAppId?.let { DirectionSignal(InstallSignal.UNAVAILABLE, ActivitySignal.UNAVAILABLE) }, lifecycle = CommitmentLifecycle.PENDING_SETUP)
         _commitments.value += pair
         return Result.success(pair)
     }
@@ -169,6 +234,18 @@ class DemoTestLoopRepository : TestLoopRepository {
                     campaign.copy(joinedTesterCount = campaign.joinedTesterCount + 1)
                 } else campaign
             }
+        }
+        return Result.success(Unit)
+    }
+
+    override suspend fun leaveCommitment(commitmentId: String): Result<Unit> {
+        val pair = _commitments.value.firstOrNull { it.commitmentId == commitmentId }
+            ?: return Result.failure(IllegalArgumentException("Commitment not found"))
+        if (pair.lifecycle == CommitmentLifecycle.COMPLETED) {
+            return Result.failure(IllegalStateException("A completed commitment cannot be left"))
+        }
+        _commitments.value = _commitments.value.map {
+            if (it.commitmentId == commitmentId) it.copy(lifecycle = CommitmentLifecycle.LEFT) else it
         }
         return Result.success(Unit)
     }

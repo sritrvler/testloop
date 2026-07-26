@@ -6,9 +6,9 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-val Brand600 = Color(0xFF2F5947)
-val Brand700 = Color(0xFF214333)
-val Brand100 = Color(0xFFE1EAE3)
+val Brand600 = Color(0xFF2639C6)
+val Brand700 = Color(0xFF2639C6)
+val Brand100 = Color(0xFFE5E8FF)
 val Ink950 = Color(0xFF202322)
 val Ink700 = Color(0xFF4C514D)
 val Ink500 = Color(0xFF747A74)
@@ -29,7 +29,7 @@ private val LightScheme = lightColorScheme(
 )
 
 private val DarkScheme = darkColorScheme(
-    primary = Color(0xFFA7C9B0), onPrimary = Color(0xFF123020), primaryContainer = Color(0xFF315843),
+    primary = Color(0xFFB9C1FF), onPrimary = Color(0xFF101A68), primaryContainer = Color(0xFF2639C6),
     background = Color(0xFF151916), onBackground = Color(0xFFF5F2EA), surface = Color(0xFF20251F),
     onSurface = Color(0xFFF5F2EA), surfaceVariant = Color(0xFF303830), onSurfaceVariant = Color(0xFFC5CBC2),
     outlineVariant = Color(0xFF394039), error = Color(0xFFFFB4AB)

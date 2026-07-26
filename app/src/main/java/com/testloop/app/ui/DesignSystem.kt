@@ -154,9 +154,11 @@ fun GroupSurface(content: @Composable ColumnScope.() -> Unit) {
 }
 
 @Composable
-fun InlineNotice(text: String) {
-    Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Brand100).padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-        Icon(Icons.Default.PrivacyTip, null, tint = Brand600, modifier = Modifier.size(18.dp)); Spacer(Modifier.width(8.dp)); Text(text, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+fun InlineNotice(text: String, isError: Boolean = false) {
+    val background = if (isError) MaterialTheme.colorScheme.errorContainer else Brand100
+    val contentColor = if (isError) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onSurfaceVariant
+    Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(background).padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+        Icon(if (isError) Icons.Default.ErrorOutline else Icons.Default.PrivacyTip, null, tint = if (isError) MaterialTheme.colorScheme.error else Brand600, modifier = Modifier.size(18.dp)); Spacer(Modifier.width(8.dp)); Text(text, style = MaterialTheme.typography.bodySmall, color = contentColor)
     }
 }
 

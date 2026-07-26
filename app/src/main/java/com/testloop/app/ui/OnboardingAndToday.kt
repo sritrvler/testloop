@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -53,6 +54,10 @@ import com.testloop.app.domain.ActivitySignal
 import com.testloop.app.domain.Campaign
 import com.testloop.app.domain.CampaignProgress
 import com.testloop.app.domain.CampaignTestingStatus
+import com.testloop.app.domain.dailyTaskUnlocked
+import com.testloop.app.domain.ownerActionRequired
+import com.testloop.app.domain.testerWord
+import com.testloop.app.domain.statusLabel
 import com.testloop.app.domain.CommitmentLifecycle
 import com.testloop.app.domain.InstallSignal
 import com.testloop.app.domain.OwnedApp
@@ -69,7 +74,7 @@ import java.time.LocalTime
 fun UsernameRedesign(error: String?, submitting: Boolean, onComplete: (String) -> Unit, onUsernameChanged: () -> Unit = {}) {
     var username by remember { mutableStateOf("") }
     val valid = username.matches(Regex("[a-zA-Z0-9_]{3,20}"))
-    Column(Modifier.fillMaxSize().padding(Gutter), verticalArrangement = Arrangement.Center) {
+    Column(Modifier.fillMaxSize().navigationBarsPadding().padding(Gutter), verticalArrangement = Arrangement.Center) {
         Text("Step 1 of 2", style = MaterialTheme.typography.labelLarge, color = Brand600)
         Spacer(Modifier.height(8.dp)); Text("Choose your public username", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, modifier = Modifier.semantics { heading() })
         Spacer(Modifier.height(8.dp)); Text("Other members see this name. Your Google email stays private.", color = Ink500)
@@ -81,7 +86,7 @@ fun UsernameRedesign(error: String?, submitting: Boolean, onComplete: (String) -
 
 @Composable
 fun TrackingSetup(usageAccessGranted: Boolean, onOpenUsageAccess: () -> Unit, onContinue: () -> Unit) {
-    Column(Modifier.fillMaxSize().padding(Gutter), verticalArrangement = Arrangement.Center) {
+    Column(Modifier.fillMaxSize().navigationBarsPadding().padding(Gutter), verticalArrangement = Arrangement.Center) {
         Text("Step 2 of 2", style = MaterialTheme.typography.labelLarge, color = Brand600)
         Spacer(Modifier.height(8.dp)); Text("Allow daily open checks", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, modifier = Modifier.semantics { heading() })
         Spacer(Modifier.height(12.dp)); Text("Enable Android Usage Access so the publisher can see whether you opened the specific app you committed to test today.", color = Ink500, style = MaterialTheme.typography.bodyLarge)
@@ -109,18 +114,25 @@ fun TodayRedesign(padding: PaddingValues, username: String, dataLoaded: Boolean,
     val tasks = active
         .distinctBy { it.appBeingTestedByCurrentUserId to it.otherUserId }
         .sortedWith(compareBy<ReciprocalCommitment> { taskPriority(it) }.thenBy { it.joinedOn })
-    val pendingTasks = tasks.filter(::needsYourAction)
-    val tasksRemaining = tasks.count(::needsYourAction)
+    val taskProgressByPair = tasks.associateWith { targetProgress(it, publicApps, ownedApps, campaigns) }
+    val unlockedTasks = tasks.filter { taskProgressByPair[it]?.dailyTaskUnlocked() == true }
+    val pendingTasks = unlockedTasks.filter(::needsYourAction)
+    val tasksRemaining = unlockedTasks.count(::needsYourAction)
     val incoming = active.filter { pair ->
         pair.currentUserOwnAppId != null && ownedApps.any { it.id == pair.currentUserOwnAppId }
     }.groupBy { it.otherUserId to it.currentUserOwnAppId }.values.map { group ->
         group.firstOrNull { needsAttention(it.theyOweSignal) } ?: group.first()
     }
-    val incomingNeedsAction = incoming.count { needsAttention(it.theyOweSignal) }
+    val incomingNeedsAction = incoming.count { pair ->
+        targetProgress(pair, publicApps, ownedApps, campaigns).dailyTaskUnlocked() && needsAttention(pair.theyOweSignal)
+    }
     val hasNoActivity = active.isEmpty()
     val firstRun = hasNoActivity && ownedApps.isEmpty()
     LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(horizontal = Gutter, vertical = 0.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item { TestLoopTopBar("Today", "${timeGreeting()}, ${username.ifBlank { "there" }} · ${today.format(DateTimeFormatter.ofPattern("EEEE, d MMMM"))}", unreadCount = unread, onNotifications = onNotifications) }
+        if (campaigns.any { it.progress.ownerActionRequired() }) item {
+            OwnerCampaignActionBanner(campaigns.filter { it.progress.ownerActionRequired() }, onOwnApp)
+        }
         if (!dataLoaded) {
             item { LoadingTodayState() }
         } else if (firstRun) {
@@ -128,13 +140,13 @@ fun TodayRedesign(padding: PaddingValues, username: String, dataLoaded: Boolean,
         } else if (hasNoActivity) {
             item { ReadyToPairToday(onDiscover = onDiscover, onAddApp = onAddApp) }
         } else {
-            item { TodaySummaryCard(tasksRemaining, tasks.size) }
+            item { TodaySummaryCard(tasksRemaining, unlockedTasks.size) }
             item { SectionHeader("Your tasks today", if (tasksRemaining == 0) "Nothing else for you to do" else "$tasksRemaining app${if (tasksRemaining == 1) "" else "s"} still need you", action = "All obligations", onAction = onObligations) }
             item { if (pendingTasks.isEmpty()) EmptyTodayState() else GroupSurface { pendingTasks.forEachIndexed { index, pair -> DailyTaskRow(pair, targetAppTitle(pair, publicApps, ownedApps), targetProgress(pair, publicApps, ownedApps, campaigns), today, onPair, onPrimaryAction); if (index != pendingTasks.lastIndex) RowDivider() } } }
             item { SectionHeader("Waiting on other testers", if (incoming.isEmpty()) "No reciprocal apps yet" else if (incomingNeedsAction == 0) "All your testers are done today" else "$incomingNeedsAction person${if (incomingNeedsAction == 1) "" else "s"} ${if (incomingNeedsAction == 1) "needs" else "need"} attention") }
             item { if (incoming.isEmpty()) EmptyIncomingHint(onDiscover) else GroupSurface { incoming.forEachIndexed { index, pair -> PartnerStatusRow(pair, ownedApps, targetProgress(pair, publicApps, ownedApps, campaigns), today, onOwnApp, onPair); if (index != incoming.lastIndex) RowDivider() } } }
             if (incoming.isNotEmpty() && incomingNeedsAction == 0) item { AllTestersCaughtUp() }
-            item { InlineNotice("The 14-day countdown starts only when every required tester is active at the same time. If active testers drop below the requirement, progress resets.") }
+            item { InlineNotice("TestLoop shows the installed count and the owner’s campaign decision. It does not verify Google Play approval or reset the timer automatically.") }
         }
     }
 }
@@ -155,6 +167,24 @@ private fun AllTestersCaughtUp() {
         Text("All your testers have completed today’s commitments", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         Spacer(Modifier.height(4.dp))
         Text("Everyone testing your apps is on track for today. No reminders are needed.", color = Ink500)
+    }
+}
+
+@Composable
+private fun OwnerCampaignActionBanner(campaigns: List<Campaign>, onOwnApp: (String, Boolean) -> Unit) {
+    val first = campaigns.first()
+    val replacementNeeded = campaigns.any { it.testingStatus == CampaignTestingStatus.RESTART_PENDING }
+    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(Brand100).padding(16.dp)) {
+        Text(if (replacementNeeded) "Campaign decision needed" else "Campaign ready for your review", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Spacer(Modifier.height(4.dp))
+        Text(
+            if (campaigns.size == 1) first.progress.statusLabel()
+            else "${campaigns.size} campaigns need a confirmation or recovery decision",
+            color = Ink500,
+            style = MaterialTheme.typography.bodySmall
+        )
+        Spacer(Modifier.height(10.dp))
+        Button(onClick = { onOwnApp(first.ownedAppId, true) }, modifier = Modifier.fillMaxWidth()) { Text("Review campaign") }
     }
 }
 
@@ -266,9 +296,11 @@ private fun targetProgress(pair: ReciprocalCommitment, publicApps: List<PublicAp
 }
 
 private fun CampaignProgress.dayLabel(today: LocalDate): String = when (status) {
-    CampaignTestingStatus.WAITING_FOR_RELEASE -> "Waiting for approved release · $activeTesterCount/$requiredTesters installed"
-    CampaignTestingStatus.WAITING_FOR_TESTERS -> "Waiting for $requiredTesters active testers · $activeTesterCount/$requiredTesters installed"
-    CampaignTestingStatus.RESET_WAITING -> "Progress reset · $activeTesterCount/$requiredTesters active testers"
+    CampaignTestingStatus.WAITING_FOR_TESTERS -> "Waiting for ${testerWord(requiredTesters)} to install · $activeTesterCount/$requiredTesters installed"
+    CampaignTestingStatus.READY_FOR_OWNER_CONFIRMATION -> "Ready to start · $activeTesterCount/$requiredTesters installed"
+    CampaignTestingStatus.AT_RISK -> if (riskDecision == com.testloop.app.domain.CampaignRiskDecision.CONTINUE) "Continuing current run · $activeTesterCount/$requiredTesters active testers" else "At risk · $activeTesterCount/$requiredTesters active testers"
+    CampaignTestingStatus.RESTART_PENDING -> if (replacementJoinedAt == null) "Replacement tester needed · $activeTesterCount/$requiredTesters active testers" else "Replacement tester joined · $activeTesterCount/$requiredTesters active testers"
+    CampaignTestingStatus.READY_TO_RESTART -> "Ready to restart · $activeTesterCount/$requiredTesters active testers"
     CampaignTestingStatus.COMPLETE -> "$targetDays-day test complete · $activeTesterCount/$requiredTesters active testers"
     CampaignTestingStatus.IN_PROGRESS -> {
         val start = testingStartedAt?.atZone(java.time.ZoneId.systemDefault())?.toLocalDate() ?: today
@@ -298,7 +330,20 @@ private fun PartnerStatusRow(pair: ReciprocalCommitment, ownedApps: List<OwnedAp
             Text("${pair.otherUsername} · $appTitle", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
             Text("They test your app · ${progress.dayLabel(today)}", style = MaterialTheme.typography.bodySmall, color = Ink500)
             Spacer(Modifier.height(7.dp))
-            if (signal == null) {
+            if (!progress.dailyTaskUnlocked()) {
+                Text(
+                    when (progress.status) {
+                        CampaignTestingStatus.WAITING_FOR_TESTERS,
+                        CampaignTestingStatus.READY_FOR_OWNER_CONFIRMATION -> "Installed. Waiting for the owner to start closed testing."
+                        CampaignTestingStatus.AT_RISK -> "The owner is deciding how to handle the testing period."
+                        CampaignTestingStatus.RESTART_PENDING -> "The owner is arranging a replacement before restarting."
+                        CampaignTestingStatus.READY_TO_RESTART -> "The owner can now confirm whether to restart at Day 1."
+                        else -> "Daily tasks are not available right now."
+                    },
+                    style = MaterialTheme.typography.labelMedium,
+                    color = Ink500
+                )
+            } else if (signal == null) {
                 Text("Waiting for ${pair.otherUsername} to open TestLoop", style = MaterialTheme.typography.labelMedium, color = Ink500)
             } else {
                 SignalLabel(signal, compact = true, waitingForTester = true)

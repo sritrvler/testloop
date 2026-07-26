@@ -25,6 +25,7 @@ import com.testloop.app.ui.theme.TestLoopTheme
 class MainActivity : ComponentActivity() {
     private val auth by lazy { SupabaseAuthRepository() }
     private val repository by lazy { SupabaseTestLoopRepository(applicationContext, auth) }
+    private val chatRepository by lazy { com.testloop.app.data.SupabaseChatRepository(applicationContext, auth) }
     private val externalAppLauncher by lazy { AndroidExternalAppLauncher(applicationContext) }
     private val usageAccessReporter by lazy { AndroidUsageAccessReporter(applicationContext) }
     private val eveningReminderScheduler by lazy { com.testloop.app.notifications.EveningReminderScheduler(applicationContext) }
@@ -43,6 +44,7 @@ class MainActivity : ComponentActivity() {
                     TestLoopApp(
                         auth,
                         repository,
+                        chatRepository,
                         externalAppLauncher,
                         FeedbackForm.url(),
                         usageAccessGranted,
@@ -68,9 +70,16 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        usageAccessGranted = usageAccessReporter.isGranted()
+        val hasUsageAccess = usageAccessReporter.isGranted()
+        usageAccessGranted = hasUsageAccess
+        // Settings returns to this callback. Persist the fresh permission state
+        // before refreshing commitments so the active-commitment gate and the
+        // server's enforcement window see the same round-trip result.
         if (!auth.account.value?.id.isNullOrBlank() && auth.account.value?.id != "pending") {
-            lifecycleScope.launch { repository.refresh() }
+            lifecycleScope.launch {
+                repository.syncUsageAccess(hasUsageAccess)
+                repository.refresh()
+            }
         }
     }
 

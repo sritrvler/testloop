@@ -29,6 +29,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,17 +39,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.testloop.app.domain.Campaign
 import com.testloop.app.domain.AppBookmark
 import com.testloop.app.domain.OwnedApp
 import com.testloop.app.domain.PublicApp
 import com.testloop.app.domain.ReciprocalCommitment
+import com.testloop.app.domain.discoverStateLabel
+import com.testloop.app.domain.dailyTaskUnlocked
+import com.testloop.app.domain.isDiscoverableForJoin
 import com.testloop.app.domain.statusLabel
+import com.testloop.app.domain.portfolioActivityLabel
 import com.testloop.app.ui.theme.Brand600
 import com.testloop.app.ui.theme.Ink500
 import java.time.Duration
@@ -77,15 +86,27 @@ fun MyAppsScreen(padding: PaddingValues, ownedApps: List<OwnedApp>, campaigns: L
 private fun OwnAppRow(app: OwnedApp, campaign: Campaign?, pairs: List<ReciprocalCommitment>, onOwnApp: (String, Boolean) -> Unit) {
     val count = campaign?.joinedTesterCount ?: 0
     val requested = campaign?.requestedTesters ?: 0
-    val attention = pairs.count { needsAttention(it.theyOweSignal) }
+    val attention = if (campaign?.progress?.dailyTaskUnlocked() == true) {
+        pairs.count { needsAttention(it.theyOweSignal) }
+    } else 0
     Row(Modifier.fillMaxWidth().clickable { onOwnApp(app.id, false) }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
         AppMonogram(app.title); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) {
             Text(app.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
             Text(campaign?.progress?.statusLabel() ?: "$count of $requested testers", style = MaterialTheme.typography.bodySmall, color = Ink500)
             Spacer(Modifier.height(9.dp)); androidx.compose.foundation.layout.Box(Modifier.fillMaxWidth().height(4.dp).background(com.testloop.app.ui.theme.Brand100)) { androidx.compose.foundation.layout.Box(Modifier.fillMaxWidth(if (requested == 0) 0f else count.toFloat() / requested).height(4.dp).background(Brand600)) }
-            Spacer(Modifier.height(8.dp)); Text(if (attention == 0) "All active today" else "$attention need attention", style = MaterialTheme.typography.labelMedium, color = if (attention == 0) com.testloop.app.ui.theme.Success700 else com.testloop.app.ui.theme.Attention700)
+            Spacer(Modifier.height(8.dp)); Text(
+                campaign?.portfolioActivityLabel(attention) ?: if (count == 0) "No testers enrolled yet" else "All active today",
+                style = MaterialTheme.typography.labelMedium,
+                color = if (campaign?.reservedTesterCount == 0 || campaign?.testingStatus in setOf(
+                        com.testloop.app.domain.CampaignTestingStatus.READY_FOR_OWNER_CONFIRMATION,
+                        com.testloop.app.domain.CampaignTestingStatus.AT_RISK,
+                        com.testloop.app.domain.CampaignTestingStatus.RESTART_PENDING,
+                        com.testloop.app.domain.CampaignTestingStatus.READY_TO_RESTART
+                    ) || attention > 0
+                ) com.testloop.app.ui.theme.Attention700 else com.testloop.app.ui.theme.Success700
+            )
         }
-        Icon(Icons.Default.ArrowForward, "Manage ${app.title}", tint = Brand600)
+        TextButton(onClick = { onOwnApp(app.id, false) }) { Text("Manage", color = Brand600) }
     }
 }
 
@@ -105,10 +126,11 @@ private fun PortfolioEmpty(onAdd: () -> Unit, onDiscover: () -> Unit) {
 }
 
 @Composable
-fun DiscoverRedesign(padding: PaddingValues, apps: List<PublicApp>, commitments: List<ReciprocalCommitment>, bookmarks: List<AppBookmark>, onOpen: (String) -> Unit, onBookmark: suspend (String) -> Result<Unit>, onRemoveBookmark: suspend (String) -> Result<Unit>, onAddApp: () -> Unit, onNotifications: () -> Unit, unread: Int) {
+fun DiscoverRedesign(padding: PaddingValues, apps: List<PublicApp>, ownedAppIds: Set<String>, commitments: List<ReciprocalCommitment>, bookmarks: List<AppBookmark>, onOpen: (String) -> Unit, onBookmark: suspend (String) -> Result<Unit>, onRemoveBookmark: suspend (String) -> Result<Unit>, onAddApp: () -> Unit, onNotifications: () -> Unit, unread: Int) {
     var query by remember { mutableStateOf("") }
     var filter by remember { mutableStateOf("All apps") }
     var showBookmarksOnly by remember { mutableStateOf(false) }
+    var hideMyApps by rememberSaveable { mutableStateOf(false) }
     var optimisticBookmarkOverrides by remember { mutableStateOf<Map<String, Boolean>>(emptyMap()) }
     val scope = rememberCoroutineScope()
     val joinedAppIds = commitments.filter { it.lifecycle != com.testloop.app.domain.CommitmentLifecycle.PENDING_SETUP }.mapTo(mutableSetOf()) { it.appBeingTestedByCurrentUserId }
@@ -119,11 +141,15 @@ fun DiscoverRedesign(padding: PaddingValues, apps: List<PublicApp>, commitments:
     fun isBookmarked(id: String): Boolean = optimisticBookmarkOverrides[id] ?: (id in actualBookmarkedIds)
     val bookmarkedById = apps.mapNotNull { app -> if (isBookmarked(app.id)) app.id to (bookmarks.firstOrNull { it.appId == app.id } ?: AppBookmark(app.id, Instant.now())) else null }.toMap()
     val filtered = apps
-        .filter { it.id !in joinedAppIds }
+        .filter { it.id in ownedAppIds || it.isDiscoverableForJoin() }
+        .filter { it.id in ownedAppIds || it.id !in joinedAppIds }
         .filter { !showBookmarksOnly || it.id in bookmarkedById }
         .filter { it.title.contains(query, true) || it.ownerUsername.contains(query, true) || it.packageName.contains(query, true) }
-        .filter { showBookmarksOnly || when (filter) { "Open" -> it.slotsRemaining > 0; "Full" -> it.slotsRemaining == 0; else -> true } }
+        .filter { it.id in ownedAppIds || showBookmarksOnly || when (filter) { "Open" -> it.slotsRemaining > 0; "Full" -> it.slotsRemaining == 0; else -> true } }
         .let { if (filter == "Fewest slots") it.sortedBy { app -> app.slotsRemaining } else it }
+        .let { list -> if (hideMyApps) list.filterNot { it.id in ownedAppIds } else list }
+    val ownerPreviews = filtered.filter { it.id in ownedAppIds }
+    val joinableApps = filtered.filterNot { it.id in ownedAppIds }
     LazyColumn(Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(horizontal = Gutter, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item { TestLoopTopBar("Discover", "Explore apps, join their test groups, and get your app tested in return", unreadCount = unread, onNotifications = onNotifications, actionContent = {
             IconButton(onClick = { showBookmarksOnly = !showBookmarksOnly }) {
@@ -132,8 +158,40 @@ fun DiscoverRedesign(padding: PaddingValues, apps: List<PublicApp>, commitments:
         }) }
         item { OutlinedTextField(query, { query = it }, modifier = Modifier.fillMaxWidth(), label = { Text("Search apps or usernames") }, leadingIcon = { Icon(Icons.Default.Search, null) }, singleLine = true) }
         item { Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("All apps", "Open", "New", "Fewest slots", "Full").forEach { label -> FilterChip(selected = filter == label && !showBookmarksOnly, onClick = { filter = label; showBookmarksOnly = false }, label = { Text(label) }) } } }
+        item {
+            Row(Modifier.fillMaxWidth().clickable { hideMyApps = !hideMyApps }.padding(vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text("Hide my apps", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
+                    Text(if (hideMyApps) "Showing apps you can join" else "Show your listings as preview cards", style = MaterialTheme.typography.bodySmall, color = Ink500)
+                }
+                Switch(checked = hideMyApps, onCheckedChange = { hideMyApps = it }, modifier = Modifier.semantics { contentDescription = "Hide my apps" })
+            }
+        }
         if (filtered.isEmpty()) item { DiscoverEmptyState(apps.isNotEmpty(), onAddApp) }
-        else item { GroupSurface { filtered.forEachIndexed { index, app -> DiscoverRow(app, bookmarkedById[app.id], onOpen, onBookmark = { id -> optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to true); scope.launch { onBookmark(id).onFailure { optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to false) } } }, onRemoveBookmark = { id -> optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to false); scope.launch { onRemoveBookmark(id).onFailure { optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to true) } } }); if (index != filtered.lastIndex) RowDivider() } } }
+        else {
+            if (ownerPreviews.isNotEmpty()) {
+                item { SectionHeader("Your listings") }
+                item {
+                    GroupSurface {
+                        ownerPreviews.forEachIndexed { index, app ->
+                            DiscoverRow(app, isOwnerPreview = true, bookmark = null, onOpen = onOpen, onBookmark = {}, onRemoveBookmark = {})
+                            if (index != ownerPreviews.lastIndex) RowDivider()
+                        }
+                    }
+                }
+            }
+            if (joinableApps.isNotEmpty()) {
+                item { SectionHeader("Apps you can test") }
+                item {
+                    GroupSurface {
+                        joinableApps.forEachIndexed { index, app ->
+                            DiscoverRow(app, isOwnerPreview = false, bookmark = bookmarkedById[app.id], onOpen = onOpen, onBookmark = { id -> optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to true); scope.launch { onBookmark(id).onFailure { optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to false) } } }, onRemoveBookmark = { id -> optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to false); scope.launch { onRemoveBookmark(id).onFailure { optimisticBookmarkOverrides = optimisticBookmarkOverrides + (id to true) } } })
+                            if (index != joinableApps.lastIndex) RowDivider()
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -153,11 +211,16 @@ private fun DiscoverEmptyState(hasAnyApps: Boolean, onAddApp: () -> Unit) {
 }
 
 @Composable
-private fun DiscoverRow(app: PublicApp, bookmark: AppBookmark?, onOpen: (String) -> Unit, onBookmark: (String) -> Unit, onRemoveBookmark: (String) -> Unit) {
+private fun DiscoverRow(app: PublicApp, isOwnerPreview: Boolean, bookmark: AppBookmark?, onOpen: (String) -> Unit, onBookmark: (String) -> Unit, onRemoveBookmark: (String) -> Unit) {
     Row(Modifier.fillMaxWidth().clickable { onOpen(app.id) }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-        AppMonogram(app.title); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(app.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold); Text("@${app.ownerUsername} · ${app.postedLabel}", style = MaterialTheme.typography.labelMedium, color = Ink500); if (bookmark != null) Text("Bookmarked ${bookmarkAgeLabel(bookmark.bookmarkedAt)}", style = MaterialTheme.typography.labelSmall, color = Brand600); Spacer(Modifier.height(5.dp)); Text(app.instructions, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall, color = Ink500); Spacer(Modifier.height(7.dp)); Text(app.progress.statusLabel(), style = MaterialTheme.typography.labelMedium, color = if (app.slotsRemaining == 0) Ink500 else Brand600) }
-        IconButton(onClick = { if (bookmark == null) onBookmark(app.id) else onRemoveBookmark(app.id) }) { Icon(if (bookmark == null) Icons.Default.BookmarkBorder else Icons.Default.Bookmark, if (bookmark == null) "Bookmark ${app.title}" else "Remove ${app.title} bookmark", tint = Brand600) }
-        Icon(Icons.Default.ArrowForward, "Open ${app.title}", tint = Brand600)
+        AppMonogram(app.title); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(app.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold); Text("@${app.ownerUsername} · ${app.postedLabel}", style = MaterialTheme.typography.labelMedium, color = Ink500); Spacer(Modifier.height(5.dp)); Text(app.instructions, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall, color = Ink500); Spacer(Modifier.height(7.dp)); Text(if (isOwnerPreview) "Preview only · Your app" else app.discoverStateLabel(), style = MaterialTheme.typography.labelMedium, color = Brand600) }
+        if (!isOwnerPreview) {
+            if (bookmark != null) Text("Bookmarked ${bookmarkAgeLabel(bookmark.bookmarkedAt)}", style = MaterialTheme.typography.labelSmall, color = Brand600)
+            IconButton(onClick = { if (bookmark == null) onBookmark(app.id) else onRemoveBookmark(app.id) }) { Icon(if (bookmark == null) Icons.Default.BookmarkBorder else Icons.Default.Bookmark, if (bookmark == null) "Bookmark ${app.title}" else "Remove ${app.title} bookmark", tint = Brand600) }
+        } else {
+            Text("Preview", style = MaterialTheme.typography.labelMedium, color = Brand600)
+        }
+        Icon(Icons.Default.ArrowForward, if (isOwnerPreview) "Preview ${app.title}" else "Open ${app.title}", tint = Brand600)
     }
 }
 

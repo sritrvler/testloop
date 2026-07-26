@@ -12,6 +12,7 @@ import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.auth.handleDeeplinks
 import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.postgrest.from
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -37,6 +38,7 @@ object SupabaseClientProvider {
             )
         }
         install(Postgrest)
+        install(Realtime)
     }
 }
 

@@ -4,6 +4,7 @@ import com.testloop.app.domain.Account
 import com.testloop.app.domain.AppNotification
 import com.testloop.app.domain.AppBookmark
 import com.testloop.app.domain.Campaign
+import com.testloop.app.domain.CampaignRiskDecision
 import com.testloop.app.domain.OwnedApp
 import com.testloop.app.domain.PublicApp
 import com.testloop.app.domain.ReciprocalCommitment
@@ -35,12 +36,16 @@ interface TestLoopRepository {
     suspend fun updateCampaignTesterCount(campaignId: String, requestedTesters: Int): Result<Unit>
     suspend fun delistOwnedApp(appId: String): Result<Unit>
     suspend fun markOwnedAppPublished(appId: String): Result<Unit>
+    suspend fun confirmClosedTesting(campaignId: String): Result<Unit>
+    suspend fun chooseCampaignRiskDecision(campaignId: String, decision: CampaignRiskDecision, affectedCommitmentId: String? = null): Result<Unit>
+    suspend fun finalizeCampaignRestart(campaignId: String): Result<Unit>
     suspend fun syncUsageAccess(hasAccess: Boolean): Result<Unit>
     suspend fun joinCampaign(publicAppId: String, ownAppId: String?): Result<ReciprocalCommitment>
     suspend fun bookmarkApp(publicAppId: String): Result<Unit>
     suspend fun removeBookmark(publicAppId: String): Result<Unit>
     suspend fun refresh(): Result<Unit>
     suspend fun reportInstallStatus(commitmentId: String): Result<Unit>
+    suspend fun leaveCommitment(commitmentId: String): Result<Unit>
     suspend fun sendReminder(commitmentId: String): Result<Unit>
     suspend fun markNotificationsRead()
 }

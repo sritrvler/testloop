@@ -48,6 +48,7 @@ configurations.configureEach {
 kotlin { jvmToolchain(21) }
 
 dependencies {
+    testImplementation(kotlin("test"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -62,6 +63,8 @@ dependencies {
     implementation(platform(libs.supabase.bom))
     implementation(libs.supabase.auth)
     implementation(libs.supabase.postgrest)
+    implementation(libs.supabase.realtime)
     implementation(libs.ktor.client.android)
+    implementation(libs.tink.android)
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

@@ -6,6 +6,7 @@ import com.testloop.app.domain.AppBookmark
 import com.testloop.app.domain.ActivitySignal
 import com.testloop.app.domain.AppNotification
 import com.testloop.app.domain.Campaign
+import com.testloop.app.domain.CampaignRiskDecision
 import com.testloop.app.domain.CommitmentLifecycle
 import com.testloop.app.domain.DirectionSignal
 import com.testloop.app.domain.InstallSignal
@@ -39,6 +40,7 @@ class SupabaseTestLoopRepository(
     private val supabase = SupabaseClientProvider.client
     private val installReporter = AndroidInstallStatusReporter(context)
     private val usageReporter = AndroidUsageAccessReporter(context)
+    private val deviceCheckEnabledCommitmentIds = mutableSetOf<String>()
 
     private val _ownedApps = MutableStateFlow<List<OwnedApp>>(emptyList())
     override val ownedApps: StateFlow<List<OwnedApp>> = _ownedApps.asStateFlow()
@@ -55,7 +57,9 @@ class SupabaseTestLoopRepository(
     private val _usageAccess = MutableStateFlow(UsageAccessStatus())
     override val usageAccess: StateFlow<UsageAccessStatus> = _usageAccess.asStateFlow()
 
-    override suspend fun refresh(): Result<Unit> = runCatching {
+    override suspend fun refresh(): Result<Unit> = refreshInternal()
+
+    private suspend fun refreshInternal(): Result<Unit> = runCatching {
         val userId = requireUserId()
         val ownRows = supabase.from("owned_apps").select {
             filter { eq("owner_id", userId) }
@@ -82,12 +86,17 @@ class SupabaseTestLoopRepository(
         val visibleCommitmentRows = commitmentRows.filter { row ->
             row.testerId == userId || listings.firstOrNull { it.campaignId == row.campaignId }?.ownerId == userId
         }
-        visibleCommitmentRows.forEach { commitment ->
+        visibleCommitmentRows
+            .filter { it.lifecycle == "active" || it.id in deviceCheckEnabledCommitmentIds }
+            .forEach { commitment ->
             runCatching { reportInstallStatusInternal(commitment, listings, userId) }
         }
         // Install activation happens in the database trigger, so read the
         // commitments and observations again before publishing UI state.
         commitmentRows = supabase.from("reciprocal_commitments").select().decodeList()
+        val updatedVisibleCommitmentRows = commitmentRows.filter { row ->
+            row.testerId == userId || listings.firstOrNull { it.campaignId == row.campaignId }?.ownerId == userId
+        }
 
         _ownedApps.value = activeOwnRows.map { it.toOwnedApp(campaignRows.firstOrNull { campaign -> campaign.ownedAppId == it.id }?.id) }
         val listingsByCampaign = listings.associateBy { it.campaignId }
@@ -96,36 +105,38 @@ class SupabaseTestLoopRepository(
                 releaseApprovedAt = activeOwnRows.firstOrNull { it.id == campaign.ownedAppId }?.playStorePublishedAt?.let(Instant::parse),
                 reservedTesterCount = listingsByCampaign[campaign.id]?.let { listing ->
                     (listing.requestedTesters - listing.slotsRemaining).coerceAtLeast(0)
-                } ?: 0
+                } ?: 0,
+                replacementOpen = campaign.replacementOpen && (listingsByCampaign[campaign.id]?.slotsRemaining ?: 0) > 0
             )
         }
         // Keep joined listings in this cache so commitment details can still
         // resolve the app name and both Play links. Discover filters joined
         // listings at the UI boundary, while own listings are excluded here.
-        _discoverApps.value = listings
-            .filter { it.id !in ownIds }
-            .map { it.toPublicApp() }
+        // Keep the owner's published rows in the same cache as public rows so
+        // Discover can render an exact preview. The UI gates them as preview
+        // only; other users still receive the backend view's normal rows.
+        _discoverApps.value = listings.map { it.toPublicApp() }
 
-        val installRows = visibleCommitmentRows.flatMap { commitment ->
+        val installRows = updatedVisibleCommitmentRows.flatMap { commitment ->
             supabase.from("commitment_install_states").select {
                 filter {
                     eq("commitment_id", commitment.id)
                 }
             }.decodeList<InstallStateRow>()
         }
-        val openRows = visibleCommitmentRows.flatMap { commitment ->
+        val openRows = updatedVisibleCommitmentRows.flatMap { commitment ->
             runCatching {
                 supabase.from("commitment_daily_open_states").select { filter { eq("commitment_id", commitment.id) } }
                     .decodeList<DailyOpenRow>()
             }.getOrDefault(emptyList())
         }
-        val reminderRows = visibleCommitmentRows.flatMap { commitment ->
+        val reminderRows = updatedVisibleCommitmentRows.flatMap { commitment ->
             runCatching {
                 supabase.from("reminders").select { filter { eq("commitment_id", commitment.id) } }
                     .decodeList<ReminderRow>()
             }.getOrDefault(emptyList())
         }
-        val mappedCommitments = visibleCommitmentRows.map { row ->
+        val mappedCommitments = updatedVisibleCommitmentRows.map { row ->
             row.toCommitment(listings, _ownedApps.value, profileRows, installRows, openRows, userId, reminderRows)
         }
         _commitments.value = mappedCommitments
@@ -157,6 +168,7 @@ class SupabaseTestLoopRepository(
                 installUrl = app.installUrl.trim(),
                 optInUrl = app.optInUrl?.trim()?.ifBlank { null },
                 groupUrl = app.groupUrl.trim(),
+                messagingId = app.messagingId.trim().ifBlank { null },
                 iconSeed = app.iconSeed,
                 details = app.details.trim(),
                 category = "Productivity",
@@ -206,6 +218,32 @@ class SupabaseTestLoopRepository(
         refresh().getOrThrow()
     }
 
+    override suspend fun confirmClosedTesting(campaignId: String): Result<Unit> = runCatching {
+        requireUserId()
+        supabase.postgrest.rpc("confirm_closed_testing", CampaignActionParams(campaignId))
+            .decodeList<CampaignActionRow>().firstOrNull() ?: error("Closed testing could not be confirmed")
+        refresh().getOrThrow()
+    }
+
+    override suspend fun chooseCampaignRiskDecision(campaignId: String, decision: CampaignRiskDecision, affectedCommitmentId: String?): Result<Unit> = runCatching {
+        requireUserId()
+        require(decision != CampaignRiskDecision.RESTART || !affectedCommitmentId.isNullOrBlank()) {
+            "Choose the tester commitment to release before requesting a replacement"
+        }
+        supabase.postgrest.rpc(
+            "choose_campaign_risk_decision",
+            CampaignRiskDecisionParams(campaignId, decision.rpcValue, affectedCommitmentId)
+        ).decodeList<CampaignActionRow>().firstOrNull() ?: error("Campaign decision could not be saved")
+        refresh().getOrThrow()
+    }
+
+    override suspend fun finalizeCampaignRestart(campaignId: String): Result<Unit> = runCatching {
+        requireUserId()
+        supabase.postgrest.rpc("finalize_campaign_restart", CampaignActionParams(campaignId))
+            .decodeList<CampaignActionRow>().firstOrNull() ?: error("Campaign restart could not be confirmed")
+        refresh().getOrThrow()
+    }
+
     override suspend fun syncUsageAccess(hasAccess: Boolean): Result<Unit> = runCatching {
         requireUserId()
         val status = supabase.postgrest.rpc("record_usage_access_status", UsageAccessStatusParams(hasAccess))
@@ -220,6 +258,9 @@ class SupabaseTestLoopRepository(
         val offeredAppId = ownAppId?.takeIf { id -> _ownedApps.value.any { it.id == id } }
         val listing = _discoverApps.value.firstOrNull { it.id == publicAppId }
             ?: error("That listing is no longer available")
+        if (listing.ownerId == userId) {
+            error("You cannot join your own app.")
+        }
         val listingRow = supabase.from("public_app_listings").select {
             filter { eq("id", listing.id) }
         }.decodeSingle<PublicListingRow>()
@@ -232,6 +273,8 @@ class SupabaseTestLoopRepository(
                 lifecycle = "pending_setup"
             )
         ) { select() }.decodeSingle<CommitmentRow>()
+        // The ready screen performs the first device check explicitly. Once
+        // that check runs, normal refreshes keep checking this commitment.
         refresh().getOrThrow()
         _commitments.value.firstOrNull { it.commitmentId == inserted.id }
             ?: inserted.toCommitment(listOf(listingRow), _ownedApps.value, emptyList(), emptyList(), emptyList(), userId)
@@ -242,7 +285,14 @@ class SupabaseTestLoopRepository(
         supabase.from("app_bookmarks").upsert(
             BookmarkInsert(memberId = userId, ownedAppId = publicAppId)
         ) { onConflict = "member_id,owned_app_id" }
-        refresh().getOrThrow()
+        // Publish the successful save immediately. A full refresh can be slow
+        // and should not make a bookmark appear to have failed when the user
+        // opens the Bookmarks filter right away.
+        if (_bookmarks.value.none { it.appId == publicAppId }) {
+            _bookmarks.value = _bookmarks.value + AppBookmark(publicAppId, Instant.now())
+        }
+        refresh()
+        Unit
     }
 
     override suspend fun removeBookmark(publicAppId: String): Result<Unit> = runCatching {
@@ -250,7 +300,9 @@ class SupabaseTestLoopRepository(
         supabase.from("app_bookmarks").delete {
             filter { eq("member_id", userId); eq("owned_app_id", publicAppId) }
         }
-        refresh().getOrThrow()
+        _bookmarks.value = _bookmarks.value.filterNot { it.appId == publicAppId }
+        refresh()
+        Unit
     }
 
     override suspend fun reportInstallStatus(commitmentId: String): Result<Unit> = runCatching {
@@ -262,6 +314,21 @@ class SupabaseTestLoopRepository(
             filter { eq("campaign_id", row.campaignId) }
         }.decodeList<PublicListingRow>()
         reportInstallStatusInternal(row, listingRows, userId)
+        // Only enable the existing automatic refresh loop after the initial
+        // device check has completed successfully.
+        deviceCheckEnabledCommitmentIds += commitmentId
+        refresh().getOrThrow()
+    }
+
+    override suspend fun leaveCommitment(commitmentId: String): Result<Unit> = runCatching {
+        requireUserId()
+        supabase.postgrest.rpc("leave_commitment", LeaveCommitmentParams(commitmentId))
+            .decodeList<LeaveCommitmentRow>()
+            .firstOrNull()
+            ?: error("Commitment could not be left")
+        deviceCheckEnabledCommitmentIds -= commitmentId
+        // The public listing view derives reserved slots from lifecycle, so a
+        // refresh immediately exposes the freed slot to this member.
         refresh().getOrThrow()
     }
 
@@ -343,13 +410,14 @@ private data class OwnedAppRow(
     @SerialName("install_url") val installUrl: String,
     @SerialName("opt_in_url") val optInUrl: String? = null,
     @SerialName("group_url") val groupUrl: String? = null,
+    @SerialName("messaging_id") val messagingId: String? = null,
     @SerialName("icon_seed") val iconSeed: String = "",
     val details: String = "",
     val category: String = "Productivity",
     @SerialName("play_store_published_at") val playStorePublishedAt: String? = null,
     val lifecycle: String = "published"
 ) {
-    fun toOwnedApp(campaignId: String?, details: String = this.details) = OwnedApp(id, title, packageName, installUrl, optInUrl, iconSeed, campaignId.orEmpty(), details, playStorePublishedAt?.let(Instant::parse), groupUrl.orEmpty())
+    fun toOwnedApp(campaignId: String?, details: String = this.details) = OwnedApp(id, title, packageName, installUrl, optInUrl, iconSeed, campaignId.orEmpty(), details, playStorePublishedAt?.let(Instant::parse), groupUrl.orEmpty(), messagingId.orEmpty())
 }
 
 @Serializable
@@ -360,6 +428,7 @@ private data class OwnedAppInsert(
     @SerialName("install_url") val installUrl: String,
     @SerialName("opt_in_url") val optInUrl: String?,
     @SerialName("group_url") val groupUrl: String,
+    @SerialName("messaging_id") val messagingId: String?,
     @SerialName("icon_seed") val iconSeed: String,
     val details: String,
     val category: String,
@@ -399,9 +468,14 @@ private data class CampaignRow(
     @SerialName("target_days") val targetDays: Int = 14,
     @SerialName("testing_started_at") val testingStartedAt: String? = null,
     @SerialName("testing_completed_at") val testingCompletedAt: String? = null,
-    @SerialName("progress_reset_at") val progressResetAt: String? = null
+    @SerialName("progress_reset_at") val progressResetAt: String? = null,
+    @SerialName("closed_test_confirmed_at") val closedTestConfirmedAt: String? = null,
+    @SerialName("risk_decision") val riskDecision: String? = null,
+    @SerialName("replacement_open") val replacementOpen: Boolean = false,
+    @SerialName("replacement_joined_at") val replacementJoinedAt: String? = null,
+    @SerialName("restart_confirmed_at") val restartConfirmedAt: String? = null
 ) {
-    fun toCampaign(activeTesterCount: Int = 0) = Campaign(id, ownedAppId, requestedTesters, activeTesterCount, parseDate(startedOn), isActive = lifecycle == "active", instructions = instructions, targetDays = targetDays, activeTesterCount = activeTesterCount, testingStartedAt = testingStartedAt?.let(Instant::parse), testingCompletedAt = testingCompletedAt?.let(Instant::parse), progressResetAt = progressResetAt?.let(Instant::parse))
+    fun toCampaign(activeTesterCount: Int = 0) = Campaign(id, ownedAppId, requestedTesters, activeTesterCount, parseDate(startedOn), isActive = lifecycle == "active", instructions = instructions, targetDays = targetDays, activeTesterCount = activeTesterCount, testingStartedAt = testingStartedAt?.let(Instant::parse), testingCompletedAt = testingCompletedAt?.let(Instant::parse), progressResetAt = progressResetAt?.let(Instant::parse), closedTestConfirmedAt = closedTestConfirmedAt?.let(Instant::parse), riskDecision = riskDecision.toRiskDecision(), replacementOpen = replacementOpen, replacementJoinedAt = replacementJoinedAt?.let(Instant::parse), restartConfirmedAt = restartConfirmedAt?.let(Instant::parse))
 }
 
 @Serializable
@@ -415,6 +489,23 @@ private data class CampaignInsert(
 @Serializable
 private data class CampaignTesterCountUpdate(
     @SerialName("requested_testers") val requestedTesters: Int
+)
+
+@Serializable
+private data class CampaignActionParams(
+    @SerialName("target_campaign_id") val targetCampaignId: String
+)
+
+@Serializable
+private data class CampaignRiskDecisionParams(
+    @SerialName("target_campaign_id") val targetCampaignId: String,
+    val decision: String,
+    @SerialName("affected_commitment_id") val affectedCommitmentId: String? = null
+)
+
+@Serializable
+private data class CampaignActionRow(
+    val id: String
 )
 
 @Serializable
@@ -446,9 +537,15 @@ private data class PublicListingRow(
     @SerialName("testing_started_at") val testingStartedAt: String? = null,
     @SerialName("testing_completed_at") val testingCompletedAt: String? = null,
     @SerialName("progress_reset_at") val progressResetAt: String? = null,
-    @SerialName("play_store_published_at") val releaseApprovedAt: String? = null
+    @SerialName("play_store_published_at") val releaseApprovedAt: String? = null,
+    @SerialName("closed_test_confirmed_at") val closedTestConfirmedAt: String? = null,
+    @SerialName("risk_decision") val riskDecision: String? = null,
+    @SerialName("replacement_open") val replacementOpen: Boolean = false,
+    @SerialName("replacement_joined_at") val replacementJoinedAt: String? = null,
+    @SerialName("restart_confirmed_at") val restartConfirmedAt: String? = null,
+    @SerialName("messaging_id") val messagingId: String? = null
 ) {
-    fun toPublicApp() = PublicApp(id, title, packageName, ownerId, ownerUsername, installUrl, optInUrl, requestedTesters, joinedTesterCount, instructions, details, category, postedLabel(createdAt), title, campaignId, targetDays, joinedTesterCount, testingStartedAt?.let(Instant::parse), testingCompletedAt?.let(Instant::parse), progressResetAt?.let(Instant::parse), releaseApprovedAt?.let(Instant::parse), groupUrl.orEmpty(), (requestedTesters - slotsRemaining).coerceAtLeast(0))
+    fun toPublicApp() = PublicApp(id, title, packageName, ownerId, ownerUsername, installUrl, optInUrl, requestedTesters, joinedTesterCount, instructions, details, category, postedLabel(createdAt), title, campaignId, targetDays, joinedTesterCount, testingStartedAt?.let(Instant::parse), testingCompletedAt?.let(Instant::parse), progressResetAt?.let(Instant::parse), releaseApprovedAt?.let(Instant::parse), groupUrl.orEmpty(), (requestedTesters - slotsRemaining).coerceAtLeast(0), messagingId.orEmpty(), closedTestConfirmedAt?.let(Instant::parse), riskDecision.toRiskDecision(), replacementOpen, replacementJoinedAt?.let(Instant::parse), restartConfirmedAt?.let(Instant::parse))
 }
 
 @Serializable
@@ -495,6 +592,18 @@ private data class CommitmentInsert(
     @SerialName("current_user_owned_app_id") val currentUserOwnedAppId: String?,
     @SerialName("target_days") val targetDays: Int,
     val lifecycle: String
+)
+
+@Serializable
+private data class LeaveCommitmentParams(
+    @SerialName("target_commitment_id") val targetCommitmentId: String
+)
+
+@Serializable
+private data class LeaveCommitmentRow(
+    @SerialName("commitment_id") val commitmentId: String,
+    val lifecycle: String,
+    @SerialName("left_at") val leftAt: String
 )
 
 @Serializable
@@ -608,6 +717,20 @@ private fun String.toCommitmentLifecycle() = when (this) {
     "left" -> CommitmentLifecycle.LEFT
     else -> CommitmentLifecycle.PENDING_SETUP
 }
+
+private fun String?.toRiskDecision() = when (this) {
+    "continue" -> CampaignRiskDecision.CONTINUE
+    "restart" -> CampaignRiskDecision.RESTART
+    "defer" -> CampaignRiskDecision.DECIDE_LATER
+    else -> null
+}
+
+private val CampaignRiskDecision.rpcValue: String
+    get() = when (this) {
+        CampaignRiskDecision.CONTINUE -> "continue"
+        CampaignRiskDecision.RESTART -> "restart"
+        CampaignRiskDecision.DECIDE_LATER -> "defer"
+    }
 
 private fun String.toNotificationKind() = when (this) {
     "install" -> NotificationKind.INSTALL

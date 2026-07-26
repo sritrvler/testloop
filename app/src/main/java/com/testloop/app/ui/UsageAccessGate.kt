@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PrivacyTip
@@ -27,7 +28,7 @@ import java.time.Instant
 fun UsageAccessRequiredScreen(status: UsageAccessStatus, onOpenUsageAccess: () -> Unit) {
     val deadlinePassed = status.deadlineAt?.isBefore(Instant.now()) == true
     Column(
-        Modifier.fillMaxSize().padding(Gutter),
+        Modifier.fillMaxSize().navigationBarsPadding().padding(Gutter),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -37,7 +38,7 @@ fun UsageAccessRequiredScreen(status: UsageAccessStatus, onOpenUsageAccess: () -
         Spacer(Modifier.height(12.dp))
         Text(
             if (deadlinePassed) "Usage Access was not restored in time, so your test listing has been paused. Restore access to continue using TestLoop."
-            else "TestLoop cannot verify your testing commitments without Android Usage Access. Restore it within 6 hours or your test listing will be paused.",
+            else "TestLoop cannot verify your testing commitments without Android Usage Access. Restore it within 1 hour or your test listing will be paused.",
             color = Ink500,
             style = MaterialTheme.typography.bodyLarge
         )
