@@ -123,7 +123,8 @@ fun TodayRedesign(padding: PaddingValues, username: String, dataLoaded: Boolean,
     val taskProgressByPair = tasks.associateWith { targetProgress(it, publicApps, ownedApps, campaigns) }
     val unlockedTasks = tasks.filter { taskProgressByPair[it]?.dailyTaskUnlocked() == true }
     val pendingTasks = unlockedTasks.filter(::needsYourAction)
-    val tasksRemaining = unlockedTasks.count(::needsYourAction)
+    val taskCount = pendingSetup.size + unlockedTasks.size
+    val tasksRemaining = pendingSetup.size + pendingTasks.size
     val incoming = active.filter { pair ->
         pair.currentUserOwnAppId != null && ownedApps.any { it.id == pair.currentUserOwnAppId }
     }.groupBy { it.otherUserId to it.currentUserOwnAppId }.values.map { group ->
@@ -147,27 +148,44 @@ fun TodayRedesign(padding: PaddingValues, username: String, dataLoaded: Boolean,
         } else if (hasNoActivity) {
             item { ReadyToPairToday(onDiscover = onDiscover, onAddApp = onAddApp) }
         } else {
-            if (pendingSetup.isNotEmpty()) item {
-                SectionHeader("Finish setup", "Your tester slot is reserved")
-                GroupSurface {
-                    pendingSetup.forEachIndexed { index, pair ->
-                        val targetTitle = publicApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }?.title
-                            ?: ownedApps.firstOrNull { it.id == pair.appBeingTestedByCurrentUserId }?.title
-                        Row(Modifier.fillMaxWidth().clickable { onPair(pair.commitmentId) }.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Column(Modifier.weight(1f)) {
-                                Text(targetTitle ?: "Your reserved test", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                                Spacer(Modifier.height(5.dp))
-                                Text("Install the app and complete the setup steps before the reservation expires.", color = Ink500, style = MaterialTheme.typography.bodySmall)
-                            }
-                            Icon(Icons.Default.ArrowForward, "Continue setup", tint = Brand600)
+            item { TodaySummaryCard(tasksRemaining, taskCount) }
+            item { SectionHeader("Your tasks today", if (tasksRemaining == 0) "Nothing else for you to do" else "$tasksRemaining app${if (tasksRemaining == 1) "" else "s"} still need you", action = "All obligations", onAction = onObligations) }
+            item {
+                if (pendingSetup.isEmpty() && pendingTasks.isEmpty()) {
+                    EmptyTodayState()
+                } else {
+                    GroupSurface {
+                        val totalRows = pendingSetup.size + pendingTasks.size
+                        var rowIndex = 0
+                        pendingSetup.forEach { pair ->
+                            TodayTaskRow(
+                                pair = pair,
+                                appName = targetAppTitle(pair, publicApps, ownedApps),
+                                progress = null,
+                                today = today,
+                                setupRequired = true,
+                                onPair = onPair,
+                                onPrimaryAction = onPrimaryAction
+                            )
+                            rowIndex += 1
+                            if (rowIndex < totalRows) RowDivider()
                         }
-                        if (index != pendingSetup.lastIndex) RowDivider()
+                        pendingTasks.forEach { pair ->
+                            TodayTaskRow(
+                                pair = pair,
+                                appName = targetAppTitle(pair, publicApps, ownedApps),
+                                progress = targetProgress(pair, publicApps, ownedApps, campaigns),
+                                today = today,
+                                setupRequired = false,
+                                onPair = onPair,
+                                onPrimaryAction = onPrimaryAction
+                            )
+                            rowIndex += 1
+                            if (rowIndex < totalRows) RowDivider()
+                        }
                     }
                 }
             }
-            item { TodaySummaryCard(tasksRemaining, unlockedTasks.size) }
-            item { SectionHeader("Your tasks today", if (tasksRemaining == 0) "Nothing else for you to do" else "$tasksRemaining app${if (tasksRemaining == 1) "" else "s"} still need you", action = "All obligations", onAction = onObligations) }
-            item { if (pendingTasks.isEmpty()) EmptyTodayState() else GroupSurface { pendingTasks.forEachIndexed { index, pair -> DailyTaskRow(pair, targetAppTitle(pair, publicApps, ownedApps), targetProgress(pair, publicApps, ownedApps, campaigns), today, onPair, onPrimaryAction); if (index != pendingTasks.lastIndex) RowDivider() } } }
             item { SectionHeader("Waiting on other testers", if (incoming.isEmpty()) "No reciprocal apps yet" else if (incomingNeedsAction == 0) "All your testers are done today" else "$incomingNeedsAction person${if (incomingNeedsAction == 1) "" else "s"} ${if (incomingNeedsAction == 1) "needs" else "need"} attention") }
             item { if (incoming.isEmpty()) EmptyIncomingHint(onDiscover) else GroupSurface { incoming.forEachIndexed { index, pair -> PartnerStatusRow(pair, ownedApps, targetProgress(pair, publicApps, ownedApps, campaigns), today, onOwnApp, onPair); if (index != incoming.lastIndex) RowDivider() } } }
             if (incoming.isNotEmpty() && incomingNeedsAction == 0) item { AllTestersCaughtUp() }
@@ -305,15 +323,37 @@ private fun TodaySummaryCard(remaining: Int, total: Int) {
 }
 
 @Composable
-private fun DailyTaskRow(pair: ReciprocalCommitment, appName: String, progress: CampaignProgress, today: LocalDate, onPair: (String) -> Unit, onPrimaryAction: (String) -> Unit) {
-    val action = when {
-        pair.youOweSignal.install != InstallSignal.INSTALLED -> "Install"
-        pair.youOweSignal.activity != ActivitySignal.OPENED_TODAY -> "Open"
-        else -> "Open again"
+private fun TodayTaskRow(pair: ReciprocalCommitment, appName: String, progress: CampaignProgress?, today: LocalDate, setupRequired: Boolean, onPair: (String) -> Unit, onPrimaryAction: (String) -> Unit) {
+    val action = if (setupRequired) {
+        "Install"
+    } else {
+        when {
+            pair.youOweSignal.install != InstallSignal.INSTALLED -> "Install"
+            pair.youOweSignal.activity != ActivitySignal.OPENED_TODAY -> "Open"
+            else -> "Open again"
+        }
     }
-    Row(Modifier.fillMaxWidth().clickable { onPair(pair.commitmentId) }.padding(16.dp).semantics { contentDescription = "You owe them, $appName for ${pair.otherUsername}, ${pair.youOweSignal.install.label}" }, verticalAlignment = Alignment.CenterVertically) {
-        AppMonogram(appName, small = true); Spacer(Modifier.width(12.dp)); Column(Modifier.weight(1f)) { Text(appName, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold); Text("Test for ${pair.otherUsername}", style = MaterialTheme.typography.bodySmall, color = Ink500); Spacer(Modifier.height(7.dp)); SignalLabel(pair.youOweSignal, compact = true); Spacer(Modifier.height(7.dp)); Text(progress.dayLabel(today), style = MaterialTheme.typography.labelMedium, color = Ink500) }
-        FilledTonalButton(onClick = { onPrimaryAction(pair.commitmentId) }) { Icon(Icons.Default.OpenInNew, null, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(4.dp)); Text(action) }
+    val statusDescription = if (setupRequired) "Setup required" else pair.youOweSignal.install.label
+    Row(Modifier.fillMaxWidth().clickable { onPair(pair.commitmentId) }.padding(16.dp).semantics { contentDescription = "You owe them, $appName for ${pair.otherUsername}, $statusDescription" }, verticalAlignment = Alignment.CenterVertically) {
+        AppMonogram(appName, small = true)
+        Spacer(Modifier.width(12.dp))
+        Column(Modifier.weight(1f)) {
+            Text(appName, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+            Text("Test for ${pair.otherUsername}", style = MaterialTheme.typography.bodySmall, color = Ink500)
+            Spacer(Modifier.height(7.dp))
+            if (setupRequired) {
+                Text("Setup required · Install before your tester slot expires", style = MaterialTheme.typography.labelMedium, color = Ink500)
+            } else {
+                SignalLabel(pair.youOweSignal, compact = true)
+                Spacer(Modifier.height(7.dp))
+                Text(progress?.dayLabel(today).orEmpty(), style = MaterialTheme.typography.labelMedium, color = Ink500)
+            }
+        }
+        FilledTonalButton(onClick = { if (setupRequired) onPair(pair.commitmentId) else onPrimaryAction(pair.commitmentId) }) {
+            Icon(if (setupRequired) Icons.Default.ArrowForward else Icons.Default.OpenInNew, null, modifier = Modifier.size(16.dp))
+            Spacer(Modifier.width(4.dp))
+            Text(action)
+        }
     }
 }
 
